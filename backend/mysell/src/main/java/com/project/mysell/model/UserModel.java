@@ -6,7 +6,14 @@ import java.util.UUID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Table("users")
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class UserModel {
 	@Id
 	private UUID userId;
