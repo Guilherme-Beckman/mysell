@@ -9,4 +9,8 @@ spring:
     url: jdbc:postgresql://localhost:5432/mysell
     user: postgres
     password: ${DB_PASSWORD}
-    locations: classpath:db/migration
+    locations: classpath:db/migration		
+api:
+  security:
+    token:
+      secret: ${SECRET}
