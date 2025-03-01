@@ -1,0 +1,12 @@
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/mysell
+    username: postgres
+    password: ${DB_PASSWORD}
+
+  flyway:
+    enabled: true
+    url: jdbc:postgresql://localhost:5432/mysell
+    user: postgres
+    password: ${DB_PASSWORD}
+    locations: classpath:db/migration
