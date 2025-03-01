@@ -6,6 +6,8 @@ import java.util.UUID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
+import com.project.mysell.dto.UserDTO;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,4 +23,10 @@ public class UserModel {
 	private String password;
 	private LocalDateTime created_at;
 	
+	
+	public UserModel (UserDTO userDTO) {
+		this.email = userDTO.email();
+		this.password = userDTO.password();
+		this.created_at = LocalDateTime.now();
+	}
 }
