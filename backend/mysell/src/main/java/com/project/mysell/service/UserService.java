@@ -14,7 +14,7 @@ public class UserService {
 	@Autowired
 	private UserRepository userRepository;
 	
-	private Mono<UserModel> createUser(UserDTO userDTO) {
+	public Mono<UserModel> createUser(UserDTO userDTO) {
 		UserModel newUser = new UserModel(userDTO);
 		var addedUser = this.userRepository.save(newUser);
 		return addedUser;
