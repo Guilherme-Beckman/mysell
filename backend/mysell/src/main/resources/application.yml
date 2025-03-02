@@ -10,7 +10,5 @@ spring:
     user: postgres
     password: ${DB_PASSWORD}
     locations: classpath:db/migration		
-api:
-  security:
-    token:
-      secret: ${SECRET}
+jwt:
+  secret: ${SECRET}
