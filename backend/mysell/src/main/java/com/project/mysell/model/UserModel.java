@@ -1,10 +1,14 @@
 package com.project.mysell.model;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.security.config.annotation.authentication.configurers.userdetails.UserDetailsAwareConfigurer;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.project.mysell.dto.UserDTO;
 
@@ -16,7 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UserModel {
+public class UserModel implements UserDetails{
 	@Id
 	private UUID id;
 	private String email;
@@ -28,5 +32,19 @@ public class UserModel {
 		this.email = userDTO.email();
 		this.password = userDTO.password();
 		this.created_at = LocalDateTime.now();
+	}
+
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public String getUsername() {
+		// TODO Auto-generated method stub
+		return email;
 	}
 }
