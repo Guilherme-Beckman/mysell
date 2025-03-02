@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UserModel implements UserDetails{
+public class UserModel{
 	@Id
 	private UUID id;
 	private String email;
@@ -32,19 +32,5 @@ public class UserModel implements UserDetails{
 		this.email = userDTO.email();
 		this.password = userDTO.password();
 		this.created_at = LocalDateTime.now();
-	}
-
-
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public String getUsername() {
-		// TODO Auto-generated method stub
-		return email;
 	}
 }

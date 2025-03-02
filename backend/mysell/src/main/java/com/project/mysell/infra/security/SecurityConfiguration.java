@@ -45,14 +45,6 @@ public class SecurityConfiguration {
 	        authenticationManager.setPasswordEncoder(passwordEncoder);
 	        return authenticationManager;
 	}
-	@Bean
-	 ReactiveUserDetailsService userDetailsService(UserRepository users){
-	    return username->users.findByEmail(username)
-	       .map(u -> User
-	            .withUsername(u.getUsername()).password(u.getPassword())
-	            .authorities(u.getAuthorities())
-	            .build()
-	        );
-	}
+
 
 }
