@@ -1,5 +1,6 @@
 package com.project.mysell.infra.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,7 +16,6 @@ import org.springframework.security.web.server.context.NoOpServerSecurityContext
 
 @Configuration
 public class SecurityConfiguration {
-
 	@Bean
 	SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http,
 	        JwtTokenProvider tokenProvider,
@@ -36,20 +36,19 @@ public class SecurityConfiguration {
 	        .build();
 	}
 	
-	@Bean
-	 ReactiveAuthenticationManager reactiveAuthenticationManager(ReactiveUserDetailsService userDetailsService,
-	        PasswordEncoder passwordEncoder) {
-	        var authenticationManager = new UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService);
-	        authenticationManager.setPasswordEncoder(passwordEncoder);
-	        return authenticationManager;
-	}
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
     
-
+    @Bean
+    public ReactiveAuthenticationManager reactiveAuthenticationManager(ReactiveUserDetailsService userDetailsService,
+                                                                      PasswordEncoder passwordEncoder) {
+        var authenticationManager = new UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService);
+        authenticationManager.setPasswordEncoder(passwordEncoder);
+        return authenticationManager;
+    }
 
 
 }

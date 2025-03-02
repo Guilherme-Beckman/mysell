@@ -6,12 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
 
 import com.project.mysell.exceptions.user.UserNotFoundException;
 import com.project.mysell.repository.UserRepository;
 
 import reactor.core.publisher.Mono;
-
+@Service
 public class CustomReactiveUserDetailsService implements ReactiveUserDetailsService{
 	@Autowired
 	private UserRepository userRepository;
