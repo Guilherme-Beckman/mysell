@@ -12,7 +12,7 @@ import com.project.mysell.dto.UserDTO;
 import com.project.mysell.exceptions.InvalidCredentialsException;
 import com.project.mysell.exceptions.user.UserAlreadyExistsException;
 import com.project.mysell.exceptions.user.UserNotFoundException;
-import com.project.mysell.infra.security.JwtTokenProvider;
+import com.project.mysell.infra.security.jwt.JwtTokenProvider;
 import com.project.mysell.model.UserModel;
 import com.project.mysell.repository.UserRepository;
 
