@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.mysell.dto.LoginDTO;
+import com.project.mysell.dto.ResponseDTO;
 import com.project.mysell.service.AuthService;
 
 import lombok.RequiredArgsConstructor;
@@ -17,8 +18,8 @@ public class AuthController {
 	@Autowired
 	private AuthService authService;
 	
-	public ResponseEntity<Mono<String>> login(LoginDTO loginDTO){
-		String token =this.authService.login(loginDTO);
-		return ResponseEntity.ok().body(Mono<>);
+	public ResponseEntity<Mono<ResponseDTO>> login(LoginDTO loginDTO){
+		Mono<ResponseDTO> responseDTO =this.authService.login(loginDTO);
+		return ResponseEntity.ok().body(responseDTO);
 	}
 }

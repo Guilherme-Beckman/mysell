@@ -8,12 +8,10 @@ import org.springframework.security.authentication.UserDetailsRepositoryReactive
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
-
-import com.project.mysell.repository.UserRepository;
 
 @Configuration
 public class SecurityConfiguration {
@@ -34,7 +32,7 @@ public class SecurityConfiguration {
 	            .pathMatchers(PATH_POSTS).authenticated()
 	            .pathMatchers("/me").authenticated()
 	            .anyExchange().permitAll())
-	        .addFilterAt(new JwtTokenAuthenticationFilter(tokenProvider),SecurityWebFiltersOrder.HTTP_BASIC)
+	        .addFilterBefore(new JwtTokenAuthenticationFilter(tokenProvider),SecurityWebFiltersOrder.HTTP_BASIC)
 	        .build();
 	}
 	
@@ -45,6 +43,13 @@ public class SecurityConfiguration {
 	        authenticationManager.setPasswordEncoder(passwordEncoder);
 	        return authenticationManager;
 	}
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+    
+
 
 
 }
