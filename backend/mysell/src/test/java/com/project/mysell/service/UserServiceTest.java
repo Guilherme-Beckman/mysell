@@ -26,37 +26,22 @@ import reactor.test.StepVerifier;
 @Import(UserService.class)
 public class UserServiceTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
+	@Autowired
+	private UserService userService;
 
-    @Autowired
-    private UserService userService;
+	@Test
+	public void testCreateUser() {
+		// Given
+		String email = "test@example.com";
+		String password = "password123";
+		UserDTO userDTO = new UserDTO(email, password);
+		Mono<UserModel> result = userService.createUser(userDTO);
+		StepVerifier.create(result).assertNext(createdUser -> {
+			assertNotNull(createdUser.getId());
+			assertEquals(email, createdUser.getEmail());
+			assertEquals(password, createdUser.getPassword());
+			assertNotNull(createdUser.getCreated_at());
+		}).verifyComplete();
 
-    @Test
-    public void testCreateUser() {
-        // Given
-        String email = "test@example.com";
-        String password = "password123";
-        UserDTO userDTO = new UserDTO(email, password);
-        
-        logger.info("Starting testCreateUser with email: {}", email);
-
-        // When
-        Mono<UserModel> result = userService.createUser(userDTO);
-
-        // Then
-        StepVerifier.create(result)
-            .assertNext(createdUser -> {
-                logger.info("User created with ID: {}", createdUser.getId());
-                assertNotNull(createdUser.getId());
-                assertEquals(email, createdUser.getEmail());
-                assertEquals(password, createdUser.getPassword());
-                assertNotNull(createdUser.getCreated_at());
-                logger.info("User created successfully with timestamp: {}", createdUser.getCreated_at());
-            })
-            .verifyComplete();
-        
-        logger.info("testCreateUser completed successfully");
-    }
-
-   
+	}
 }
