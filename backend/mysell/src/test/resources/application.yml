@@ -1,3 +1,9 @@
 spring:
   r2dbc:
-    url: r2dbc:h2:mem:///test;CASE_INSENSITIVE_IDENTIFIERS=TRUE
+    url: r2dbc:h2:mem:///testdb;DB_CLOSE_DELAY=-1
+    username: sa
+    password: 
+  sql:
+    init:
+      mode: embedded
+      schema-locations: classpath:schema.sql
