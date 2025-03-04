@@ -1,19 +1,23 @@
 package com.project.mysell.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.reactive.server.WebTestClient;
+
 import com.project.mysell.dto.LoginDTO;
 import com.project.mysell.dto.ResponseDTO;
 import com.project.mysell.dto.UserDTO;
+import com.project.mysell.repository.UserRepository;
 import com.project.mysell.service.AuthService;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.reactive.server.WebTestClient;
-import reactor.core.publisher.Mono;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import reactor.core.publisher.Mono;
 
 @SecureWebFluxTest(controllers = AuthController.class)
 class AuthControllerTest{
@@ -21,10 +25,9 @@ class AuthControllerTest{
     @Autowired
     private WebTestClient webTestClient;
 
-    @MockBean
+    @Autowired
     private AuthService authService;
-
-
+    
     @Test
     void login_WithValidCredentials_ReturnsResponseDTO() {
         // Arrange

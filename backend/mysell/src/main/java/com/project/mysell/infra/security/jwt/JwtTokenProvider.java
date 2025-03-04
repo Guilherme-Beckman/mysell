@@ -41,7 +41,6 @@ public class JwtTokenProvider {
 	}
 	
 	public String createToken(Authentication authentication) {
-		System.out.println(jwtProperties.getSecret());
 		String username = authentication.getName();
 		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 		Claims claims = Jwts.claims().setSubject(username);
