@@ -7,3 +7,4 @@ spring:
     init:
       mode: embedded
       schema-locations: classpath:schema.sql
+			
