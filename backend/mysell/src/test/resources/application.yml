@@ -1,4 +1,13 @@
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - email
   r2dbc:
     url: r2dbc:h2:mem:///testdb;DB_CLOSE_DELAY=-1
     username: sa
@@ -7,4 +16,3 @@ spring:
     init:
       mode: embedded
       schema-locations: classpath:schema.sql
-			

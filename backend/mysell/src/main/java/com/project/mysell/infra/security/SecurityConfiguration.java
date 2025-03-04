@@ -15,22 +15,23 @@ import org.springframework.security.web.server.context.NoOpServerSecurityContext
 
 import com.project.mysell.infra.security.jwt.JwtTokenAuthenticationFilter;
 import com.project.mysell.infra.security.jwt.JwtTokenProvider;
-
 @Configuration
 public class SecurityConfiguration {
 	@Bean
 	SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http,
 	        JwtTokenProvider tokenProvider,
-	        ReactiveAuthenticationManager reactiveAuthenticationManager) {
+	        ReactiveAuthenticationManager reactiveAuthenticationManager, CustomAuthenticationSuccessHandler successHandler) {
 	    
-	    return http.csrf(ServerHttpSecurity.CsrfSpec::disable)
+	    return http
+	    	.oauth2Login(oauth2 -> oauth2.authenticationSuccessHandler(successHandler))
+	    	.csrf(ServerHttpSecurity.CsrfSpec::disable)
 	        .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
 	        .authenticationManager(reactiveAuthenticationManager)
 	        .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
 	        .authorizeExchange(it->it
-	        	.pathMatchers(HttpMethod.POST, "/auth/login").permitAll()
-	            .pathMatchers(HttpMethod.POST, "/auth/register").permitAll()
-	            .anyExchange().authenticated())
+	        		 .pathMatchers(HttpMethod.POST, "/auth/login").permitAll()
+	                 .pathMatchers(HttpMethod.POST, "/auth/register").permitAll()
+	        .anyExchange().authenticated())
 	        .addFilterBefore(new JwtTokenAuthenticationFilter(tokenProvider),SecurityWebFiltersOrder.HTTP_BASIC)
 	        .build();
 	}
@@ -42,12 +43,17 @@ public class SecurityConfiguration {
     }
     
     @Bean
-    ReactiveAuthenticationManager reactiveAuthenticationManager(ReactiveUserDetailsService userDetailsService,
-                                                                      PasswordEncoder passwordEncoder) {
-        var authenticationManager = new UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService);
-        authenticationManager.setPasswordEncoder(passwordEncoder);
-        return authenticationManager;
+    ReactiveAuthenticationManager reactiveAuthenticationManager(
+            ReactiveUserDetailsService userDetailsService,
+            PasswordEncoder passwordEncoder) {
+            var authenticationManager = new UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService);
+            authenticationManager.setPasswordEncoder(passwordEncoder);
+            return authenticationManager;
+        };
+
+
     }
+    
 
-
-}
+  
+    

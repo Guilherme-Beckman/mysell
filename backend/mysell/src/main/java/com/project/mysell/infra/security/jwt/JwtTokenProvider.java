@@ -3,6 +3,7 @@ package com.project.mysell.infra.security.jwt;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -12,18 +13,20 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.client.authentication.OAuth2LoginAuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
@@ -85,5 +88,26 @@ public class JwtTokenProvider {
 		} catch (JwtException | IllegalArgumentException e) {
 		}
         return false;
+	}
+	
+	public String createTokenFromOAuth2(Authentication authentication) {
+		OAuth2AuthenticationToken auth2AuthenticationToken  = (OAuth2AuthenticationToken) authentication;
+		OAuth2User auth2User =  auth2AuthenticationToken.getPrincipal();
+		String username = auth2User.getAttribute("email");
+		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+		Claims claims = Jwts.claims().setSubject(username);
+		
+		if(!authorities.isEmpty()) {
+			claims.put(AUTHORITIES_KEY, authorities.stream().map(GrantedAuthority::getAuthority)
+					.collect(Collectors.joining(",")));
+		}
+		Date now = new Date();
+		Date validity = new Date(now.getTime()+ this.jwtProperties.getValidityInMs());
+		
+        return Jwts.builder()
+        		.setClaims(claims)
+        		.setIssuedAt(now)
+        		.setExpiration(validity)
+                .signWith(this.secretKey, SignatureAlgorithm.HS256).compact();
 	}
 }

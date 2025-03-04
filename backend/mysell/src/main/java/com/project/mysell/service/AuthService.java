@@ -34,7 +34,7 @@ public class AuthService {
     private JwtTokenProvider tokenProvider;
 
     // Método para gerar o token e responder com o ResponseDTO
-    private Mono<ResponseDTO> generateTokenAndRespond(String email, String password) {
+    public Mono<ResponseDTO> generateTokenAndRespond(String email, String password) {
         return this.reactiveAuthenticationManager
             .authenticate(new UsernamePasswordAuthenticationToken(email, password))
             .flatMap(authentication -> {
