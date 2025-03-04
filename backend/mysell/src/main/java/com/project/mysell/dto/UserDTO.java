@@ -1,8 +1,14 @@
 package com.project.mysell.dto;
 
-public record UserDTO(
-		String email,
-		String password
-		) {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
+public record UserDTO(
+        @NotNull(message = "Email must not be null")
+        @NotBlank(message = "Email must not be blank")
+        String email,
+
+        @NotNull(message = "Password must not be null")
+        @NotBlank(message = "Password must not be blank")
+        String password) {
 }

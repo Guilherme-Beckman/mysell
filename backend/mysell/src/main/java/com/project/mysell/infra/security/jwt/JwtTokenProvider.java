@@ -1,4 +1,4 @@
-package com.project.mysell.infra.security;
+package com.project.mysell.infra.security.jwt;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -27,7 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class JwtTokenProvider {
 	private static final String AUTHORITIES_KEY = "roles";
 	private final JwtProperties jwtProperties;
@@ -35,6 +34,7 @@ public class JwtTokenProvider {
 	
 	@PostConstruct
 	public void init() {
+	
 		var secret = Base64.getEncoder()
 				.encodeToString(this.jwtProperties.getSecret().getBytes());
 		this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
@@ -77,15 +77,12 @@ public class JwtTokenProvider {
 	}
 	public boolean validateToken(String token) {
 		try {
-			Jws<Claims> claims = Jwts.parserBuilder()
+			Jwts.parserBuilder()
 					.setSigningKey(this.secretKey)
 					.build()
 					.parseClaimsJws(token);
-		    log.info("expiration date: {}", claims.getBody().getExpiration());
             return true;
 		} catch (JwtException | IllegalArgumentException e) {
-            log.info("Invalid JWT token: {}", e.getMessage());
-            log.trace("Invalid JWT token trace.", e);
 		}
         return false;
 	}

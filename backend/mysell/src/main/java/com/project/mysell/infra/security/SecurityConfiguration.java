@@ -1,6 +1,5 @@
 package com.project.mysell.infra.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -14,36 +13,36 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 
+import com.project.mysell.infra.security.jwt.JwtTokenAuthenticationFilter;
+import com.project.mysell.infra.security.jwt.JwtTokenProvider;
+
 @Configuration
 public class SecurityConfiguration {
 	@Bean
 	SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http,
 	        JwtTokenProvider tokenProvider,
 	        ReactiveAuthenticationManager reactiveAuthenticationManager) {
-	    final String PATH_POSTS="/posts/**";
 	    
 	    return http.csrf(ServerHttpSecurity.CsrfSpec::disable)
 	        .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
 	        .authenticationManager(reactiveAuthenticationManager)
 	        .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
 	        .authorizeExchange(it->it
-	            .pathMatchers(HttpMethod.GET,PATH_POSTS).permitAll()
-	            .pathMatchers(HttpMethod.DELETE,PATH_POSTS).hasRole("ADMIN")
-	            .pathMatchers(PATH_POSTS).authenticated()
-	            .pathMatchers("/me").authenticated()
-	            .anyExchange().permitAll())
+	        	.pathMatchers(HttpMethod.POST, "/auth/login").permitAll()
+	            .pathMatchers(HttpMethod.POST, "/auth/register").permitAll()
+	            .anyExchange().authenticated())
 	        .addFilterBefore(new JwtTokenAuthenticationFilter(tokenProvider),SecurityWebFiltersOrder.HTTP_BASIC)
 	        .build();
 	}
 	
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
     
     @Bean
-    public ReactiveAuthenticationManager reactiveAuthenticationManager(ReactiveUserDetailsService userDetailsService,
+    ReactiveAuthenticationManager reactiveAuthenticationManager(ReactiveUserDetailsService userDetailsService,
                                                                       PasswordEncoder passwordEncoder) {
         var authenticationManager = new UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService);
         authenticationManager.setPasswordEncoder(passwordEncoder);

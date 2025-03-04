@@ -1,4 +1,4 @@
-package com.project.mysell.infra.security;
+package com.project.mysell.infra.security.jwt;
 import org.springframework.http.HttpHeaders;
 
 import org.springframework.http.server.reactive.ServerHttpRequest;
