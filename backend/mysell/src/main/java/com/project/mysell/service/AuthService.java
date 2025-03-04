@@ -3,6 +3,7 @@ package com.project.mysell.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,51 +22,73 @@ import reactor.core.publisher.Mono;
 @Service
 public class AuthService {
 
-    @Autowired
+	@Autowired
     private UserRepository userRepository;
-
-    @Autowired
+	@Autowired
     private PasswordEncoder passwordEncoder;
+	@Autowired
+    private ReactiveAuthenticationManager authenticationManager;
+	@Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
-    @Autowired
-    private ReactiveAuthenticationManager reactiveAuthenticationManager;
-
-    @Autowired 
-    private JwtTokenProvider tokenProvider;
-
-    // Método para gerar o token e responder com o ResponseDTO
-    public Mono<ResponseDTO> generateTokenAndRespond(String email, String password) {
-        return this.reactiveAuthenticationManager
-            .authenticate(new UsernamePasswordAuthenticationToken(email, password))
-            .flatMap(authentication -> {
-                String token = this.tokenProvider.createToken(authentication);
-                return Mono.just(new ResponseDTO(email, token));
-            });
-    }
 
     public Mono<ResponseDTO> login(LoginDTO loginDTO) {
-        return this.userRepository.findByEmail(loginDTO.email())
-            .flatMap(userModel -> {
-                // Comparar senhas com o password encoder
-                if (passwordEncoder.matches(loginDTO.password(), userModel.getPassword())) {
-                    return this.generateTokenAndRespond(loginDTO.email(), loginDTO.password());
-                } else {
-                    return Mono.error(new InvalidCredentialsException());
-                }
-            })
+        return findUserByEmail(loginDTO.email())
+            .flatMap(user -> validateCredentials(user, loginDTO))
             .switchIfEmpty(Mono.error(new UserNotFoundException(loginDTO.email())));
     }
 
     public Mono<ResponseDTO> register(UserDTO userDTO) {
-        // Verifica se o usuário já existe
-        return this.userRepository.findByEmail(userDTO.email())
-            .<ResponseDTO>flatMap(existingUser -> Mono.error(new UserAlreadyExistsException()))
-            .switchIfEmpty(Mono.defer(() -> {
-                // Criação do novo usuário
-                UserDTO newUser = new UserDTO(userDTO.email(), passwordEncoder.encode(userDTO.password()));
-                UserModel newUserModel = new UserModel(newUser);
-                return this.userRepository.save(newUserModel)
-                    .flatMap(savedUser -> this.generateTokenAndRespond(userDTO.email(), userDTO.password()));
-            }));
+        return verifyUserDoesNotExist(userDTO.email())
+            .then(createAndSaveUser(userDTO))
+            .flatMap(savedUser -> authenticateUser(userDTO));
+    }
+
+    private Mono<ResponseDTO> authenticateUser(UserDTO userDTO) {
+        return authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(userDTO.email(), userDTO.password()))
+            .flatMap(authentication -> generateAuthenticationResponse(authentication, userDTO.email()));
+    }
+    private Mono<ResponseDTO> authenticateUser(LoginDTO userDTO) {
+        return authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(userDTO.email(), userDTO.password()))
+            .flatMap(authentication -> generateAuthenticationResponse(authentication, userDTO.email()));
+    }
+
+    private Mono<UserModel> findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    private Mono<ResponseDTO> validateCredentials(UserModel user, LoginDTO loginDTO) {
+        if (isPasswordValid(loginDTO.password(), user.getPassword())) {
+            return authenticateUser(loginDTO);
+        }
+        return Mono.error(new InvalidCredentialsException());
+    }
+
+    private Mono<ResponseDTO> generateAuthenticationResponse(Authentication authentication, String email) {
+        return Mono.fromCallable(() -> jwtTokenProvider.createToken(authentication))
+            .map(token -> new ResponseDTO(email, token));
+    }
+
+    private Mono<Void> verifyUserDoesNotExist(String email) {
+        return userRepository.findByEmail(email)
+            .flatMap(existingUser -> Mono.error(new UserAlreadyExistsException()))
+            .then();
+    }
+
+    private Mono<UserModel> createAndSaveUser(UserDTO userDTO) {
+        return Mono.just(userDTO)
+            .map(this::encodeUserPassword)
+            .map(UserModel::new)
+            .flatMap(userRepository::save);
+    }
+
+    private UserDTO encodeUserPassword(UserDTO userDTO) {
+        return new UserDTO(userDTO.email(), passwordEncoder.encode(userDTO.password()));
+    }
+
+    private boolean isPasswordValid(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 }
