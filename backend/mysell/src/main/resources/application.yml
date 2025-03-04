@@ -8,6 +8,11 @@ spring:
             client-secret: ${GOOGLE_CLIENT_SECRET}
             scope:
               - email
+          facebook:
+            client-id: ${FACEBOOK_CLIENT_ID}	
+            client-secret: ${FACEBOOK_CLIENT_SECRET}
+            scope:
+              - email
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/mysell
     username: postgres
