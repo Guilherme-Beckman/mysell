@@ -13,6 +13,7 @@ import com.project.mysell.dto.UserDTO;
 import com.project.mysell.exceptions.InvalidCredentialsException;
 import com.project.mysell.exceptions.user.UserAlreadyExistsException;
 import com.project.mysell.exceptions.user.UserNotFoundException;
+import com.project.mysell.infra.security.CustomAuthenticationProvider;
 import com.project.mysell.infra.security.jwt.JwtTokenProvider;
 import com.project.mysell.model.UserModel;
 import com.project.mysell.repository.UserRepository;
@@ -27,14 +28,14 @@ public class AuthService {
 	@Autowired
     private PasswordEncoder passwordEncoder;
 	@Autowired
-    private ReactiveAuthenticationManager authenticationManager;
+    private CustomAuthenticationProvider authenticationManager;
 	@Autowired
     private JwtTokenProvider jwtTokenProvider;
 
 
     public Mono<ResponseDTO> login(LoginDTO loginDTO) {
         return findUserByEmail(loginDTO.email())
-            .flatMap(user -> validateCredentials(user, loginDTO))
+            .flatMap(user -> authenticateUser(loginDTO))
             .switchIfEmpty(Mono.error(new UserNotFoundException(loginDTO.email())));
     }
 
@@ -58,14 +59,6 @@ public class AuthService {
     private Mono<UserModel> findUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
-
-    private Mono<ResponseDTO> validateCredentials(UserModel user, LoginDTO loginDTO) {
-        if (isPasswordValid(loginDTO.password(), user.getPassword())) {
-            return authenticateUser(loginDTO);
-        }
-        return Mono.error(new InvalidCredentialsException());
-    }
-
     private Mono<ResponseDTO> generateAuthenticationResponse(Authentication authentication, String email) {
         return Mono.fromCallable(() -> jwtTokenProvider.createToken(authentication))
             .map(token -> new ResponseDTO(email, token));
@@ -88,7 +81,5 @@ public class AuthService {
         return new UserDTO(userDTO.email(), passwordEncoder.encode(userDTO.password()));
     }
 
-    private boolean isPasswordValid(String rawPassword, String encodedPassword) {
-        return passwordEncoder.matches(rawPassword, encodedPassword);
-    }
+
 }
