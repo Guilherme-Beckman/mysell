@@ -3,6 +3,8 @@ package com.project.mysell.infra.security;
 import com.project.mysell.exceptions.AccountLockedException;
 import com.project.mysell.exceptions.InvalidCredentialsException;
 import com.project.mysell.service.LoginAttemptService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,17 +16,12 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class CustomAuthenticationProvider implements ReactiveAuthenticationManager {
-    private final LoginAttemptService loginAttemptService;
-    private final CustomReactiveUserDetailsService userDetailsService;
-    private final PasswordEncoder passwordEncoder;
-
-    public CustomAuthenticationProvider(LoginAttemptService loginAttemptService,
-                                       CustomReactiveUserDetailsService userDetailsService,
-                                       PasswordEncoder passwordEncoder) {
-        this.loginAttemptService = loginAttemptService;
-        this.userDetailsService = userDetailsService;
-        this.passwordEncoder = passwordEncoder;
-    }
+	@Autowired
+    private LoginAttemptService loginAttemptService;
+	@Autowired
+    private CustomReactiveUserDetailsService userDetailsService;
+	@Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
