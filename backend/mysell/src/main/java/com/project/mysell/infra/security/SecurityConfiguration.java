@@ -20,13 +20,13 @@ public class SecurityConfiguration {
 	@Bean
 	SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http,
 	        JwtTokenProvider tokenProvider,
-	        ReactiveAuthenticationManager reactiveAuthenticationManager, CustomAuthenticationSuccessHandler successHandler) {
+	        CustomAuthenticationProvider authenticationProvider, CustomAuthenticationSuccessHandler successHandler) {
 	    
 	    return http
 	    	.oauth2Login(oauth2 -> oauth2.authenticationSuccessHandler(successHandler))
 	    	.csrf(ServerHttpSecurity.CsrfSpec::disable)
 	        .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
-	        .authenticationManager(reactiveAuthenticationManager)
+	        .authenticationManager(authenticationProvider)
 	        .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
 	        .authorizeExchange(it->it
 	        		 .pathMatchers(HttpMethod.POST, "/auth/login").permitAll()
@@ -43,14 +43,6 @@ public class SecurityConfiguration {
         return new BCryptPasswordEncoder();
     }
     
-    @Bean
-    ReactiveAuthenticationManager reactiveAuthenticationManager(
-            ReactiveUserDetailsService userDetailsService,
-            PasswordEncoder passwordEncoder) {
-            var authenticationManager = new UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService);
-            authenticationManager.setPasswordEncoder(passwordEncoder);
-            return authenticationManager;
-        };
 
 
     }
