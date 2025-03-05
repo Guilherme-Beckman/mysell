@@ -31,6 +31,8 @@ public class AuthService {
     private CustomAuthenticationProvider authenticationManager;
 	@Autowired
     private JwtTokenProvider jwtTokenProvider;
+	@Autowired
+	private EmailService emailService;
 
 
     public Mono<ResponseDTO> login(LoginDTO loginDTO) {
@@ -80,6 +82,15 @@ public class AuthService {
     private UserDTO encodeUserPassword(UserDTO userDTO) {
         return new UserDTO(userDTO.email(), passwordEncoder.encode(userDTO.password()));
     }
+
+	public Mono<String> verifyEmail(String token) {
+		return Mono.just(token)
+				.flatMap(tokenA -> {
+				var user = this.jwtTokenProvider.getAuthentication(token);
+				this.emailService.sendEmail(user.getName(),"verification","body");
+				return Mono.just("Sucess");
+				});
+	}
 
 
 }
