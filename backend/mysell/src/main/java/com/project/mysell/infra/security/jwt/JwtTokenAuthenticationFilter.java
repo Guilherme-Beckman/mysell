@@ -14,12 +14,11 @@ import reactor.core.scheduler.Schedulers;
 
 @RequiredArgsConstructor
 public class JwtTokenAuthenticationFilter implements WebFilter {
-    public static final String HEADER_PREFIX = "Bearer ";
     private final JwtTokenProvider tokenProvider;
-
+    public static final String HEADER_PREFIX = "Bearer ";
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        String token = resolveToken(exchange.getRequest());
+        String token = this.resolveToken(exchange.getRequest());
         if (StringUtils.hasText(token) && this.tokenProvider.validateToken(token)) {
             return Mono.fromCallable(() -> this.tokenProvider.getAuthentication(token))
                     .subscribeOn(Schedulers.boundedElastic())
@@ -30,7 +29,6 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
         }
         return chain.filter(exchange);
     }
-
     private String resolveToken(ServerHttpRequest request) {
         String bearerToken = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(HEADER_PREFIX)) {
@@ -38,4 +36,5 @@ public class JwtTokenAuthenticationFilter implements WebFilter {
         }
         return null;
     }
+
 }	

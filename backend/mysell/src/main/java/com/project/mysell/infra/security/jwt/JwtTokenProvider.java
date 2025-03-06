@@ -1,24 +1,26 @@
 package com.project.mysell.infra.security.jwt;
 
 import java.nio.charset.StandardCharsets;
+
 import java.util.Base64;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.client.authentication.OAuth2LoginAuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -34,6 +36,7 @@ public class JwtTokenProvider {
 	private static final String AUTHORITIES_KEY = "roles";
 	private final JwtProperties jwtProperties;
 	private SecretKey secretKey;
+    private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
 	
 	@PostConstruct
 	public void init() {
@@ -61,34 +64,55 @@ public class JwtTokenProvider {
         		.setExpiration(validity)
                 .signWith(this.secretKey, SignatureAlgorithm.HS256).compact();
 	}
-	public Authentication getAuthentication (String token) {
-		Claims claims = Jwts.parserBuilder()
-				.setSigningKey(this.secretKey)
-				.build()
-				.parseClaimsJws(token)
-				.getBody();
-		
-		Object authoritiesClaim = claims.get(AUTHORITIES_KEY);
-		
-	      Collection<? extends GrantedAuthority> authorities = authoritiesClaim == null
-	                ? AuthorityUtils.NO_AUTHORITIES
-	                : AuthorityUtils
-	                .commaSeparatedStringToAuthorityList(authoritiesClaim.toString());
-	      
-	      User principal = new User(claims.getSubject(), "", authorities);	
-	      return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+	public Authentication getAuthentication(String token) {
+	    logger.info("Starting getAuthentication with token: {}", token);
+	    // Parse the token to extract claims
+	    Claims claims = Jwts.parserBuilder()
+	            .setSigningKey(this.secretKey)
+	            .build()
+	            .parseClaimsJws(token)
+	            .getBody();
+	    logger.info("Extracted claims: {}", claims);
+
+	    // Retrieve authorities from claims
+	    Object authoritiesClaim = claims.get(AUTHORITIES_KEY);
+	    logger.debug("Authorities claim: {}", authoritiesClaim);
+
+	    Collection<? extends GrantedAuthority> authorities = authoritiesClaim == null
+	            ? AuthorityUtils.NO_AUTHORITIES
+	            : AuthorityUtils.commaSeparatedStringToAuthorityList(authoritiesClaim.toString());
+	    logger.info("Resolved authorities: {}", authorities);
+
+	    // Build the principal user
+	    User principal = new User(claims.getSubject(), "", authorities);
+	    logger.info("Created User principal: {}", principal);
+
+	    // Create the authentication token
+	    Authentication authentication = new UsernamePasswordAuthenticationToken(principal, token, authorities);
+	    logger.info("Authentication token created successfully.");
+	    
+	    return authentication;
 	}
+
 	public boolean validateToken(String token) {
-		try {
-			Jwts.parserBuilder()
-					.setSigningKey(this.secretKey)
-					.build()
-					.parseClaimsJws(token);
+        try {
+            logger.info("Validating token...");
+            Jwts.parserBuilder()
+                    .setSigningKey(this.secretKey)
+                    .build()
+                    .parseClaimsJws(token);
+            logger.info("Token is valid.");
             return true;
-		} catch (JwtException | IllegalArgumentException e) {
-		}
+        } catch (JwtException e) {
+            logger.error("JWT exception during token validation: {}", e.getMessage());
+        } catch (IllegalArgumentException e) {
+            logger.error("Illegal argument exception during token validation: {}", e.getMessage());
+        } catch (Exception e) {
+            logger.error("Unexpected exception during token validation: {}", e.getMessage());
+        }
+        logger.warn("Token is invalid.");
         return false;
-	}
+    }
 	
 	public String createTokenFromOAuth2(Authentication authentication) {
 		OAuth2AuthenticationToken auth2AuthenticationToken  = (OAuth2AuthenticationToken) authentication;

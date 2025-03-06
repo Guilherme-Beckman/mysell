@@ -33,7 +33,7 @@ public class SecurityConfiguration {
 	        		 .pathMatchers(HttpMethod.GET, "/auth/login").permitAll()
 	                 .pathMatchers(HttpMethod.POST, "/auth/register").permitAll()
 	        .anyExchange().authenticated())
-	        .addFilterBefore(new JwtTokenAuthenticationFilter(tokenProvider),SecurityWebFiltersOrder.HTTP_BASIC)
+	        .addFilterAt(new JwtTokenAuthenticationFilter(tokenProvider),SecurityWebFiltersOrder.HTTP_BASIC)
 	        .build();
 	}
 	
