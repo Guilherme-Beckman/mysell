@@ -28,7 +28,7 @@ public class EmailCodeService implements EmailService {
     private JavaMailSender javaMailSender;
 
     @Autowired
-    private CodeVerificationAttempService attempService;
+    private CodeVerificationAttemptService attempService;
 
     @Override
     public Mono<Void> sendEmail(String to, String subject, String body) {
