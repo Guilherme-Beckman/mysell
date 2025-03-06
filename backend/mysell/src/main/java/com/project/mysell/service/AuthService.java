@@ -92,7 +92,7 @@ public class AuthService {
             .flatMap(tokenA -> {
                 var authentication = this.jwtTokenProvider.getAuthentication(tokenA);
                 return this.emailCodeService.sendCode(authentication.getName())
-                    .then(Mono.just("Success"));
+                    .then(Mono.just("Code sended successfully"));
             });
     }
 
@@ -102,7 +102,7 @@ public class AuthService {
         		.flatMap(tokenA -> {
         			var authentication = this.jwtTokenProvider.getAuthentication(tokenA);
         			return this.emailCodeService.validateCode(authentication.getName(), verificationCodeDTO.code());
-        		}).then(Mono.just("Sucess"));
+        		}).then(Mono.just("Email verified successfully"));
 	}
 
 

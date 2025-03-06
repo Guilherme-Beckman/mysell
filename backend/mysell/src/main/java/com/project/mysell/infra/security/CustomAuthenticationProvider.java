@@ -1,5 +1,6 @@
 package com.project.mysell.infra.security;
 
+import com.project.mysell.exceptions.AccountLockedCodeException;
 import com.project.mysell.exceptions.AccountLockedException;
 import com.project.mysell.exceptions.InvalidCredentialsException;
 import com.project.mysell.service.LoginAttemptService;
@@ -68,11 +69,11 @@ public class CustomAuthenticationProvider implements ReactiveAuthenticationManag
     }
 
     private void handleSuccessfulLoginAttempt(String username) {
-        loginAttemptService.loginSucceeded(username);
+        loginAttemptService.succeeded(username);
     }
 
     private void handleFailedLoginAttempt(String username) {
-        loginAttemptService.loginFailed(username);
+        loginAttemptService.failed(username);
     }
 
     private Mono<Authentication> handleAuthenticationError(Throwable error, String username) {
