@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import com.project.mysell.dto.LoginDTO;
 import com.project.mysell.dto.ResponseDTO;
 import com.project.mysell.dto.UserDTO;
+import com.project.mysell.dto.VerificationCodeDTO;
 import com.project.mysell.exceptions.InvalidCredentialsException;
 import com.project.mysell.exceptions.user.UserAlreadyExistsException;
 import com.project.mysell.exceptions.user.UserNotFoundException;
@@ -35,8 +36,7 @@ public class AuthService {
 	@Autowired
     private JwtTokenProvider jwtTokenProvider;
 	@Autowired
-	private EmailService emailService;
-	 private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
+	private EmailCodeService emailCodeService;
 
 
     public Mono<ResponseDTO> login(LoginDTO loginDTO) {
@@ -86,21 +86,25 @@ public class AuthService {
     private UserDTO encodeUserPassword(UserDTO userDTO) {
         return new UserDTO(userDTO.email(), passwordEncoder.encode(userDTO.password()));
     }
-    public Mono<String> verifyEmail(String token) {
+    public Mono<String> sendCode(String token) {
         token =  token.substring(7);
-        logger.info("Iniciando verificação de e-mail com token: {}", token);
         return Mono.just(token)
             .flatMap(tokenA -> {
-                logger.debug("Token recebido: {}", tokenA);
                 var authentication = this.jwtTokenProvider.getAuthentication(tokenA);
-                logger.info("Usuário autenticado: {}", authentication.getName());
-                logger.info("Enviando e-mail de verificação para: {}", authentication.getName());
-                return this.emailService.sendWelcomeEmail(authentication.getName())
-                    .doOnSuccess(ignored -> logger.info("E-mail de verificação enviado com sucesso para: {}", authentication.getName()))
-                    .doOnError(e -> logger.error("Erro ao enviar e-mail de verificação para: {}", authentication.getName(), e))
+                return this.emailCodeService.sendCode(authentication.getName())
                     .then(Mono.just("Success"));
             });
     }
+
+	public Mono<String> verifyEmail(String token, VerificationCodeDTO verificationCodeDTO) {
+        token =  token.substring(7);
+        return Mono.just(token)
+        		.flatMap(tokenA -> {
+        			var authentication = this.jwtTokenProvider.getAuthentication(tokenA);
+        			return this.emailCodeService.validateCode(authentication.getName(), verificationCodeDTO.code());
+        		}).then(Mono.just("Sucess"));
+	}
+
 
 
 

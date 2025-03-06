@@ -36,7 +36,6 @@ public class JwtTokenProvider {
 	private static final String AUTHORITIES_KEY = "roles";
 	private final JwtProperties jwtProperties;
 	private SecretKey secretKey;
-    private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
 	
 	@PostConstruct
 	public void init() {
@@ -65,52 +64,40 @@ public class JwtTokenProvider {
                 .signWith(this.secretKey, SignatureAlgorithm.HS256).compact();
 	}
 	public Authentication getAuthentication(String token) {
-	    logger.info("Starting getAuthentication with token: {}", token);
 	    // Parse the token to extract claims
 	    Claims claims = Jwts.parserBuilder()
 	            .setSigningKey(this.secretKey)
 	            .build()
 	            .parseClaimsJws(token)
 	            .getBody();
-	    logger.info("Extracted claims: {}", claims);
 
 	    // Retrieve authorities from claims
 	    Object authoritiesClaim = claims.get(AUTHORITIES_KEY);
-	    logger.debug("Authorities claim: {}", authoritiesClaim);
 
 	    Collection<? extends GrantedAuthority> authorities = authoritiesClaim == null
 	            ? AuthorityUtils.NO_AUTHORITIES
 	            : AuthorityUtils.commaSeparatedStringToAuthorityList(authoritiesClaim.toString());
-	    logger.info("Resolved authorities: {}", authorities);
 
 	    // Build the principal user
 	    User principal = new User(claims.getSubject(), "", authorities);
-	    logger.info("Created User principal: {}", principal);
 
 	    // Create the authentication token
 	    Authentication authentication = new UsernamePasswordAuthenticationToken(principal, token, authorities);
-	    logger.info("Authentication token created successfully.");
 	    
 	    return authentication;
 	}
 
 	public boolean validateToken(String token) {
         try {
-            logger.info("Validating token...");
             Jwts.parserBuilder()
                     .setSigningKey(this.secretKey)
                     .build()
                     .parseClaimsJws(token);
-            logger.info("Token is valid.");
             return true;
         } catch (JwtException e) {
-            logger.error("JWT exception during token validation: {}", e.getMessage());
         } catch (IllegalArgumentException e) {
-            logger.error("Illegal argument exception during token validation: {}", e.getMessage());
         } catch (Exception e) {
-            logger.error("Unexpected exception during token validation: {}", e.getMessage());
         }
-        logger.warn("Token is invalid.");
         return false;
     }
 	

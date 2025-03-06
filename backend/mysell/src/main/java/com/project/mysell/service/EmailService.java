@@ -1,50 +1,25 @@
 package com.project.mysell.service;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Service;
-
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import reactor.core.publisher.Mono;
 
-@Service
-public class EmailService {
+public interface EmailService {
+    Mono<Void> sendEmail (String to, String subject, String htmlBody);
 
-    private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
-
-    @Autowired
-    private JavaMailSender javaMailSender;
-
-    /**
-     * Envia um e-mail HTML genérico.
-     */
-    public Mono<Object> sendHtmlEmail(String to, String subject, String htmlBody) {
+    /*public Mono<Object> sendEmailCode(String to, String subject, String htmlBody) {
         return Mono.fromRunnable(() -> {
             try {
-                logger.info("Preparando para enviar e-mail HTML para: {}", to);
                 MimeMessage message = javaMailSender.createMimeMessage();
                 MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
                 helper.setTo(to);
                 helper.setSubject(subject);
-                // Define o conteúdo como HTML
                 message.setContent(htmlBody, "text/html; charset=utf-8");
                 javaMailSender.send(message);
-                logger.info("E-mail HTML enviado para: {}", to);
             } catch (MessagingException e) {
-                logger.error("Erro ao enviar e-mail HTML para: {}", to, e);
                 throw new RuntimeException(e);
             }
         });
-    }
+    }*/
 
-    /**
-     * Envia um e-mail de boas-vindas utilizando um template HTML com CSS inline.
-     */
-    public Mono<Object> sendWelcomeEmail(String to) {
+   /* public Mono<Object> sendWelcomeEmail(String to) {
         String subject = "Bem-vindo à Mysell!";
         String htmlBody = "<html>" +
                 "<head>" +
@@ -71,9 +46,5 @@ public class EmailService {
                 "</body>" +
                 "</html>";
 
-        logger.info("Preparando e-mail de boas-vindas para: {}", to);
-        return sendHtmlEmail(to, subject, htmlBody)
-                .doOnSuccess(ignored -> logger.info("E-mail de boas-vindas enviado com sucesso para: {}", to))
-                .doOnError(e -> logger.error("Erro ao enviar e-mail de boas-vindas para: {}", to, e));
-    }
+        return sendHtmlEmail(to, subject, htmlBody);    }*/
 }

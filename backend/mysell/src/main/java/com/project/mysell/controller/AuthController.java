@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.mysell.dto.LoginDTO;
 import com.project.mysell.dto.ResponseDTO;
 import com.project.mysell.dto.UserDTO;
+import com.project.mysell.dto.VerificationCodeDTO;
 import com.project.mysell.service.AuthService;
 
 import jakarta.validation.Valid;
@@ -37,9 +38,14 @@ public class AuthController {
 	public String login(){
 		return "Sucess";
 	}
-	@GetMapping("/verify")
-	public ResponseEntity<Mono<String>> verifyEmail(@RequestHeader("Authorization") String token){
-		Mono<String> sucessMessage = this.authService.verifyEmail(token);
+	@GetMapping("/sendCode")
+	public ResponseEntity<Mono<String>> sendCode(@RequestHeader("Authorization") String token){
+		Mono<String> sucessMessage = this.authService.sendCode(token);
+		return ResponseEntity.ok().body(sucessMessage);
+	}
+	@PostMapping("/verify")
+	public ResponseEntity<Mono<String>> verifyEmail(@RequestHeader("Authorization") String token, @RequestBody VerificationCodeDTO verificationCodeDTO){
+		Mono<String> sucessMessage = this.authService.verifyEmail(token, verificationCodeDTO);
 		return ResponseEntity.ok().body(sucessMessage);
 	}
 	
