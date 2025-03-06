@@ -74,22 +74,24 @@ public class EmailCodeService implements EmailService {
             .then(Mono.defer(() -> {
                 String storedCode = pendingCodes.get(email);
                 if (storedCode != null && storedCode.equals(code)) {
-                    handleSuccessfullAttempt(email);
-                    pendingCodes.remove(email);
-                    return Mono.just(true);
+                    return handleSuccessfullAttempt(email)
+                    .then(Mono.defer(()->{
+                        pendingCodes.remove(email);
+                        return Mono.just(true);
+                    }));
+ 
                 }
-                handleFailedAttempt(email);
-                return Mono.error(new InvalidCodeException());
+                return handleFailedAttempt(email).then(Mono.error(new InvalidCodeException()));
             }));
     }
 
 
-    private void handleSuccessfullAttempt(String username) {
-        attempService.succeeded(username);
+    private Mono<Void> handleSuccessfullAttempt(String username) {
+        return attempService.succeeded(username);
     }
 
-    private void handleFailedAttempt(String username) {
-        attempService.failed(username);
+    private Mono<Void> handleFailedAttempt(String username) {
+        return attempService.failed(username);
     }
 
     private Mono<Void> validateAccountStatus(String username) {
