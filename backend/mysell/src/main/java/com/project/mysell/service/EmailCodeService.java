@@ -20,6 +20,7 @@ import reactor.core.publisher.Mono;
 @Service
 public class EmailCodeService implements EmailService {
 
+    private static final Logger logger = LoggerFactory.getLogger(EmailCodeService.class);
 
     private ConcurrentHashMap<String, String> pendingCodes = new ConcurrentHashMap<>();
 
@@ -37,6 +38,7 @@ public class EmailCodeService implements EmailService {
             message.setSubject(subject);
             message.setText(body);
             javaMailSender.send(message);
+            logger.info("E-mail enviado para: {}. Assunto: {}", to, subject);
         });
     }
 
@@ -44,9 +46,11 @@ public class EmailCodeService implements EmailService {
         return this.verifyExistingCode(email)
                 .then(generateCode().flatMap(code -> {
                     this.pendingCodes.put(email, code);
+                    logger.info("Código gerado para o e-mail {}: {}", email, code);
                     Mono.delay(Duration.ofSeconds(60))
                         .doOnNext(t -> {
                             pendingCodes.remove(email);
+                            logger.info("Código expirado e removido para o e-mail: {}", email);
                         })
                         .subscribe();
 
@@ -57,8 +61,10 @@ public class EmailCodeService implements EmailService {
     private Mono<Void> verifyExistingCode(String email) {
         return Mono.defer(() -> {
             if (pendingCodes.get(email) != null) {
+                logger.warn("Já existe um código pendente para o e-mail: {}", email);
                 return Mono.error(new ExistingCodeException());
             }
+            logger.info("Nenhum código pendente encontrado para o e-mail: {}", email);
             return Mono.empty();
         });
     }
@@ -74,17 +80,19 @@ public class EmailCodeService implements EmailService {
             .then(Mono.defer(() -> {
                 String storedCode = pendingCodes.get(email);
                 if (storedCode != null && storedCode.equals(code)) {
+                    logger.info("Código válido para o e-mail: {}", email);
                     return handleSuccessfullAttempt(email)
-                    .then(Mono.defer(()->{
-                        pendingCodes.remove(email);
-                        return Mono.just(true);
-                    }));
- 
+                        .then(Mono.defer(() -> {
+                            pendingCodes.remove(email);
+                            logger.info("Código removido após validação bem-sucedida para o e-mail: {}", email);
+                            return Mono.just(true);
+                        }));
+                } else {
+                    logger.warn("Código inválido fornecido para o e-mail: {}", email);
+                    return handleFailedAttempt(email).then(Mono.error(new InvalidCodeException()));
                 }
-                return handleFailedAttempt(email).then(Mono.error(new InvalidCodeException()));
             }));
     }
-
 
     private Mono<Void> handleSuccessfullAttempt(String username) {
         return attempService.succeeded(username);
@@ -96,8 +104,9 @@ public class EmailCodeService implements EmailService {
 
     private Mono<Void> validateAccountStatus(String username) {
         return Mono.defer(() -> {
-            attempService.isBlocked(username);
-            return Mono.empty();
+            return attempService.isBlocked(username).flatMap(isBlocked ->{
+            	return Mono.empty();
+            });
         });
     }
 }

@@ -45,10 +45,6 @@ public class CustomAuthenticationProvider implements ReactiveAuthenticationManag
             logger.info("Validando status da conta para o usuário: {}", username);
             return loginAttemptService.isBlocked(username)
                 .flatMap(isBlocked -> {
-                    if (isBlocked) {
-                        logger.warn("Conta bloqueada para o usuário: {}", username);
-                        return Mono.error(new AccountLockedException(0)); // Ajuste o valor conforme necessário
-                    }
                     return Mono.empty();
                 });
         });
