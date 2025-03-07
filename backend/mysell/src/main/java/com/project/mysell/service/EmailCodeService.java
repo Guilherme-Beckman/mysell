@@ -104,7 +104,7 @@ public class EmailCodeService implements EmailService {
     	}
 
     	private Mono<Void> handleSuccessfullAttempt(String username) {
-    	    return attemptService.succeeded(username).then();
+    	    return attemptService.succeeded(username);
     	}
 
     	private Mono<Void> handleFailedAttempt(String username) {

@@ -14,6 +14,7 @@ import com.project.mysell.dto.LoginDTO;
 import com.project.mysell.dto.ResponseDTO;
 import com.project.mysell.dto.UserDTO;
 import com.project.mysell.dto.VerificationCodeDTO;
+import com.project.mysell.exceptions.InvalidCodeException;
 import com.project.mysell.exceptions.InvalidCredentialsException;
 import com.project.mysell.exceptions.ValidEmailException;
 import com.project.mysell.exceptions.user.UserAlreadyExistsException;
@@ -121,11 +122,7 @@ public class AuthService {
             .flatMap(isValid -> handleCodeValidationResult(user, isValid));
     }
 
-    private Mono<String> handleCodeValidationResult(UserModel user, boolean isValid) {
-        if (!isValid) {
-            return Mono.error(new IllegalArgumentException("Invalid verification code"));
-        }
-        
+    private Mono<String> handleCodeValidationResult(UserModel user, boolean isValid) {        
         return updateUserEmailValidationStatus(user)
             .thenReturn("Email verified successfully");
     }
