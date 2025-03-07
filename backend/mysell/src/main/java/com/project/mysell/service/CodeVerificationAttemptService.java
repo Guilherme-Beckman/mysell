@@ -14,6 +14,8 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class CodeVerificationAttemptService extends AttemptService {
+
+
     private long initialLockDuration = TimeUnit.MINUTES.toMillis(1);
     private ConcurrentHashMap<String, Integer> verificationAttemptsCache = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String, Long> accountUnlockTimestampCache = new ConcurrentHashMap<>();
@@ -55,13 +57,13 @@ public class CodeVerificationAttemptService extends AttemptService {
     }
 
     private int incrementVerificationAttempts(String key) {
-        return verificationAttemptsCache.compute(key, (k, attempts) -> 
-            attempts == null ? 1 : attempts + 1
-        );
+        int attempts = verificationAttemptsCache.compute(key, (k, v) -> (v == null ? 0 : v) + 1);
+        return attempts;
     }
 
     private long calculateExponentialBackoff(int attemptCount) {
-        return initialLockDuration * (1L << (attemptCount - 1));
+        long backoffDuration = initialLockDuration * (1L << (attemptCount - 1));
+        return backoffDuration;
     }
 
     private void updateLockState(String key, long lockDuration) {
@@ -75,6 +77,7 @@ public class CodeVerificationAttemptService extends AttemptService {
         accountUnlockTimestampCache.remove(key);
         currentLockDurationCache.remove(key);
     }
+
     private void resetVerficationTimeCache(String key) {
         accountUnlockTimestampCache.remove(key);
         currentLockDurationCache.remove(key);

@@ -39,9 +39,6 @@ public class CustomAuthenticationProvider implements ReactiveAuthenticationManag
         return Mono.defer(() -> {
             return loginAttemptService.isBlocked(username)
                 .flatMap(isBlocked -> {
-                    if (isBlocked) {
-                    } else {
-                    }
                     return Mono.empty();
                 });
         });

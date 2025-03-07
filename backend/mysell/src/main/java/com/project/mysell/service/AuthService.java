@@ -91,7 +91,7 @@ public class AuthService {
         return Mono.just(token)
             .flatMap(tokenA -> {
                 var authentication = this.jwtTokenProvider.getAuthentication(tokenA);
-                return this.emailCodeService.sendCode(authentication.getName())
+                return this.emailCodeService.sendVerificationCode(authentication.getName())
                     .then(Mono.just("Code sended successfully"));
             });
     }
