@@ -17,22 +17,15 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 @Service
-public class EmailCodeService implements EmailService {
+public class EmailCodeService{
     private ConcurrentHashMap<String, String> pendingVerificationCodes = new ConcurrentHashMap<>();
-    @Autowired
-    private JavaMailSender mailSender;
     @Autowired
     private CodeVerificationAttemptService attemptService;
     private Duration codeExpirationDuration = Duration.ofSeconds(60);
-    @Override
-	public Mono<Void> sendEmail(String to, String subject, String body) {
-        return Mono.fromRunnable(() -> {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setTo(to);
-            message.setSubject("Verification Code");
-            message.setText("Your verification code: " + body);
-            mailSender.send(message);
-        });
+    @Autowired
+    private EmailService emailService;
+	public Mono<Void> sendEmail(String to, String verificationCode) {
+        return this.emailService.sendVerificationEmail(to, verificationCode);
     }
 
 
@@ -56,7 +49,7 @@ public class EmailCodeService implements EmailService {
 
     private Mono<Void> storeAndSendCode(String email, String code) {
         return Mono.fromRunnable(() -> pendingVerificationCodes.put(email, code))
-            .then(sendEmail(email," ",code))
+            .then(sendEmail(email,code))
             .then(scheduleCodeExpiration(email));
     }
 
@@ -104,7 +97,10 @@ public class EmailCodeService implements EmailService {
     	}
 
     	private Mono<Void> handleSuccessfullAttempt(String username) {
-    	    return attemptService.succeeded(username);
+    	    return attemptService.succeeded(username).then(sendWelcomeEmail(username));
+    	}
+    	private Mono<Void> sendWelcomeEmail(String username) {
+    		return this.emailService.sendWelcomeEmail(username);
     	}
 
     	private Mono<Void> handleFailedAttempt(String username) {
