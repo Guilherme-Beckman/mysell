@@ -15,6 +15,7 @@ import com.project.mysell.dto.ResponseDTO;
 import com.project.mysell.dto.UserDTO;
 import com.project.mysell.dto.VerificationCodeDTO;
 import com.project.mysell.exceptions.InvalidCredentialsException;
+import com.project.mysell.exceptions.ValidEmailException;
 import com.project.mysell.exceptions.user.UserAlreadyExistsException;
 import com.project.mysell.exceptions.user.UserNotFoundException;
 import com.project.mysell.infra.security.CustomAuthenticationProvider;
@@ -86,26 +87,55 @@ public class AuthService {
     private UserDTO encodeUserPassword(UserDTO userDTO) {
         return new UserDTO(userDTO.email(), passwordEncoder.encode(userDTO.password()));
     }
-    public Mono<String> sendCode(String token) {
-        String extractedToken = extractToken(token);
-        var authentication = this.jwtTokenProvider.getAuthentication(extractedToken);
-        return this.emailCodeService.sendVerificationCode(authentication.getName())
-            .thenReturn("Code sent successfully");
+    public Mono<String> sendVerificationCode(String authorizationHeader) {
+        final String jwtToken = extractJwtToken(authorizationHeader);
+        final Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
+
+        return findUserByEmail(authentication.getName())
+            .flatMap(user -> handleEmailVerificationRequest(user, authentication.getName()));
     }
 
-    public Mono<String> verifyEmail(String token, VerificationCodeDTO verificationCodeDTO) {
-        String extractedToken = extractToken(token);
-        var authentication = this.jwtTokenProvider.getAuthentication(extractedToken);
-        return this.emailCodeService.validateCode(authentication.getName(), verificationCodeDTO.code())
+    public Mono<String> verifyEmailWithCode(String authorizationHeader, VerificationCodeDTO verificationCode) {
+        final String jwtToken = extractJwtToken(authorizationHeader);
+        final Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
+
+        return findUserByEmail(authentication.getName())
+            .flatMap(user -> processEmailVerification(user, authentication.getName(), verificationCode.code()));
+    }
+
+    private Mono<String> handleEmailVerificationRequest(UserModel user, String email) {
+        if (user.isEmailValidated()) {
+            return Mono.error(new ValidEmailException());
+        }
+        
+        return emailCodeService.sendVerificationCode(email)
+            .thenReturn("Verification code sent successfully");
+    }
+
+    private Mono<String> processEmailVerification(UserModel user, String email, String verificationCode) {
+        if (user.isEmailValidated()) {
+            return Mono.error(new ValidEmailException());
+        }
+
+        return emailCodeService.validateCode(email, verificationCode)
+            .flatMap(isValid -> handleCodeValidationResult(user, isValid));
+    }
+
+    private Mono<String> handleCodeValidationResult(UserModel user, boolean isValid) {
+        if (!isValid) {
+            return Mono.error(new IllegalArgumentException("Invalid verification code"));
+        }
+        
+        return updateUserEmailValidationStatus(user)
             .thenReturn("Email verified successfully");
     }
 
-    private String extractToken(String token) {
-        if (token != null && token.startsWith("Bearer ")) {
-            return token.substring(7);
-        }
-        throw new IllegalArgumentException("Invalid token format");
+    private Mono<UserModel> updateUserEmailValidationStatus(UserModel user) {
+        user.setEmailValidated(true);
+        return userRepository.save(user);
     }
 
-
+    private String extractJwtToken(String authorizationHeader) {
+            return authorizationHeader.substring(7);
+    }
 }
