@@ -1,2 +1,0 @@
-ALTER TABLE products_units_of_measure_table
-RENAME TO products_units_of_measure;

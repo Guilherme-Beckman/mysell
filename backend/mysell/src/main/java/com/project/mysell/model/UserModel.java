@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class UserModel{
 	@Id
-	private UUID id;
+	private UUID usersId;
 	private String email;
 	private String password;
 	private LocalDateTime created_at;
