@@ -1,16 +1,22 @@
 package com.project.mysell.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.project.mysell.dto.LoginDTO;
 import com.project.mysell.dto.ResponseDTO;
 import com.project.mysell.dto.UserDTO;
+import com.project.mysell.dto.VerificationCodeDTO;
+import com.project.mysell.exceptions.InvalidCodeException;
 import com.project.mysell.exceptions.InvalidCredentialsException;
+import com.project.mysell.exceptions.ValidEmailException;
 import com.project.mysell.exceptions.user.UserAlreadyExistsException;
 import com.project.mysell.exceptions.user.UserNotFoundException;
 import com.project.mysell.infra.security.CustomAuthenticationProvider;
@@ -31,6 +37,8 @@ public class AuthService {
     private CustomAuthenticationProvider authenticationManager;
 	@Autowired
     private JwtTokenProvider jwtTokenProvider;
+	@Autowired
+	private EmailCodeService emailCodeService;
 
 
     public Mono<ResponseDTO> login(LoginDTO loginDTO) {
@@ -80,6 +88,51 @@ public class AuthService {
     private UserDTO encodeUserPassword(UserDTO userDTO) {
         return new UserDTO(userDTO.email(), passwordEncoder.encode(userDTO.password()));
     }
+    public Mono<String> sendVerificationCode(String authorizationHeader) {
+        final String jwtToken = extractJwtToken(authorizationHeader);
+        final Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
 
+        return findUserByEmail(authentication.getName())
+            .flatMap(user -> handleEmailVerificationRequest(user, authentication.getName()));
+    }
 
+    public Mono<String> verifyEmailWithCode(String authorizationHeader, VerificationCodeDTO verificationCode) {
+        final String jwtToken = extractJwtToken(authorizationHeader);
+        final Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
+
+        return findUserByEmail(authentication.getName())
+            .flatMap(user -> processEmailVerification(user, authentication.getName(), verificationCode.code()));
+    }
+
+    private Mono<String> handleEmailVerificationRequest(UserModel user, String email) {
+        if (user.isEmailValidated()) {
+            return Mono.error(new ValidEmailException());
+        }
+        
+        return emailCodeService.sendVerificationCode(email)
+            .thenReturn("Verification code sent successfully");
+    }
+
+    private Mono<String> processEmailVerification(UserModel user, String email, String verificationCode) {
+        if (user.isEmailValidated()) {
+            return Mono.error(new ValidEmailException());
+        }
+
+        return emailCodeService.validateCode(email, verificationCode)
+            .flatMap(isValid -> handleCodeValidationResult(user, isValid));
+    }
+
+    private Mono<String> handleCodeValidationResult(UserModel user, boolean isValid) {        
+        return updateUserEmailValidationStatus(user)
+            .thenReturn("Email verified successfully");
+    }
+
+    private Mono<UserModel> updateUserEmailValidationStatus(UserModel user) {
+        user.setEmailValidated(true);
+        return userRepository.save(user);
+    }
+
+    private String extractJwtToken(String authorizationHeader) {
+            return authorizationHeader.substring(7);
+    }
 }

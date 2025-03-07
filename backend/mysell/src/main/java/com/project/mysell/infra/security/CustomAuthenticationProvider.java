@@ -3,9 +3,13 @@ package com.project.mysell.infra.security;
 import com.project.mysell.exceptions.AccountLockedException;
 import com.project.mysell.exceptions.InvalidCredentialsException;
 import com.project.mysell.service.LoginAttemptService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,74 +18,76 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class CustomAuthenticationProvider implements ReactiveAuthenticationManager {
-    private final LoginAttemptService loginAttemptService;
-    private final CustomReactiveUserDetailsService userDetailsService;
-    private final PasswordEncoder passwordEncoder;
 
-    public CustomAuthenticationProvider(LoginAttemptService loginAttemptService,
-                                       CustomReactiveUserDetailsService userDetailsService,
-                                       PasswordEncoder passwordEncoder) {
-        this.loginAttemptService = loginAttemptService;
-        this.userDetailsService = userDetailsService;
-        this.passwordEncoder = passwordEncoder;
-    }
+    @Autowired
+    private LoginAttemptService loginAttemptService;
+    @Autowired
+    private ReactiveUserDetailsService userDetailsService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
         final String username = authentication.getName();
         final String password = authentication.getCredentials().toString();
-
-        return validateAccountStatus(username)
-            .then(authenticateUser(username, password))
-            .onErrorResume(e -> handleAuthenticationError(e, username));
+        return verifyAccountNotLocked(username)
+            .then(authenticateWithCredentials(username, password))
+            .onErrorResume(e -> handleAuthenticationFailure(e, username));
     }
 
-    private Mono<Void> validateAccountStatus(String username) {
+    private Mono<Void> verifyAccountNotLocked(String username) {
         return Mono.defer(() -> {
-            if (loginAttemptService.isBlocked(username)) {
-                return Mono.error(new AccountLockedException());
-            }
-            return Mono.empty();
+            return loginAttemptService.isBlocked(username)
+                .flatMap(isBlocked -> {
+                    return Mono.empty();
+                });
         });
     }
 
-    private Mono<Authentication> authenticateUser(String username, String password) {
+    private Mono<Authentication> authenticateWithCredentials(String username, String password) {
         return userDetailsService.findByUsername(username)
-            .flatMap(userDetails -> validateCredentials(userDetails, password, username))
-            .switchIfEmpty(Mono.defer(() -> Mono.error(new UsernameNotFoundException(username))));
+            .switchIfEmpty(Mono.defer(() -> {
+                return handleUserNotFound(username);
+            }))
+            .flatMap(user -> validateUserCredentials(user, password, username));
     }
 
-    private Mono<Authentication> validateCredentials(UserDetails userDetails, String rawPassword, String username) {
-        return Mono.defer(() -> {
-            if (!passwordEncoder.matches(rawPassword, userDetails.getPassword())) {
-                handleFailedLoginAttempt(username);
-                return Mono.error(new InvalidCredentialsException());
-            }
-            handleSuccessfulLoginAttempt(username);
-            return createAuthenticationToken(userDetails);
-        });
+    private Mono<UserDetails> handleUserNotFound(String username) {
+        return Mono.error(new UsernameNotFoundException(username));
     }
 
-    private Mono<Authentication> createAuthenticationToken(UserDetails userDetails) {
-        return Mono.just(new UsernamePasswordAuthenticationToken(
-            userDetails, 
-            userDetails.getPassword(), 
-            userDetails.getAuthorities()
-        ));
+    private Mono<Authentication> validateUserCredentials(UserDetails user, String rawPassword, String username) {
+        return Mono.fromCallable(() -> passwordEncoder.matches(rawPassword, user.getPassword()))
+            .flatMap(passwordMatches -> {
+                if (!passwordMatches) {
+                    return handleInvalidPassword(username);
+                }
+                return handleSuccessfulAuthentication(user, username);
+            });
     }
 
-    private void handleSuccessfulLoginAttempt(String username) {
-        loginAttemptService.loginSucceeded(username);
+    private Mono<Authentication> handleInvalidPassword(String username) {
+        return loginAttemptService.failed(username)
+            .then(Mono.error(new InvalidCredentialsException()));
     }
 
-    private void handleFailedLoginAttempt(String username) {
-        loginAttemptService.loginFailed(username);
+    private Mono<Authentication> handleSuccessfulAuthentication(UserDetails user, String username) {
+        return loginAttemptService.succeeded(username)
+            .then(Mono.just(createAuthenticationToken(user)));
     }
 
-    private Mono<Authentication> handleAuthenticationError(Throwable error, String username) {
-        if (error instanceof UsernameNotFoundException) {
-        	Mono.error(new UsernameNotFoundException(username));
+    private UsernamePasswordAuthenticationToken createAuthenticationToken(UserDetails user) {
+        return new UsernamePasswordAuthenticationToken(
+            user,
+            user.getPassword(),
+            user.getAuthorities()
+        );
+    }
+
+    private Mono<Authentication> handleAuthenticationFailure(Throwable error, String username) {
+        if (error instanceof AccountLockedException) {
+            return Mono.error(error);
         }
-        return Mono.error(error);
+        return Mono.error(new InvalidCredentialsException());
     }
 }

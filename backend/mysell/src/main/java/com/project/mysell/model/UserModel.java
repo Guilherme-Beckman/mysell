@@ -6,9 +6,6 @@ import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
-import org.springframework.security.config.annotation.authentication.configurers.userdetails.UserDetailsAwareConfigurer;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import com.project.mysell.dto.UserDTO;
 
@@ -26,11 +23,12 @@ public class UserModel{
 	private String email;
 	private String password;
 	private LocalDateTime created_at;
+	private boolean emailValidated;
 	
-	
-	public UserModel (UserDTO userDTO) {
+	public UserModel(UserDTO userDTO) {
 		this.email = userDTO.email();
 		this.password = userDTO.password();
 		this.created_at = LocalDateTime.now();
+		this.emailValidated = false; 
 	}
 }

@@ -3,18 +3,18 @@ package com.project.mysell.exceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 
-public class AccountLockedException extends RestException {
+public class AccountLockedCodeException extends RestException {
 
     private static final long serialVersionUID = 1L;
     private long time;
-    public AccountLockedException(long time) {
+    public AccountLockedCodeException(long time) {
     	this.time = time;
     }
     @Override
     public ProblemDetail toProblemDetail() {
         ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.LOCKED);
         problemDetail.setTitle("Account Locked");
-        problemDetail.setDetail("Your account has been locked due to multiple failed login attempts. Please try again in: "+time);
+        problemDetail.setDetail("Your account has been locked due to multiple failed verify code attempts. Please try again in: " + time);
         return problemDetail;
     }
 }

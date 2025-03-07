@@ -1,24 +1,26 @@
 package com.project.mysell.infra.security.jwt;
 
 import java.nio.charset.StandardCharsets;
+
 import java.util.Base64;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.client.authentication.OAuth2LoginAuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -61,34 +63,43 @@ public class JwtTokenProvider {
         		.setExpiration(validity)
                 .signWith(this.secretKey, SignatureAlgorithm.HS256).compact();
 	}
-	public Authentication getAuthentication (String token) {
-		Claims claims = Jwts.parserBuilder()
-				.setSigningKey(this.secretKey)
-				.build()
-				.parseClaimsJws(token)
-				.getBody();
-		
-		Object authoritiesClaim = claims.get(AUTHORITIES_KEY);
-		
-	      Collection<? extends GrantedAuthority> authorities = authoritiesClaim == null
-	                ? AuthorityUtils.NO_AUTHORITIES
-	                : AuthorityUtils
-	                .commaSeparatedStringToAuthorityList(authoritiesClaim.toString());
-	      
-	      User principal = new User(claims.getSubject(), "", authorities);	
-	      return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+	public Authentication getAuthentication(String token) {
+	    // Parse the token to extract claims
+	    Claims claims = Jwts.parserBuilder()
+	            .setSigningKey(this.secretKey)
+	            .build()
+	            .parseClaimsJws(token)
+	            .getBody();
+
+	    // Retrieve authorities from claims
+	    Object authoritiesClaim = claims.get(AUTHORITIES_KEY);
+
+	    Collection<? extends GrantedAuthority> authorities = authoritiesClaim == null
+	            ? AuthorityUtils.NO_AUTHORITIES
+	            : AuthorityUtils.commaSeparatedStringToAuthorityList(authoritiesClaim.toString());
+
+	    // Build the principal user
+	    User principal = new User(claims.getSubject(), "", authorities);
+
+	    // Create the authentication token
+	    Authentication authentication = new UsernamePasswordAuthenticationToken(principal, token, authorities);
+	    
+	    return authentication;
 	}
+
 	public boolean validateToken(String token) {
-		try {
-			Jwts.parserBuilder()
-					.setSigningKey(this.secretKey)
-					.build()
-					.parseClaimsJws(token);
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(this.secretKey)
+                    .build()
+                    .parseClaimsJws(token);
             return true;
-		} catch (JwtException | IllegalArgumentException e) {
-		}
+        } catch (JwtException e) {
+        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
+        }
         return false;
-	}
+    }
 	
 	public String createTokenFromOAuth2(Authentication authentication) {
 		OAuth2AuthenticationToken auth2AuthenticationToken  = (OAuth2AuthenticationToken) authentication;

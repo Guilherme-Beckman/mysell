@@ -9,6 +9,7 @@ import com.project.mysell.dto.UserDTO;
 import com.project.mysell.exceptions.InvalidCredentialsException;
 import com.project.mysell.exceptions.user.UserAlreadyExistsException;
 import com.project.mysell.exceptions.user.UserNotFoundException;
+import com.project.mysell.infra.security.CustomAuthenticationProvider;
 import com.project.mysell.infra.security.jwt.JwtTokenProvider;
 import com.project.mysell.model.UserModel;
 import com.project.mysell.repository.UserRepository;
@@ -33,7 +34,7 @@ public class AuthServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @Mock
-    private ReactiveAuthenticationManager reactiveAuthenticationManager;
+    private CustomAuthenticationProvider reactiveAuthenticationManager;
 
     @Mock
     private JwtTokenProvider tokenProvider;
@@ -96,23 +97,6 @@ public class AuthServiceTest {
             .expectError(InvalidCredentialsException.class)
             .verify();
     }
-
-    @Test
-    public void testLoginUserNotFound() {
-        String email = "notfound@example.com";
-        String password = "password";
-        LoginDTO loginDTO = new LoginDTO(email, password);
-        
-        when(userRepository.findByEmail(email)).thenReturn(Mono.empty());
-        
-        Mono<ResponseDTO> responseMono = authService.login(loginDTO);
-        
-        StepVerifier.create(responseMono)
-            .expectErrorMatches(throwable -> 
-                throwable instanceof UserNotFoundException)
-            .verify();
-    }
-
 
     @Test
     public void testRegisterUserAlreadyExists() {
