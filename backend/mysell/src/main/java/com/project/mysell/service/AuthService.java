@@ -87,25 +87,25 @@ public class AuthService {
         return new UserDTO(userDTO.email(), passwordEncoder.encode(userDTO.password()));
     }
     public Mono<String> sendCode(String token) {
-        token =  token.substring(7);
-        return Mono.just(token)
-            .flatMap(tokenA -> {
-                var authentication = this.jwtTokenProvider.getAuthentication(tokenA);
-                return this.emailCodeService.sendVerificationCode(authentication.getName())
-                    .then(Mono.just("Code sended successfully"));
-            });
+        String extractedToken = extractToken(token);
+        var authentication = this.jwtTokenProvider.getAuthentication(extractedToken);
+        return this.emailCodeService.sendVerificationCode(authentication.getName())
+            .thenReturn("Code sent successfully");
     }
 
-	public Mono<String> verifyEmail(String token, VerificationCodeDTO verificationCodeDTO) {
-        token =  token.substring(7);
-        return Mono.just(token)
-        		.flatMap(tokenA -> {
-        			var authentication = this.jwtTokenProvider.getAuthentication(tokenA);
-        			return this.emailCodeService.validateCode(authentication.getName(), verificationCodeDTO.code());
-        		}).then(Mono.just("Email verified successfully"));
-	}
+    public Mono<String> verifyEmail(String token, VerificationCodeDTO verificationCodeDTO) {
+        String extractedToken = extractToken(token);
+        var authentication = this.jwtTokenProvider.getAuthentication(extractedToken);
+        return this.emailCodeService.validateCode(authentication.getName(), verificationCodeDTO.code())
+            .thenReturn("Email verified successfully");
+    }
 
-
+    private String extractToken(String token) {
+        if (token != null && token.startsWith("Bearer ")) {
+            return token.substring(7);
+        }
+        throw new IllegalArgumentException("Invalid token format");
+    }
 
 
 }
