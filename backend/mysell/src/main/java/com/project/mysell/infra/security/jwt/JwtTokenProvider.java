@@ -33,10 +33,9 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
-	private static final String AUTHORITIES_KEY = "roles";
+	private static final String AUTHORITIES_KEY = "role";
 	private final JwtProperties jwtProperties;
 	private SecretKey secretKey;
-	
 	@PostConstruct
 	public void init() {
 	
@@ -45,48 +44,42 @@ public class JwtTokenProvider {
 		this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
 	}
 	
-	public String createToken(Authentication authentication) {
-		String username = authentication.getName();
-		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-		Claims claims = Jwts.claims().setSubject(username);
-		
-		if(!authorities.isEmpty()) {
-			claims.put(AUTHORITIES_KEY, authorities.stream().map(GrantedAuthority::getAuthority)
-					.collect(Collectors.joining(",")));
-		}
-		Date now = new Date();
-		Date validity = new Date(now.getTime()+ this.jwtProperties.getValidityInMs());
-		
-        return Jwts.builder()
-        		.setClaims(claims)
-        		.setIssuedAt(now)
-        		.setExpiration(validity)
-                .signWith(this.secretKey, SignatureAlgorithm.HS256).compact();
-	}
-	public Authentication getAuthentication(String token) {
-	    // Parse the token to extract claims
-	    Claims claims = Jwts.parserBuilder()
-	            .setSigningKey(this.secretKey)
-	            .build()
-	            .parseClaimsJws(token)
-	            .getBody();
+	 public String createToken(Authentication authentication) {
+	        String username = authentication.getName();
+	        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+	        Claims claims = Jwts.claims().setSubject(username);
+	        if (!authorities.isEmpty()) {
+	            String authoritiesString = authorities.stream()
+	                    .map(GrantedAuthority::getAuthority)
+	                    .collect(Collectors.joining(","));
+	            claims.put(AUTHORITIES_KEY, authoritiesString);
+	        }
 
-	    // Retrieve authorities from claims
-	    Object authoritiesClaim = claims.get(AUTHORITIES_KEY);
-
-	    Collection<? extends GrantedAuthority> authorities = authoritiesClaim == null
-	            ? AuthorityUtils.NO_AUTHORITIES
-	            : AuthorityUtils.commaSeparatedStringToAuthorityList(authoritiesClaim.toString());
-
-	    // Build the principal user
-	    User principal = new User(claims.getSubject(), "", authorities);
-
-	    // Create the authentication token
-	    Authentication authentication = new UsernamePasswordAuthenticationToken(principal, token, authorities);
-	    
-	    return authentication;
-	}
-
+	        Date now = new Date();
+	        Date validity = new Date(now.getTime() + this.jwtProperties.getValidityInMs());
+	        String token = Jwts.builder()
+	                .setClaims(claims)
+	                .setIssuedAt(now)
+	                .setExpiration(validity)
+	                .signWith(this.secretKey, SignatureAlgorithm.HS256)
+	                .compact();
+	        return token;
+	    }
+	
+    public Authentication getAuthentication(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(this.secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        Object authoritiesClaim = claims.get(AUTHORITIES_KEY);
+        Collection<? extends GrantedAuthority> authorities = authoritiesClaim == null
+                ? AuthorityUtils.NO_AUTHORITIES
+                : AuthorityUtils.commaSeparatedStringToAuthorityList(authoritiesClaim.toString());
+        User principal = new User(claims.getSubject(), "", authorities);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(principal, token, authorities);
+        return authentication;
+    }
 	public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()

@@ -22,7 +22,7 @@ public class CustomReactiveUserDetailsService implements ReactiveUserDetailsServ
 				map(u -> User 
 						.withUsername(u.getEmail())
 						.password(u.getPassword())
-						.authorities(new ArrayList<>())
+						.authorities(new String[]{u.getRole().toString()})
 						.build())
 				.switchIfEmpty(Mono.error(new UserNotFoundException(username)))
 				;

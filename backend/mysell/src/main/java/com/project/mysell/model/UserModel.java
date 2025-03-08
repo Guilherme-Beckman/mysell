@@ -1,7 +1,8 @@
 package com.project.mysell.model;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
@@ -24,11 +25,12 @@ public class UserModel{
 	private String password;
 	private LocalDateTime created_at;
 	private boolean emailValidated;
-	
+	private UserRole role;
 	public UserModel(UserDTO userDTO) {
 		this.email = userDTO.email();
 		this.password = userDTO.password();
 		this.created_at = LocalDateTime.now();
 		this.emailValidated = false; 
+		this.role = UserRole.USER ;
 	}
 }

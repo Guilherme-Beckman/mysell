@@ -37,7 +37,7 @@ public class UserServiceTest {
 		UserDTO userDTO = new UserDTO(email, password);
 		Mono<UserModel> result = userService.createUser(userDTO);
 		StepVerifier.create(result).assertNext(createdUser -> {
-			assertNotNull(createdUser.getId());
+			assertNotNull(createdUser.getUsersId());
 			assertEquals(email, createdUser.getEmail());
 			assertEquals(password, createdUser.getPassword());
 			assertNotNull(createdUser.getCreated_at());

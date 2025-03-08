@@ -5,7 +5,8 @@ CREATE TABLE users (
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    email_validated BOOLEAN DEFAULT false NOT NULL
+    email_validated BOOLEAN DEFAULT false NOT NULL,
+    role VARCHAR(10) DEFAULT 'USER' NOT NULL
 );
 
 CREATE TABLE categories (

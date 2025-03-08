@@ -32,6 +32,7 @@ public class SecurityConfiguration {
 	        		 .pathMatchers(HttpMethod.POST, "/auth/login").permitAll()
 	        		 .pathMatchers(HttpMethod.GET, "/auth/login").permitAll()
 	                 .pathMatchers(HttpMethod.POST, "/auth/register").permitAll()
+	                 .pathMatchers(HttpMethod.GET, "/auth/see").hasAuthority("ADMIN")
 	        .anyExchange().authenticated())
 	        .addFilterAt(new JwtTokenAuthenticationFilter(tokenProvider),SecurityWebFiltersOrder.HTTP_BASIC)
 	        .build();
