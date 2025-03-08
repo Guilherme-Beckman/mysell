@@ -4,8 +4,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
+import java.util.UUID;
 import java.util.stream.Collectors;
+
 import javax.crypto.SecretKey;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -116,5 +119,14 @@ public class JwtTokenProvider {
 	}
     public String extractJwtToken(String authorizationHeader) {
         return authorizationHeader.substring(7);
-}
+        }
+    public UUID getUserIdFromToken (String token) {
+    	  Claims claims = Jwts.parserBuilder()
+                  .setSigningKey(this.secretKey)  
+                  .build()
+                  .parseClaimsJws(token)
+                  .getBody();
+
+    	  return UUID.fromString((String) claims.get("userId"));
+    	  }
 }

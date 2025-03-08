@@ -12,7 +12,6 @@ public record ProductDTO(
 			    Double purchasedPrice,
 			    @NotNull(message = "Price to sell Price must not be null")
 			    Double priceToSell,
-			    @NotBlank(message = "Brand must not be blank")
 			    String brand,
 			    ProductUnitOfMeasureDTO productUnitOfMeasureDTO
 		){

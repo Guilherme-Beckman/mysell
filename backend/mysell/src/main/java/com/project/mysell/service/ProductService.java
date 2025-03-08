@@ -24,9 +24,7 @@ public class ProductService {
 	private ProductUnitOfMeasureService productUnitOfMeasureService;
 	public Mono<ProductModel> createProduct(ProductDTO productDTO, String token) {
 	    final String extractedToken = jwtTokenProvider.extractJwtToken(token);
-	    final Authentication authentication = jwtTokenProvider.getAuthentication(extractedToken);
-	    final CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
-	    final UUID userId = user.getUsersId();
+	    final UUID userId = jwtTokenProvider.getUserIdFromToken(extractedToken);
 
 	    ProductModel newProduct = new ProductModel(productDTO);
 	    newProduct.setUserId(userId);
@@ -45,8 +43,7 @@ public class ProductService {
 		return null;
 	}
 	public Flux<ProductModel> getAllProducts() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.productRepository.findAll();
 	}
 
 	public Mono<ProductModel> updateProduct(Long id, ProductDTO productDTO) {
