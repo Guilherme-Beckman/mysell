@@ -37,6 +37,7 @@ public class SecurityConfiguration {
 	                 .pathMatchers(HttpMethod.POST, "/unity").hasAuthority("ADMIN")
 	                 .pathMatchers(HttpMethod.PUT, "/unity").hasAuthority("ADMIN")
 	                 .pathMatchers(HttpMethod.DELETE, "/unity").hasAuthority("ADMIN")
+	                 .pathMatchers(HttpMethod.POST, "/product").permitAll()
 	        .anyExchange().authenticated())
 	        .addFilterAt(new JwtTokenAuthenticationFilter(tokenProvider),SecurityWebFiltersOrder.HTTP_BASIC)
 	        .build();

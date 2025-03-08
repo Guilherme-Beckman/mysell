@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,8 +27,8 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping()
-    public ResponseEntity<Mono<ProductModel>> createProduct(@Valid @RequestBody ProductDTO productDTO) {
-        Mono<ProductModel> newProduct = this.productService.createProduct(productDTO);
+    public ResponseEntity<Mono<ProductModel>> createProduct(@Valid @RequestBody ProductDTO productDTO, @RequestHeader("Authorization") String token) {
+        Mono<ProductModel> newProduct = this.productService.createProduct(productDTO, token);
         return ResponseEntity.ok().body(newProduct);
     }
     @GetMapping("/{id}")
