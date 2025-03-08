@@ -30,7 +30,11 @@ public class ProductController {
         Mono<ProductModel> newProduct = this.productService.createProduct(productDTO);
         return ResponseEntity.ok().body(newProduct);
     }
-
+    @GetMapping("/{id}")
+    public ResponseEntity<Flux<ProductModel>> getProductById(@PathVariable Long id) {
+        Flux<ProductModel> products  = this.productService.getProductById();
+        return ResponseEntity.ok().body(products);
+    }
     @GetMapping()
     public ResponseEntity<Flux<ProductModel>> getAllProducts() {
         Flux<ProductModel> products  = this.productService.getAllProducts();
