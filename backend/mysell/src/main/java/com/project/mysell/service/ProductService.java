@@ -13,8 +13,7 @@ public class ProductService {
 	@Autowired
 	private ProductRepository productRepository;
 	public Mono<ProductModel> createProduct(ProductDTO productDTO) {
-		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
 	public Flux<ProductModel> getProductById() {

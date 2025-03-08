@@ -14,6 +14,9 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
+
+import com.project.mysell.infra.security.CustomUserDetails;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -37,9 +40,12 @@ public class JwtTokenProvider {
 	}
 	
 	 public String createToken(Authentication authentication) {
+		 if(authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+			CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 	        String username = authentication.getName();
 	        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 	        Claims claims = Jwts.claims().setSubject(username);
+	        claims.put("userId", userDetails.getUsersId());
 	        if (!authorities.isEmpty()) {
 	            String authoritiesString = authorities.stream()
 	                    .map(GrantedAuthority::getAuthority)
@@ -57,6 +63,8 @@ public class JwtTokenProvider {
 	                .compact();
 	        return token;
 	    }
+		 return null;
+	 }
 	
     public Authentication getAuthentication(String token) {
         Claims claims = Jwts.parserBuilder()

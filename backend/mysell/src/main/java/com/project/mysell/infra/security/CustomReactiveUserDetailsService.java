@@ -1,7 +1,6 @@
 package com.project.mysell.infra.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import com.project.mysell.exceptions.user.UserNotFoundException;
@@ -14,14 +13,13 @@ public class CustomReactiveUserDetailsService implements ReactiveUserDetailsServ
 	private UserRepository userRepository;
 	@Override
 	public Mono<UserDetails> findByUsername(String username) {
-		return this.userRepository.findByEmail(username).
-				map(u -> User 
-						.withUsername(u.getEmail())
-						.password(u.getPassword())
-						.authorities(new String[]{u.getRole().toString()})
-						.build())
-				.switchIfEmpty(Mono.error(new UserNotFoundException(username)))
-				;
+	    return this.userRepository.findByEmail(username)
+	        .map(u -> (UserDetails) new CustomUserDetails(
+	            u.getUsersId(), 
+	            u.getEmail(),
+	            u.getPassword(),
+	            u.getRole()))
+	        .switchIfEmpty(Mono.error(new UserNotFoundException(username)));
 	}
 
 }
