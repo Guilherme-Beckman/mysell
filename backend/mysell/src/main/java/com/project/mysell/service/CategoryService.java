@@ -14,32 +14,30 @@ import reactor.core.publisher.Mono;
 @Service
 public class CategoryService {
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+	@Autowired
+	private CategoryRepository categoryRepository;
 
-    public Mono<CategoryModel> createCategory(CategoryDTO categoryDTO) {
-        CategoryModel categoryModel = new CategoryModel(categoryDTO);
-        return this.categoryRepository.save(categoryModel);
-    }
+	public Mono<CategoryModel> createCategory(CategoryDTO categoryDTO) {
+		CategoryModel categoryModel = new CategoryModel(categoryDTO);
+		return this.categoryRepository.save(categoryModel);
+	}
 
-    public Flux<CategoryModel> getAllCategories() {
-        return this.categoryRepository.findAll();
-    }
+	public Flux<CategoryModel> getAllCategories() {
+		return this.categoryRepository.findAll();
+	}
 
-    public Mono<CategoryModel> updateCategory(Long id, CategoryDTO categoryDTO) {
-    	return this.categoryRepository.findById(id)
-    			.flatMap(category ->{
-    				category.setName(categoryDTO.name());
-    				return this.categoryRepository.save(category);
-    			})
-    			.switchIfEmpty(Mono.error(new CategoryNotFoundException()));
-    }
+	public Mono<CategoryModel> updateCategory(Long id, CategoryDTO categoryDTO) {
+		return this.categoryRepository.findById(id).flatMap(category -> {
+			category.setName(categoryDTO.name());
+			return this.categoryRepository.save(category);
+		}).switchIfEmpty(Mono.error(new CategoryNotFoundException()));
+	}
 
-    public Mono<Void> deleteCategory(Long id) {
-        return this.categoryRepository.findById(id)
-        		.flatMap(category->{
-        			return this.categoryRepository.deleteById(id);
-        		})
-        		.switchIfEmpty(Mono.error(new CategoryNotFoundException()));
-    }
+	public Mono<Void> deleteCategory(Long id) {
+		return this.categoryRepository.findById(id).switchIfEmpty(Mono.error(new CategoryNotFoundException()))
+				.flatMap(category -> {
+					return this.categoryRepository.deleteById(id);
+				});
+
+	}
 }
