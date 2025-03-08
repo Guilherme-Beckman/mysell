@@ -1,21 +1,15 @@
 package com.project.mysell.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.project.mysell.dto.LoginDTO;
 import com.project.mysell.dto.ResponseDTO;
 import com.project.mysell.dto.UserDTO;
 import com.project.mysell.dto.VerificationCodeDTO;
-import com.project.mysell.exceptions.InvalidCodeException;
-import com.project.mysell.exceptions.InvalidCredentialsException;
 import com.project.mysell.exceptions.ValidEmailException;
 import com.project.mysell.exceptions.user.UserAlreadyExistsException;
 import com.project.mysell.exceptions.user.UserNotFoundException;

@@ -3,18 +3,13 @@ package com.project.mysell.service;
 import java.time.Duration;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import com.project.mysell.exceptions.ExistingCodeException;
 import com.project.mysell.exceptions.InvalidCodeException;
 import com.project.mysell.exceptions.NoVerificationCodeFoundException;
 
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 @Service
 public class EmailCodeService{
