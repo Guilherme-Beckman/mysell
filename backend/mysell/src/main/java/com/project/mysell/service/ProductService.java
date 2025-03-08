@@ -17,6 +17,10 @@ public class ProductService {
 		return null;
 	}
 
+	public Flux<ProductModel> getProductById() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	public Flux<ProductModel> getAllProducts() {
 		// TODO Auto-generated method stub
 		return null;
@@ -31,5 +35,6 @@ public class ProductService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 	
 }
