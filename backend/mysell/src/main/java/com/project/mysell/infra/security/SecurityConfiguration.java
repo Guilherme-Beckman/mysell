@@ -32,7 +32,10 @@ public class SecurityConfiguration {
 	        		 .pathMatchers(HttpMethod.POST, "/auth/login").permitAll()
 	        		 .pathMatchers(HttpMethod.GET, "/auth/login").permitAll()
 	                 .pathMatchers(HttpMethod.POST, "/auth/register").permitAll()
-	                 .pathMatchers(HttpMethod.GET, "/auth/see").hasAuthority("ADMIN")
+	                 .pathMatchers(HttpMethod.GET, "/category").permitAll()
+	                 .pathMatchers(HttpMethod.POST, "/category").hasAuthority("ADMIN")
+	                 .pathMatchers(HttpMethod.PUT, "/category").hasAuthority("ADMIN")
+	                 .pathMatchers(HttpMethod.DELETE, "/category").hasAuthority("ADMIN")
 	        .anyExchange().authenticated())
 	        .addFilterAt(new JwtTokenAuthenticationFilter(tokenProvider),SecurityWebFiltersOrder.HTTP_BASIC)
 	        .build();
