@@ -18,5 +18,8 @@ public class ProductUnitOfMeasureService {
 		final ProductUnitOfMeasureModel newProductUnitOfMeasureModel = new ProductUnitOfMeasureModel(productUnitOfMeasureDTO);
 		return productUnitOfMeasureRepository.save(newProductUnitOfMeasureModel);
 	}
+	public Mono<ProductUnitOfMeasureModel> getProductUnitOfMeasureById(Long id ){
+		return productUnitOfMeasureRepository.findById(id);
+	}
 	
 }

@@ -25,6 +25,10 @@ public class CategoryService {
 	public Flux<CategoryModel> getAllCategories() {
 		return this.categoryRepository.findAll();
 	}
+	public Mono<CategoryModel> getCategoryById(Long id) {
+		return this.categoryRepository.findById(id);
+	}
+
 
 	public Mono<CategoryModel> updateCategory(Long id, CategoryDTO categoryDTO) {
 		return this.categoryRepository.findById(id).flatMap(category -> {

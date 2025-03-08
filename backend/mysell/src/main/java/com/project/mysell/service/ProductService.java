@@ -3,14 +3,17 @@ package com.project.mysell.service;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+
+import com.project.mysell.dto.CategoryDTO;
 import com.project.mysell.dto.ProductDTO;
-import com.project.mysell.infra.security.CustomUserDetails;
+import com.project.mysell.dto.ProductResponseDTO;
+import com.project.mysell.dto.ProductUnitOfMeasureResponseDTO;
+import com.project.mysell.dto.UnityOfMeasureDTO;
 import com.project.mysell.infra.security.jwt.JwtTokenProvider;
 import com.project.mysell.model.ProductModel;
-import com.project.mysell.model.ProductUnitOfMeasureModel;
 import com.project.mysell.repository.ProductRepository;
+
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -22,6 +25,10 @@ public class ProductService {
 	private ProductRepository productRepository;
 	@Autowired
 	private ProductUnitOfMeasureService productUnitOfMeasureService;
+	@Autowired
+	private CategoryService categoryService;
+	@Autowired
+	private UnityOfMeasureService unityOfMeasureService;
 	public Mono<ProductModel> createProduct(ProductDTO productDTO, String token) {
 	    final String extractedToken = jwtTokenProvider.extractJwtToken(token);
 	    final UUID userId = jwtTokenProvider.getUserIdFromToken(extractedToken);
@@ -42,8 +49,35 @@ public class ProductService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public Flux<ProductModel> getAllProducts() {
-		return this.productRepository.findAll();
+	public Flux<ProductResponseDTO> getAllProducts() {
+
+		return this.productRepository.findAll()
+				.flatMap(product ->{
+					Mono<CategoryDTO> categoryResponse = 
+							this.categoryService
+							.getCategoryById(product.getCategoryId())
+							.map(category -> new CategoryDTO(category.getName()));
+					Mono<ProductUnitOfMeasureResponseDTO> productUnitOfMeasureResponseDTO = 
+							this.productUnitOfMeasureService
+							.getProductUnitOfMeasureById(product.getProductUnitOfMeasureId())
+							.flatMap(productUnitOfMeasureModel ->{
+								return this.unityOfMeasureService.
+										getUnityOfMeasureById(productUnitOfMeasureModel.getUnitOfMeasureId())
+										.map(unityOfMeasure -> new UnityOfMeasureDTO(unityOfMeasure.getName()))
+										.map(unityResponsedto -> new ProductUnitOfMeasureResponseDTO(productUnitOfMeasureModel.getQuantity(),unityResponsedto));
+							});
+					
+					return Mono.zip(categoryResponse, productUnitOfMeasureResponseDTO)
+					.map(tuple -> new ProductResponseDTO(
+						     product.getProductsId(),
+						     product.getName(),
+						     tuple.getT1(),
+						     product.getPurchasedPrice(),
+						     product.getPriceToSell(),
+						     product.getBrand(),
+						     product.getUserId(),
+						     tuple.getT2()));
+				});
 	}
 
 	public Mono<ProductModel> updateProduct(Long id, ProductDTO productDTO) {

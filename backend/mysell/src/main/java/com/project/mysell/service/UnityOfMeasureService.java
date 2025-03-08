@@ -20,7 +20,9 @@ public class UnityOfMeasureService {
 		UnityOfMeasureModel newUnityOfMeasureModel = new UnityOfMeasureModel(unityOfMeasureDTO);
 		return this.unityOfMeasureRepository.save(newUnityOfMeasureModel);
 	}
-
+	public Mono<UnityOfMeasureModel> getUnityOfMeasureById(Long id) {
+		return this.unityOfMeasureRepository.findById(id);
+	}
 	public Flux<UnityOfMeasureModel> getAllUnitsOfMeasure() {
 		return this.unityOfMeasureRepository.findAll();
 	}

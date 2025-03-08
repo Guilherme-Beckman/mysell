@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.mysell.dto.ProductDTO;
+import com.project.mysell.dto.ProductResponseDTO;
 import com.project.mysell.model.ProductModel;
 import com.project.mysell.service.ProductService;
+
 import jakarta.validation.Valid;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -37,8 +39,8 @@ public class ProductController {
         return ResponseEntity.ok().body(products);
     }
     @GetMapping()
-    public ResponseEntity<Flux<ProductModel>> getAllProducts() {
-        Flux<ProductModel> products  = this.productService.getAllProducts();
+    public ResponseEntity<Flux<ProductResponseDTO>> getAllProducts() {
+        Flux<ProductResponseDTO> products  = this.productService.getAllProducts();
         return ResponseEntity.ok().body(products);
     }
 
