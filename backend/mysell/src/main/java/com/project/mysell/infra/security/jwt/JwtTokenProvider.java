@@ -114,4 +114,7 @@ public class JwtTokenProvider {
         		.setExpiration(validity)
                 .signWith(this.secretKey, SignatureAlgorithm.HS256).compact();
 	}
+    public String extractJwtToken(String authorizationHeader) {
+        return authorizationHeader.substring(7);
+}
 }

@@ -83,7 +83,7 @@ public class AuthService {
         return new UserDTO(userDTO.email(), passwordEncoder.encode(userDTO.password()));
     }
     public Mono<String> sendVerificationCode(String authorizationHeader) {
-        final String jwtToken = extractJwtToken(authorizationHeader);
+        final String jwtToken = jwtTokenProvider.extractJwtToken(authorizationHeader);
         final Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
 
         return findUserByEmail(authentication.getName())
@@ -91,7 +91,7 @@ public class AuthService {
     }
 
     public Mono<String> verifyEmailWithCode(String authorizationHeader, VerificationCodeDTO verificationCode) {
-        final String jwtToken = extractJwtToken(authorizationHeader);
+        final String jwtToken = jwtTokenProvider.extractJwtToken(authorizationHeader);
         final Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
 
         return findUserByEmail(authentication.getName())
@@ -126,7 +126,4 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    private String extractJwtToken(String authorizationHeader) {
-            return authorizationHeader.substring(7);
-    }
 }
