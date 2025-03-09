@@ -34,9 +34,9 @@ public class ProductController {
         Mono<ProductResponseDTO> newProduct = this.productService.createProduct(productDTO, token);
         return ResponseEntity.ok().body(newProduct);
     }
-    @GetMapping("/{id}")
-    public ResponseEntity<Mono<ProductResponseDTO>> getProductById(@PathVariable Long id) {
-        Mono<ProductResponseDTO> products  = this.productService.getProductById(id);
+    @GetMapping("/my")
+    public ResponseEntity<Flux<ProductResponseDTO>> getProductByUserId(@RequestHeader("Authorization") String token) {
+    	Flux<ProductResponseDTO> products  = this.productService.getProductByUserId(token);
         return ResponseEntity.ok().body(products);
     }
     @GetMapping()

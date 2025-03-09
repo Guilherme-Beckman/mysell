@@ -53,10 +53,12 @@ public class ProductService {
             .flatMap(this::convertToProductResponseDTO);
     }
 
-    public Mono<ProductResponseDTO> getProductById(Long id) {
-        return productRepository.findById(id)
-            .flatMap(this::convertToProductResponseDTO)
-            .switchIfEmpty(Mono.error(new ProductNotFoundException(id)));
+    public Flux<ProductResponseDTO> getProductByUserId(String token) {
+        final UUID userId = extractUserIdFromToken(token);
+        return productRepository.findAllByUserId(userId)
+            .flatMap(this::convertToProductResponseDTO);
+        		
+
     }
 
     public Mono<ProductResponseDTO> updateProduct(Long id, ProductUpdateDTO productDTO, String token) {
@@ -141,9 +143,6 @@ public class ProductService {
     	
     	return productRepository.deleteById(existingProduct.getProductsId())
     			.then(productUnitOfMeasureService.deleteProductUnitOfMeasure(existingProduct.getProductUnitOfMeasureId()));
-        /*return productUnitOfMeasureService
-            .deleteProductUnitOfMeasure(product.getProductUnitOfMeasureId())
-            .then(productRepository.delete(product));*/
     }
 
     private Mono<ProductResponseDTO> convertToProductResponseDTO(ProductModel product) {
