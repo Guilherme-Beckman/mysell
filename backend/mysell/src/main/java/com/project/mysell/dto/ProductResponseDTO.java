@@ -1,5 +1,4 @@
 package com.project.mysell.dto;
-import java.util.UUID;
 
 public record ProductResponseDTO (
      Long productsId,
@@ -8,7 +7,6 @@ public record ProductResponseDTO (
      Double purchasedPrice,
      Double priceToSell,
      String brand,
-     UUID userId,
      ProductUnitOfMeasureResponseDTO  productUnitOfMeasureDTO
 )
 {}
