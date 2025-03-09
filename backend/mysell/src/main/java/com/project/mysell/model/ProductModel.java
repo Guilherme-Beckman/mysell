@@ -2,6 +2,7 @@ package com.project.mysell.model;
 
 import java.util.UUID;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 import com.project.mysell.dto.ProductDTO;
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductModel {
+	@Id
     private Long productsId;
     private String name;
     private Long categoryId;

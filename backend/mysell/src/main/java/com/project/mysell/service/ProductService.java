@@ -1,6 +1,7 @@
 package com.project.mysell.service;
 
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,9 +10,13 @@ import com.project.mysell.dto.CategoryDTO;
 import com.project.mysell.dto.ProductDTO;
 import com.project.mysell.dto.ProductResponseDTO;
 import com.project.mysell.dto.ProductUnitOfMeasureResponseDTO;
+import com.project.mysell.dto.ProductUpdateDTO;
 import com.project.mysell.dto.UnityOfMeasureDTO;
+import com.project.mysell.exceptions.DoesNotOwnProductException;
+import com.project.mysell.exceptions.ProductNotFoundException;
 import com.project.mysell.infra.security.jwt.JwtTokenProvider;
 import com.project.mysell.model.ProductModel;
+import com.project.mysell.model.ProductUnitOfMeasureModel;
 import com.project.mysell.repository.ProductRepository;
 
 import reactor.core.publisher.Flux;
@@ -20,74 +25,160 @@ import reactor.core.publisher.Mono;
 @Service
 public class ProductService {
 	@Autowired
-	private JwtTokenProvider jwtTokenProvider;
+    private JwtTokenProvider jwtTokenProvider;
 	@Autowired
-	private ProductRepository productRepository;
+    private ProductRepository productRepository;
 	@Autowired
-	private ProductUnitOfMeasureService productUnitOfMeasureService;
+    private ProductUnitOfMeasureService productUnitOfMeasureService;
 	@Autowired
-	private CategoryService categoryService;
+    private CategoryService categoryService;
 	@Autowired
-	private UnityOfMeasureService unityOfMeasureService;
-	public Mono<ProductModel> createProduct(ProductDTO productDTO, String token) {
-	    final String extractedToken = jwtTokenProvider.extractJwtToken(token);
-	    final UUID userId = jwtTokenProvider.getUserIdFromToken(extractedToken);
-
-	    ProductModel newProduct = new ProductModel(productDTO);
-	    newProduct.setUserId(userId);
-
-	    return productUnitOfMeasureService
-	        .createProductUnitOfMeasure(productDTO.productUnitOfMeasureDTO())
-	        .flatMap(p -> {
-	            newProduct.setProductUnitOfMeasureId(p.getProductsUnitsOfMeasureId());
-	            return productRepository.save(newProduct);
-	        });
-	}
+    private UnityOfMeasureService unityOfMeasureService;
 
 
-	public Flux<ProductModel> getProductById() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	public Flux<ProductResponseDTO> getAllProducts() {
+    public Mono<ProductResponseDTO> createProduct(ProductDTO productDTO, String token) {
+        final UUID userId = extractUserIdFromToken(token);
+        ProductModel newProduct = createNewProduct(productDTO, userId);
 
-		return this.productRepository.findAll()
-				.flatMap(product ->{
-					Mono<CategoryDTO> categoryResponse = 
-							this.categoryService
-							.getCategoryById(product.getCategoryId())
-							.map(category -> new CategoryDTO(category.getName()));
-					Mono<ProductUnitOfMeasureResponseDTO> productUnitOfMeasureResponseDTO = 
-							this.productUnitOfMeasureService
-							.getProductUnitOfMeasureById(product.getProductUnitOfMeasureId())
-							.flatMap(productUnitOfMeasureModel ->{
-								return this.unityOfMeasureService.
-										getUnityOfMeasureById(productUnitOfMeasureModel.getUnitOfMeasureId())
-										.map(unityOfMeasure -> new UnityOfMeasureDTO(unityOfMeasure.getName()))
-										.map(unityResponsedto -> new ProductUnitOfMeasureResponseDTO(productUnitOfMeasureModel.getQuantity(),unityResponsedto));
-							});
-					
-					return Mono.zip(categoryResponse, productUnitOfMeasureResponseDTO)
-					.map(tuple -> new ProductResponseDTO(
-						     product.getProductsId(),
-						     product.getName(),
-						     tuple.getT1(),
-						     product.getPurchasedPrice(),
-						     product.getPriceToSell(),
-						     product.getBrand(),
-						     product.getUserId(),
-						     tuple.getT2()));
-				});
-	}
+        return productUnitOfMeasureService
+            .createProductUnitOfMeasure(productDTO.productUnitOfMeasureDTO())
+            .flatMap(unitOfMeasure -> {
+                newProduct.setProductUnitOfMeasureId(unitOfMeasure.getProductsUnitsOfMeasureId());
+                return saveProductAndConvertToResponse(newProduct);
+            });
+    }
 
-	public Mono<ProductModel> updateProduct(Long id, ProductDTO productDTO) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public Flux<ProductResponseDTO> getAllProducts() {
+        return productRepository.findAll()
+            .flatMap(this::convertToProductResponseDTO);
+    }
 
-	public Mono<Void> deleteProduct(Long id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public Mono<ProductResponseDTO> getProductById(Long id) {
+        return productRepository.findById(id)
+            .flatMap(this::convertToProductResponseDTO)
+            .switchIfEmpty(Mono.error(new ProductNotFoundException(id)));
+    }
 
+    public Mono<ProductResponseDTO> updateProduct(Long id, ProductUpdateDTO productDTO, String token) {
+        final UUID userId = extractUserIdFromToken(token);
+
+        return productRepository.findById(id)
+            .switchIfEmpty(Mono.error(new ProductNotFoundException(id)))
+            .flatMap(existingProduct -> validateOwnershipAndUpdate(existingProduct, productDTO, userId));
+    }
+
+    public Mono<Void> deleteProduct(Long id) {
+        return productRepository.findById(id)
+            .switchIfEmpty(Mono.error(new ProductNotFoundException(id)))
+            .flatMap(this::deleteProductAndMeasureUnit);
+    }
+
+    private Mono<ProductResponseDTO> validateOwnershipAndUpdate(
+        ProductModel existingProduct,
+        ProductUpdateDTO productDTO,
+        UUID userId
+    ) {
+        if (!existingProduct.getUserId().equals(userId)) {
+            return Mono.error(new DoesNotOwnProductException(existingProduct.getProductsId().toString()));
+        }
+
+        updateProductFields(existingProduct, productDTO);
+        if (productDTO.productUnitOfMeasureDTO() == null) {
+            return productRepository.save(existingProduct)
+                .flatMap(this::convertToProductResponseDTO);
+        }
+        return productUnitOfMeasureService
+            .updateProductUnitOfMeasure(
+                existingProduct.getProductUnitOfMeasureId(),
+                productDTO.productUnitOfMeasureDTO()
+            )
+            .flatMap(updatedUnit -> productRepository.save(existingProduct))
+            .flatMap(this::convertToProductResponseDTO);
+    }
+
+    private void updateProductFields(ProductModel product, ProductUpdateDTO updateDTO) {
+        updateFieldIfValid(product::setName, product.getName(), updateDTO.name());
+        updateFieldIfValid(product::setCategoryId, product.getCategoryId(), updateDTO.categoryId());
+        updateFieldIfValid(product::setPurchasedPrice, product.getPurchasedPrice(), updateDTO.purchasedPrice());
+        updateFieldIfValid(product::setPriceToSell, product.getPriceToSell(), updateDTO.priceToSell());
+        updateFieldIfValid(product::setBrand, product.getBrand(), updateDTO.brand());
+    }
+
+    private <T> void updateFieldIfValid(Consumer<T> setter, T currentValue, T newValue) {
+        if (newValue != null && !newValue.equals(currentValue)) {
+            if (newValue instanceof String str && !str.isBlank()) {
+                setter.accept(newValue);
+            } else if (!(newValue instanceof String)) {
+                setter.accept(newValue);
+            }
+        }
+    }
+
+    private UUID extractUserIdFromToken(String token) {
+        return jwtTokenProvider.getUserIdFromToken(jwtTokenProvider.extractJwtToken(token));
+    }
+
+    private ProductModel createNewProduct(ProductDTO productDTO, UUID userId) {
+        ProductModel product = new ProductModel(productDTO);
+        product.setUserId(userId);
+        return product;
+    }
+
+    private Mono<ProductResponseDTO> saveProductAndConvertToResponse(ProductModel product) {
+        return productRepository.save(product)
+            .flatMap(savedProduct -> productRepository.findById(savedProduct.getProductsId()))
+            .flatMap(this::convertToProductResponseDTO);
+    }
+
+    private Mono<Void> deleteProductAndMeasureUnit(ProductModel product) {
+        return productUnitOfMeasureService
+            .deleteProductUnitOfMeasure(product.getProductUnitOfMeasureId())
+            .then(productRepository.delete(product));
+    }
+
+    private Mono<ProductResponseDTO> convertToProductResponseDTO(ProductModel product) {
+        Mono<CategoryDTO> categoryMono = retrieveCategoryDetails(product.getCategoryId());
+        Mono<ProductUnitOfMeasureResponseDTO> unitOfMeasureMono = retrieveUnitOfMeasureDetails(product);
+
+        return Mono.zip(categoryMono, unitOfMeasureMono)
+            .map(tuple -> buildProductResponseDTO(product, tuple.getT1(), tuple.getT2()));
+    }
+
+    private Mono<CategoryDTO> retrieveCategoryDetails(Long categoryId) {
+        return categoryService.getCategoryById(categoryId)
+            .map(category -> new CategoryDTO(category.getName()));
+    }
+
+    private Mono<ProductUnitOfMeasureResponseDTO> retrieveUnitOfMeasureDetails(ProductModel product) {
+        return productUnitOfMeasureService
+            .getProductUnitOfMeasureById(product.getProductUnitOfMeasureId())
+            .flatMap(this::buildUnitOfMeasureResponse);
+    }
+
+    private Mono<ProductUnitOfMeasureResponseDTO> buildUnitOfMeasureResponse(ProductUnitOfMeasureModel unitOfMeasure) {
+        return unityOfMeasureService
+            .getUnityOfMeasureById(unitOfMeasure.getUnitOfMeasureId())
+            .map(measure -> new UnityOfMeasureDTO(measure.getName()))
+            .map(measureDto -> new ProductUnitOfMeasureResponseDTO(
+                unitOfMeasure.getQuantity(),
+                measureDto
+            ));
+    }
+
+    private ProductResponseDTO buildProductResponseDTO(
+        ProductModel product,
+        CategoryDTO category,
+        ProductUnitOfMeasureResponseDTO unitOfMeasure
+    ) {
+        return new ProductResponseDTO(
+            product.getProductsId(),
+            product.getName(),
+            category,
+            product.getPurchasedPrice(),
+            product.getPriceToSell(),
+            product.getBrand(),
+            product.getUserId(),
+            unitOfMeasure
+        );
+    }
 }

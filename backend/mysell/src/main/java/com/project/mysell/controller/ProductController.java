@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.mysell.dto.ProductDTO;
 import com.project.mysell.dto.ProductResponseDTO;
+import com.project.mysell.dto.ProductUpdateDTO;
 import com.project.mysell.model.ProductModel;
 import com.project.mysell.service.ProductService;
 
@@ -29,13 +30,13 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping()
-    public ResponseEntity<Mono<ProductModel>> createProduct(@Valid @RequestBody ProductDTO productDTO, @RequestHeader("Authorization") String token) {
-        Mono<ProductModel> newProduct = this.productService.createProduct(productDTO, token);
+    public ResponseEntity<Mono<ProductResponseDTO>> createProduct(@Valid @RequestBody ProductDTO productDTO, @RequestHeader("Authorization") String token) {
+        Mono<ProductResponseDTO> newProduct = this.productService.createProduct(productDTO, token);
         return ResponseEntity.ok().body(newProduct);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<Flux<ProductModel>> getProductById(@PathVariable Long id) {
-        Flux<ProductModel> products  = this.productService.getProductById();
+    public ResponseEntity<Mono<ProductResponseDTO>> getProductById(@PathVariable Long id) {
+        Mono<ProductResponseDTO> products  = this.productService.getProductById(id);
         return ResponseEntity.ok().body(products);
     }
     @GetMapping()
@@ -45,8 +46,8 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Mono<ProductModel>> updateProduct (@PathVariable Long id, @RequestBody @Valid ProductDTO productDTO) {
-        Mono<ProductModel> updatedProduct  = this.productService.updateProduct(id, productDTO);
+    public ResponseEntity<Mono<ProductResponseDTO>> updateProduct (@PathVariable Long id, @RequestBody @Valid ProductUpdateDTO productDTO, @RequestHeader("Authorization") String token) {
+        Mono<ProductResponseDTO> updatedProduct  = this.productService.updateProduct(id, productDTO, token);
         return ResponseEntity.ok().body(updatedProduct);
     }
 
