@@ -196,7 +196,6 @@ public class ProductService {
             product.getPurchasedPrice(),
             product.getPriceToSell(),
             product.getBrand(),
-            product.getUserId(),
             unitOfMeasure
         );
     }
