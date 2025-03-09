@@ -17,3 +17,7 @@ ALTER TABLE products_units_of_measure
 ALTER TABLE sells
     ADD CONSTRAINT fk_product FOREIGN KEY (product_id)
     REFERENCES products(products_id);
+
+ALTER TABLE sells
+    ADD CONSTRAINT fk_user FOREIGN KEY (user_id)
+    REFERENCES users(users_id);
