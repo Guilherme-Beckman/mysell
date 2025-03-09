@@ -3,6 +3,7 @@ package com.project.mysell.model;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 import com.project.mysell.dto.SellDTO;
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SellModel {
-
+	@Id
 	private Long sellsId;
 	private Long quantity;
 	private LocalDateTime createdAt;
