@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CategoryModel {
 	@Id
-	private Long categories_id;
+	private Long categoriesId;
 	private String name;
 	public CategoryModel(CategoryDTO categoryDTO) {
 		this.name = categoryDTO.name();
