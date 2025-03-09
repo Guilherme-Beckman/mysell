@@ -52,8 +52,8 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Mono<Void>> deleteProduct (@PathVariable Long id) {
-        Mono<Void> deletedProduct = this.productService.deleteProduct(id);
+    public ResponseEntity<Mono<Void>> deleteProduct (@PathVariable Long id, @RequestHeader("Authorization") String token) {
+        Mono<Void> deletedProduct = this.productService.deleteProduct(id, token);
         return ResponseEntity.ok().body(deletedProduct);
     }
 }

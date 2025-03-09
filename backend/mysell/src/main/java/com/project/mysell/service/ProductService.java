@@ -64,24 +64,26 @@ public class ProductService {
 
         return productRepository.findById(id)
             .switchIfEmpty(Mono.error(new ProductNotFoundException(id)))
-            .flatMap(existingProduct -> validateOwnershipAndUpdate(existingProduct, productDTO, userId));
+            .flatMap(existingProduct -> {
+            	validateOwnership(existingProduct.getUserId(), userId);
+        		return update(existingProduct, productDTO);
+            });
     }
 
-    public Mono<Void> deleteProduct(Long id) {
+    public Mono<Void> deleteProduct(Long id, String token) {
+    	final UUID userId = extractUserIdFromToken(token);
         return productRepository.findById(id)
             .switchIfEmpty(Mono.error(new ProductNotFoundException(id)))
-            .flatMap(this::deleteProductAndMeasureUnit);
+            .flatMap(existingProduct -> {
+            	validateOwnership(existingProduct.getUserId(), userId);
+            	return deleteProductAndMeasureUnit(existingProduct);
+            	});
+            
     }
 
-    private Mono<ProductResponseDTO> validateOwnershipAndUpdate(
+    private Mono<ProductResponseDTO> update(
         ProductModel existingProduct,
-        ProductUpdateDTO productDTO,
-        UUID userId
-    ) {
-        if (!existingProduct.getUserId().equals(userId)) {
-            return Mono.error(new DoesNotOwnProductException(existingProduct.getProductsId().toString()));
-        }
-
+        ProductUpdateDTO productDTO    ) {
         updateProductFields(existingProduct, productDTO);
         if (productDTO.productUnitOfMeasureDTO() == null) {
             return productRepository.save(existingProduct)
@@ -95,7 +97,12 @@ public class ProductService {
             .flatMap(updatedUnit -> productRepository.save(existingProduct))
             .flatMap(this::convertToProductResponseDTO);
     }
-
+    private Mono<Void> validateOwnership(UUID existingProductId, UUID userId){
+        if (!existingProductId.equals(userId)) {
+            return Mono.error(new DoesNotOwnProductException());
+        }
+		return null;
+    }
     private void updateProductFields(ProductModel product, ProductUpdateDTO updateDTO) {
         updateFieldIfValid(product::setName, product.getName(), updateDTO.name());
         updateFieldIfValid(product::setCategoryId, product.getCategoryId(), updateDTO.categoryId());
@@ -130,10 +137,13 @@ public class ProductService {
             .flatMap(this::convertToProductResponseDTO);
     }
 
-    private Mono<Void> deleteProductAndMeasureUnit(ProductModel product) {
-        return productUnitOfMeasureService
+    private Mono<Void> deleteProductAndMeasureUnit(ProductModel existingProduct) {
+    	
+    	return productRepository.deleteById(existingProduct.getProductsId())
+    			.then(productUnitOfMeasureService.deleteProductUnitOfMeasure(existingProduct.getProductUnitOfMeasureId()));
+        /*return productUnitOfMeasureService
             .deleteProductUnitOfMeasure(product.getProductUnitOfMeasureId())
-            .then(productRepository.delete(product));
+            .then(productRepository.delete(product));*/
     }
 
     private Mono<ProductResponseDTO> convertToProductResponseDTO(ProductModel product) {
