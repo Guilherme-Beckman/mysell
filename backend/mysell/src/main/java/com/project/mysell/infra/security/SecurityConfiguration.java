@@ -3,11 +3,8 @@ package com.project.mysell.infra.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.ReactiveAuthenticationManager;
-import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
@@ -32,6 +29,16 @@ public class SecurityConfiguration {
 	        		 .pathMatchers(HttpMethod.POST, "/auth/login").permitAll()
 	        		 .pathMatchers(HttpMethod.GET, "/auth/login").permitAll()
 	                 .pathMatchers(HttpMethod.POST, "/auth/register").permitAll()
+	                 .pathMatchers(HttpMethod.GET, "/category").permitAll()
+	                 .pathMatchers(HttpMethod.POST, "/category").hasAuthority("ADMIN")
+	                 .pathMatchers(HttpMethod.PUT, "/category").hasAuthority("ADMIN")
+	                 .pathMatchers(HttpMethod.DELETE, "/category").hasAuthority("ADMIN")
+	                 .pathMatchers(HttpMethod.GET, "/unity").permitAll()
+	                 .pathMatchers(HttpMethod.POST, "/unity").hasAuthority("ADMIN")
+	                 .pathMatchers(HttpMethod.PUT, "/unity").hasAuthority("ADMIN")
+	                 .pathMatchers(HttpMethod.DELETE, "/unity").hasAuthority("ADMIN")
+	                 .pathMatchers(HttpMethod.POST, "/product").permitAll()
+	                 .pathMatchers(HttpMethod.GET, "/product").hasAuthority("ADMIN")
 	        .anyExchange().authenticated())
 	        .addFilterAt(new JwtTokenAuthenticationFilter(tokenProvider),SecurityWebFiltersOrder.HTTP_BASIC)
 	        .build();

@@ -1,17 +1,14 @@
 package com.project.mysell.infra.security.jwt;
 
 import java.nio.charset.StandardCharsets;
-
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.server.reactive.ServerHttpRequest;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,7 +17,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
+
+import com.project.mysell.infra.security.CustomUserDetails;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -33,10 +31,9 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
-	private static final String AUTHORITIES_KEY = "roles";
+	private static final String AUTHORITIES_KEY = "role";
 	private final JwtProperties jwtProperties;
 	private SecretKey secretKey;
-	
 	@PostConstruct
 	public void init() {
 	
@@ -45,48 +42,47 @@ public class JwtTokenProvider {
 		this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
 	}
 	
-	public String createToken(Authentication authentication) {
-		String username = authentication.getName();
-		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-		Claims claims = Jwts.claims().setSubject(username);
-		
-		if(!authorities.isEmpty()) {
-			claims.put(AUTHORITIES_KEY, authorities.stream().map(GrantedAuthority::getAuthority)
-					.collect(Collectors.joining(",")));
-		}
-		Date now = new Date();
-		Date validity = new Date(now.getTime()+ this.jwtProperties.getValidityInMs());
-		
-        return Jwts.builder()
-        		.setClaims(claims)
-        		.setIssuedAt(now)
-        		.setExpiration(validity)
-                .signWith(this.secretKey, SignatureAlgorithm.HS256).compact();
-	}
-	public Authentication getAuthentication(String token) {
-	    // Parse the token to extract claims
-	    Claims claims = Jwts.parserBuilder()
-	            .setSigningKey(this.secretKey)
-	            .build()
-	            .parseClaimsJws(token)
-	            .getBody();
+	 public String createToken(Authentication authentication) {
+		 if(authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+			CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+	        String username = authentication.getName();
+	        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+	        Claims claims = Jwts.claims().setSubject(username);
+	        claims.put("userId", userDetails.getUsersId());
+	        if (!authorities.isEmpty()) {
+	            String authoritiesString = authorities.stream()
+	                    .map(GrantedAuthority::getAuthority)
+	                    .collect(Collectors.joining(","));
+	            claims.put(AUTHORITIES_KEY, authoritiesString);
+	        }
 
-	    // Retrieve authorities from claims
-	    Object authoritiesClaim = claims.get(AUTHORITIES_KEY);
-
-	    Collection<? extends GrantedAuthority> authorities = authoritiesClaim == null
-	            ? AuthorityUtils.NO_AUTHORITIES
-	            : AuthorityUtils.commaSeparatedStringToAuthorityList(authoritiesClaim.toString());
-
-	    // Build the principal user
-	    User principal = new User(claims.getSubject(), "", authorities);
-
-	    // Create the authentication token
-	    Authentication authentication = new UsernamePasswordAuthenticationToken(principal, token, authorities);
-	    
-	    return authentication;
-	}
-
+	        Date now = new Date();
+	        Date validity = new Date(now.getTime() + this.jwtProperties.getValidityInMs());
+	        String token = Jwts.builder()
+	                .setClaims(claims)
+	                .setIssuedAt(now)
+	                .setExpiration(validity)
+	                .signWith(this.secretKey, SignatureAlgorithm.HS256)
+	                .compact();
+	        return token;
+	    }
+		 return null;
+	 }
+	
+    public Authentication getAuthentication(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(this.secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        Object authoritiesClaim = claims.get(AUTHORITIES_KEY);
+        Collection<? extends GrantedAuthority> authorities = authoritiesClaim == null
+                ? AuthorityUtils.NO_AUTHORITIES
+                : AuthorityUtils.commaSeparatedStringToAuthorityList(authoritiesClaim.toString());
+        User principal = new User(claims.getSubject(), "", authorities);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(principal, token, authorities);
+        return authentication;
+    }
 	public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
@@ -121,4 +117,16 @@ public class JwtTokenProvider {
         		.setExpiration(validity)
                 .signWith(this.secretKey, SignatureAlgorithm.HS256).compact();
 	}
+    public String extractJwtToken(String authorizationHeader) {
+        return authorizationHeader.substring(7);
+        }
+    public UUID getUserIdFromToken (String token) {
+    	  Claims claims = Jwts.parserBuilder()
+                  .setSigningKey(this.secretKey)  
+                  .build()
+                  .parseClaimsJws(token)
+                  .getBody();
+
+    	  return UUID.fromString((String) claims.get("userId"));
+    	  }
 }

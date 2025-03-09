@@ -12,6 +12,9 @@ public class UserNotFoundException extends RestException {
     public UserNotFoundException(String email) {
         this.email = email;
     }
+    public UserNotFoundException() {
+		this.email = "";
+    }
     @Override
     public ProblemDetail toProblemDetail() {
         var problemDetail = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
