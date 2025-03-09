@@ -3,6 +3,8 @@ package com.project.mysell.service;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,8 +59,16 @@ public class ProductService {
         final UUID userId = extractUserIdFromToken(token);
         return productRepository.findAllByUserId(userId)
             .flatMap(this::convertToProductResponseDTO);
-        		
-
+    }
+    public Mono<ProductResponseDTO> getProductById(String token, Long id) {
+    	final UUID userId = extractUserIdFromToken(token);
+    	
+    	 return productRepository.findById(id)
+    	            .switchIfEmpty(Mono.error(new ProductNotFoundException(id)))
+    	            .flatMap(existingProduct -> {
+    	            	return validateOwnership(existingProduct.getUserId(), userId).
+    	            	then(convertToProductResponseDTO(existingProduct));
+    	            	});
     }
 
     public Mono<ProductResponseDTO> updateProduct(Long id, ProductUpdateDTO productDTO, String token) {
@@ -67,20 +77,20 @@ public class ProductService {
         return productRepository.findById(id)
             .switchIfEmpty(Mono.error(new ProductNotFoundException(id)))
             .flatMap(existingProduct -> {
-            	validateOwnership(existingProduct.getUserId(), userId);
-        		return update(existingProduct, productDTO);
+            	return validateOwnership(existingProduct.getUserId(), userId).
+            			then(update(existingProduct, productDTO));
             });
     }
 
     public Mono<Void> deleteProduct(Long id, String token) {
-    	final UUID userId = extractUserIdFromToken(token);
+        final UUID userId = extractUserIdFromToken(token);
+
         return productRepository.findById(id)
             .switchIfEmpty(Mono.error(new ProductNotFoundException(id)))
             .flatMap(existingProduct -> {
-            	validateOwnership(existingProduct.getUserId(), userId);
-            	return deleteProductAndMeasureUnit(existingProduct);
-            	});
-            
+                return validateOwnership(existingProduct.getUserId(), userId)
+                    .then(deleteProductAndMeasureUnit(existingProduct));
+            });
     }
 
     private Mono<ProductResponseDTO> update(
@@ -99,11 +109,11 @@ public class ProductService {
             .flatMap(updatedUnit -> productRepository.save(existingProduct))
             .flatMap(this::convertToProductResponseDTO);
     }
-    private Mono<Void> validateOwnership(UUID existingProductId, UUID userId){
-        if (!existingProductId.equals(userId)) {
+    private Mono<Void> validateOwnership(UUID existingProductUserId, UUID userId) {
+        if (!existingProductUserId.equals(userId)) {
             return Mono.error(new DoesNotOwnProductException());
         }
-		return null;
+        return Mono.empty();
     }
     private void updateProductFields(ProductModel product, ProductUpdateDTO updateDTO) {
         updateFieldIfValid(product::setName, product.getName(), updateDTO.name());
@@ -190,4 +200,6 @@ public class ProductService {
             unitOfMeasure
         );
     }
+
+	
 }
