@@ -21,3 +21,7 @@ ALTER TABLE sells
 ALTER TABLE sells
     ADD CONSTRAINT fk_user FOREIGN KEY (user_id)
     REFERENCES users(users_id);
+    
+ALTER TABLE events
+    ADD CONSTRAINT fk_user FOREIGN KEY (user_id)
+    REFERENCES users(users_id);

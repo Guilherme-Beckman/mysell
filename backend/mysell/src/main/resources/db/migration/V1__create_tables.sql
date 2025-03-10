@@ -42,3 +42,12 @@ CREATE TABLE IF NOT EXISTS sells (
     user_id UUID NOT NULL,
     product_id BIGINT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS events (
+    events_id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    date DATE NOT NULL,
+    time TIME NOT NULL,
+    color VARCHAR(50) NOT NULL,
+    favorite BOOLEAN DEFAULT false NOT NULL,
+    user_id UUID NOT NULL
+);
