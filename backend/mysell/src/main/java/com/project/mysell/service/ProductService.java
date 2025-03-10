@@ -200,5 +200,10 @@ public class ProductService {
         );
     }
 
+	public Mono<ProductResponseDTO> getProductByBarcode(String barcode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 }
