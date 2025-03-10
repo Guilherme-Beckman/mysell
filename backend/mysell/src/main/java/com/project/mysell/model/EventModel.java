@@ -2,8 +2,11 @@ package com.project.mysell.model;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.UUID;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 import com.project.mysell.dto.EventDTO;
@@ -17,10 +20,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor	
 public class EventModel {
+	@Id
 	private Long eventsId;
 	private String name;
-	private Date date;
-	private Time time;
+	private LocalDate date;
+	private LocalTime time;
 	private String color;
 	private boolean favorite;
 	private UUID userId;

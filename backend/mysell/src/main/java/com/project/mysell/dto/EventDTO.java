@@ -1,13 +1,12 @@
 package com.project.mysell.dto;
 
-import java.sql.Date;
-import java.sql.Time;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public record EventDTO (
 		String name,
-		Date date,
-		Time time,
+		LocalDate date,
+		LocalTime time,
 		String color,
 		boolean favorite
 		){
