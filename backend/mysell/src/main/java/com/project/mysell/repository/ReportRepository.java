@@ -1,5 +1,9 @@
 package com.project.mysell.repository;
 
-public interface ReportRepository {
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface ReportRepository extends ReactiveCrudRepository<T, ID> {
 
 }
