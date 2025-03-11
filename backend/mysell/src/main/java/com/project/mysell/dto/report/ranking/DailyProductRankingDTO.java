@@ -1,5 +1,9 @@
 package com.project.mysell.dto.report.ranking;
 
-public class DailyProductRankingDTO {
+import reactor.core.publisher.Flux;
+
+public record DailyProductRankingDTO (
+		Flux<ProductPositionDTO> productPositionDTO
+		){
 
 }
