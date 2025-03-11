@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.mysell.dto.report.DailyReportResponseDTO;
 import com.project.mysell.service.ReportService;
 
 import reactor.core.publisher.Mono;
@@ -14,8 +15,8 @@ import reactor.core.publisher.Mono;
 public class ReportController {
 	private ReportService reportService;
 	@GetMapping("/daily")
-	private ResponseEntity<Mono<DailyReportDTO>> getDailyReport (@RequestHeader("Authorization") String token){
-		Mono<DailyReportDTO> dailyReport = this.reportService.getDailyReport(token);
+	private ResponseEntity<Mono<DailyReportResponseDTO>> getDailyReport (@RequestHeader("Authorization") String token){
+		Mono<DailyReportResponseDTO> dailyReport = this.reportService.getDailyReport(token);
 		return ResponseEntity.ok().body(dailyReport);
 	}
 }
