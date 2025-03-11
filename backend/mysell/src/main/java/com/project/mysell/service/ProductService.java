@@ -3,19 +3,17 @@ package com.project.mysell.service;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import org.apache.logging.log4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.project.mysell.dto.CategoryDTO;
-import com.project.mysell.dto.ProductDTO;
-import com.project.mysell.dto.ProductResponseDTO;
-import com.project.mysell.dto.ProductUnitOfMeasureResponseDTO;
-import com.project.mysell.dto.ProductUpdateDTO;
-import com.project.mysell.dto.UnityOfMeasureDTO;
-import com.project.mysell.exceptions.DoesNotOwnProductException;
-import com.project.mysell.exceptions.ProductNotFoundException;
+import com.project.mysell.dto.category.CategoryDTO;
+import com.project.mysell.dto.product.ProductDTO;
+import com.project.mysell.dto.product.ProductResponseDTO;
+import com.project.mysell.dto.product.ProductUpdateDTO;
+import com.project.mysell.dto.product.unit.ProductUnitOfMeasureResponseDTO;
+import com.project.mysell.dto.unit.UnityOfMeasureDTO;
+import com.project.mysell.exceptions.product.DoesNotOwnProductException;
+import com.project.mysell.exceptions.product.ProductNotFoundException;
 import com.project.mysell.infra.security.jwt.JwtTokenProvider;
 import com.project.mysell.model.ProductModel;
 import com.project.mysell.model.ProductUnitOfMeasureModel;

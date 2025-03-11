@@ -5,7 +5,6 @@ import java.util.UUID;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 
 import com.project.mysell.model.EventModel;
-import com.project.mysell.model.ProductModel;
 
 import reactor.core.publisher.Flux;
 

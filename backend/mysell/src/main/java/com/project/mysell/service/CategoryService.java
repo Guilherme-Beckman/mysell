@@ -3,8 +3,8 @@ package com.project.mysell.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.project.mysell.dto.CategoryDTO;
-import com.project.mysell.exceptions.CategoryNotFoundException;
+import com.project.mysell.dto.category.CategoryDTO;
+import com.project.mysell.exceptions.category.CategoryNotFoundException;
 import com.project.mysell.model.CategoryModel;
 import com.project.mysell.repository.CategoryRepository;
 

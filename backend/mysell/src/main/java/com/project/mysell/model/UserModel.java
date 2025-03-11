@@ -1,9 +1,13 @@
 package com.project.mysell.model;
 import java.time.LocalDateTime;
 import java.util.UUID;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
-import com.project.mysell.dto.UserDTO;
+
+import com.project.mysell.dto.auth.UserDTO;
+import com.project.mysell.model.role.UserRole;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

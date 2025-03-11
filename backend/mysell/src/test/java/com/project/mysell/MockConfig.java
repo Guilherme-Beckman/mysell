@@ -4,12 +4,12 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
-import com.project.mysell.exceptions.ValidationException;
+import com.project.mysell.exceptions.validation.ValidationException;
 import com.project.mysell.infra.security.CustomAuthenticationProvider;
 import com.project.mysell.infra.security.CustomAuthenticationSuccessHandler;
 import com.project.mysell.repository.UserRepository;
-import com.project.mysell.service.AuthService;
-import com.project.mysell.service.LoginAttemptService;
+import com.project.mysell.service.auth.AuthService;
+import com.project.mysell.service.auth.attempt.LoginAttemptService;
 
 @TestConfiguration
     public class MockConfig {

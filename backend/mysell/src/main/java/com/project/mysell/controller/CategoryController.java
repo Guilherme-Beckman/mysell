@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.mysell.dto.CategoryDTO;
+import com.project.mysell.dto.category.CategoryDTO;
 import com.project.mysell.model.CategoryModel;
 import com.project.mysell.service.CategoryService;
 

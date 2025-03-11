@@ -3,15 +3,6 @@ package com.project.mysell.service;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import com.project.mysell.dto.LoginDTO;
-import com.project.mysell.dto.ResponseDTO;
-import com.project.mysell.dto.UserDTO;
-import com.project.mysell.exceptions.InvalidCredentialsException;
-import com.project.mysell.exceptions.user.UserAlreadyExistsException;
-import com.project.mysell.infra.security.CustomAuthenticationProvider;
-import com.project.mysell.infra.security.jwt.JwtTokenProvider;
-import com.project.mysell.model.UserModel;
-import com.project.mysell.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -20,6 +11,18 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.project.mysell.dto.auth.ResponseDTO;
+import com.project.mysell.dto.auth.UserDTO;
+import com.project.mysell.dto.category.LoginDTO;
+import com.project.mysell.exceptions.auth.credential.InvalidCredentialsException;
+import com.project.mysell.exceptions.user.UserAlreadyExistsException;
+import com.project.mysell.infra.security.CustomAuthenticationProvider;
+import com.project.mysell.infra.security.jwt.JwtTokenProvider;
+import com.project.mysell.model.UserModel;
+import com.project.mysell.repository.UserRepository;
+import com.project.mysell.service.auth.AuthService;
+
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 

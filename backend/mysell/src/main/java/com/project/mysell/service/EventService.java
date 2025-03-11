@@ -6,11 +6,11 @@ import java.util.function.Consumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.project.mysell.dto.EventDTO;
-import com.project.mysell.dto.EventResponseDTO;
-import com.project.mysell.dto.EventUpdateDTO;
-import com.project.mysell.exceptions.DoesNotOwnEventException;
-import com.project.mysell.exceptions.EventNotFoundException;
+import com.project.mysell.dto.event.EventDTO;
+import com.project.mysell.dto.event.EventResponseDTO;
+import com.project.mysell.dto.event.EventUpdateDTO;
+import com.project.mysell.exceptions.event.DoesNotOwnEventException;
+import com.project.mysell.exceptions.event.EventNotFoundException;
 import com.project.mysell.infra.security.jwt.JwtTokenProvider;
 import com.project.mysell.model.EventModel;
 import com.project.mysell.repository.EventRepository;

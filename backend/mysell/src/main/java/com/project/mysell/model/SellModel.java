@@ -6,7 +6,7 @@ import java.util.UUID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-import com.project.mysell.dto.SellDTO;
+import com.project.mysell.dto.sell.SellDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

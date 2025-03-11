@@ -1,13 +1,16 @@
 package com.project.mysell.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import com.project.mysell.dto.UserDTO;
+
+import com.project.mysell.dto.auth.UserDTO;
 import com.project.mysell.model.UserModel;
+
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 

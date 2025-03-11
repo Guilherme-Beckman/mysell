@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.project.mysell.dto.UserDTO;
+import com.project.mysell.dto.auth.UserDTO;
 import com.project.mysell.exceptions.user.UserNotFoundException;
 import com.project.mysell.model.UserModel;
 import com.project.mysell.repository.UserRepository;
