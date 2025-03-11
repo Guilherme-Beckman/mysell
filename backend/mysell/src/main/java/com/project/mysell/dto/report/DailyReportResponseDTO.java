@@ -10,7 +10,6 @@ public record DailyReportResponseDTO(
 		Double grossRevenue,
 		Long numberOfSales,
 		DailyProductRankingDTO dailyProductRankingDTO
-		
 		) {
 
 }
