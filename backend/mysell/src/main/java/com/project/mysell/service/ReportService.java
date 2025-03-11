@@ -1,5 +1,9 @@
 package com.project.mysell.service;
 
-public class ReportService {
+import org.springframework.stereotype.Service;
 
+
+@Service
+public class ReportService {
+	//private ReportRepository reportRepository;
 }
