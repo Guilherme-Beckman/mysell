@@ -155,4 +155,9 @@ public class SellService {
             productResponseDTO
         );
     }
+
+	public Flux<SellResponseDTO> getTodaySellByUserId(String userId) {
+		return sellRepository.getTodaySellById(userId)
+				.flatMap(this::convertToSellResponseDTO);
+	}
 }
