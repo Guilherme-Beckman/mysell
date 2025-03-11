@@ -1,7 +1,9 @@
-package com.project.mysell.exceptions;
+package com.project.mysell.exceptions.auth.credential;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+
+import com.project.mysell.exceptions.RestException;
 public class InvalidCredentialsException extends RestException {
 
 	private static final long serialVersionUID = 1L;

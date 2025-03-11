@@ -1,4 +1,4 @@
-package com.project.mysell.exceptions;
+package com.project.mysell.exceptions.validation;
 
 import java.util.stream.Collectors;
 

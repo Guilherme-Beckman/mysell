@@ -1,4 +1,4 @@
-package com.project.mysell.dto;
+package com.project.mysell.dto.auth.email;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

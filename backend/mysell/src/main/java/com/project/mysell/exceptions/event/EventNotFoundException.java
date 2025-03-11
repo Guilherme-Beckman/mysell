@@ -1,8 +1,10 @@
-package com.project.mysell.exceptions;
+package com.project.mysell.exceptions.event;
 
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+
+import com.project.mysell.exceptions.RestException;
 
 
 public class EventNotFoundException extends RestException {

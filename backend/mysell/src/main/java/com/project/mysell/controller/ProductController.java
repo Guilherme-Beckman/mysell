@@ -13,14 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.mysell.dto.ProductDTO;
-import com.project.mysell.dto.ProductResponseDTO;
-import com.project.mysell.dto.ProductUpdateDTO;
-import com.project.mysell.model.ProductModel;
+import com.project.mysell.dto.product.ProductDTO;
+import com.project.mysell.dto.product.ProductResponseDTO;
+import com.project.mysell.dto.product.ProductUpdateDTO;
 import com.project.mysell.service.ProductService;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

@@ -2,7 +2,7 @@ package com.project.mysell.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-import com.project.mysell.dto.CategoryDTO;
+import com.project.mysell.dto.category.CategoryDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

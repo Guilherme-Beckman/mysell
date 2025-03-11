@@ -1,13 +1,16 @@
-package com.project.mysell.service;
+package com.project.mysell.service.auth.code;
 
 import java.time.Duration;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.project.mysell.exceptions.ExistingCodeException;
-import com.project.mysell.exceptions.InvalidCodeException;
-import com.project.mysell.exceptions.NoVerificationCodeFoundException;
+
+import com.project.mysell.exceptions.code.ExistingCodeException;
+import com.project.mysell.exceptions.code.InvalidCodeException;
+import com.project.mysell.exceptions.code.NoVerificationCodeFoundException;
+import com.project.mysell.service.EmailService;
 
 import reactor.core.publisher.Mono;
 

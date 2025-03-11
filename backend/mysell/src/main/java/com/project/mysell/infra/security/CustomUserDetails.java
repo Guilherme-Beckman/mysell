@@ -1,6 +1,5 @@
 package com.project.mysell.infra.security;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -8,7 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.project.mysell.model.UserRole;
+import com.project.mysell.model.role.UserRole;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

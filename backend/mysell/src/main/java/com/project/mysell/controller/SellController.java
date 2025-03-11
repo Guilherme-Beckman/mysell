@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.mysell.dto.SellDTO;
-import com.project.mysell.dto.SellResponseDTO;
-import com.project.mysell.dto.SellUpdateDTO;
+import com.project.mysell.dto.sell.SellDTO;
+import com.project.mysell.dto.sell.SellResponseDTO;
+import com.project.mysell.dto.sell.SellUpdateDTO;
 import com.project.mysell.service.SellService;
 
 import jakarta.validation.Valid;

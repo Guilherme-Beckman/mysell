@@ -3,7 +3,7 @@ package com.project.mysell.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-import com.project.mysell.dto.UnityOfMeasureDTO;
+import com.project.mysell.dto.unit.UnityOfMeasureDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.project.mysell.dto;
+package com.project.mysell.dto.event;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

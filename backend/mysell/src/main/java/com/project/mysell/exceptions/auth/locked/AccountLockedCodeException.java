@@ -1,7 +1,9 @@
-package com.project.mysell.exceptions;
+package com.project.mysell.exceptions.auth.locked;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+
+import com.project.mysell.exceptions.RestException;
 
 public class AccountLockedCodeException extends RestException {
 

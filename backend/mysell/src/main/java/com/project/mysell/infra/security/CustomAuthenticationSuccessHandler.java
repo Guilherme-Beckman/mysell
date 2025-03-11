@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.project.mysell.dto.UserDTO;
+import com.project.mysell.dto.auth.UserDTO;
 import com.project.mysell.infra.security.jwt.JwtTokenProvider;
 import com.project.mysell.model.UserModel;
 import com.project.mysell.repository.UserRepository;

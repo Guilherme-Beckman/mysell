@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.mysell.dto.UnityOfMeasureDTO;
+import com.project.mysell.dto.unit.UnityOfMeasureDTO;
 import com.project.mysell.model.UnityOfMeasureModel;
 import com.project.mysell.service.UnityOfMeasureService;
 

@@ -5,9 +5,7 @@ import java.util.function.Consumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.project.mysell.dto.ProductUnitOfMeasureDTO;
-import com.project.mysell.dto.ProductUpdateDTO;
-import com.project.mysell.model.ProductModel;
+import com.project.mysell.dto.product.unit.ProductUnitOfMeasureDTO;
 import com.project.mysell.model.ProductUnitOfMeasureModel;
 import com.project.mysell.repository.ProductUnitOfMeasureRepository;
 

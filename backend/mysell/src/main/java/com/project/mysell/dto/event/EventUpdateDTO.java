@@ -1,10 +1,7 @@
-package com.project.mysell.dto;
+package com.project.mysell.dto.event;
 
-import java.sql.Date;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.UUID;
 
 public record EventUpdateDTO (
 		String name,

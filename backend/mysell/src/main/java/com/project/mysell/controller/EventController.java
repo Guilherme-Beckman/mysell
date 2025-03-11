@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.mysell.dto.EventDTO;
-import com.project.mysell.dto.EventResponseDTO;
-import com.project.mysell.dto.EventUpdateDTO;
+import com.project.mysell.dto.event.EventDTO;
+import com.project.mysell.dto.event.EventResponseDTO;
+import com.project.mysell.dto.event.EventUpdateDTO;
 import com.project.mysell.service.EventService;
 
 import jakarta.validation.Valid;
@@ -23,7 +23,7 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/event")
-public class EventsController {
+public class EventController {
 
     @Autowired
     private EventService eventService;

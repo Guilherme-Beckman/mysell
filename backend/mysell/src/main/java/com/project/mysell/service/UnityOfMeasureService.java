@@ -3,8 +3,8 @@ package com.project.mysell.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.project.mysell.dto.UnityOfMeasureDTO;
-import com.project.mysell.exceptions.UnityOfMeasureNotFoundException;
+import com.project.mysell.dto.unit.UnityOfMeasureDTO;
+import com.project.mysell.exceptions.unit.UnityOfMeasureNotFoundException;
 import com.project.mysell.model.UnityOfMeasureModel;
 import com.project.mysell.repository.UnityOfMeasureRepository;
 

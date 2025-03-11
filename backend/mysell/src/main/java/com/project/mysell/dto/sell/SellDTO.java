@@ -1,4 +1,4 @@
-package com.project.mysell.dto;
+package com.project.mysell.dto.sell;
 
 public record SellDTO(
 		Long quantity,

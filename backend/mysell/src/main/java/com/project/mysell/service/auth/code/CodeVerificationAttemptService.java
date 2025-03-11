@@ -1,9 +1,13 @@
-package com.project.mysell.service;
-import org.springframework.stereotype.Service;
-import com.project.mysell.exceptions.AccountLockedCodeException;
-import reactor.core.publisher.Mono;
+package com.project.mysell.service.auth.code;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+
+import org.springframework.stereotype.Service;
+
+import com.project.mysell.exceptions.auth.locked.AccountLockedCodeException;
+import com.project.mysell.service.auth.attempt.AttemptService;
+
+import reactor.core.publisher.Mono;
 
 @Service
 public class CodeVerificationAttemptService extends AttemptService {

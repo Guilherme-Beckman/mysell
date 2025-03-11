@@ -1,4 +1,4 @@
-package com.project.mysell.service;
+package com.project.mysell.service.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -6,17 +6,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.project.mysell.dto.LoginDTO;
-import com.project.mysell.dto.ResponseDTO;
-import com.project.mysell.dto.UserDTO;
-import com.project.mysell.dto.VerificationCodeDTO;
-import com.project.mysell.exceptions.ValidEmailException;
+import com.project.mysell.dto.auth.ResponseDTO;
+import com.project.mysell.dto.auth.UserDTO;
+import com.project.mysell.dto.auth.email.VerificationCodeDTO;
+import com.project.mysell.dto.category.LoginDTO;
+import com.project.mysell.exceptions.auth.ValidEmailException;
 import com.project.mysell.exceptions.user.UserAlreadyExistsException;
 import com.project.mysell.exceptions.user.UserNotFoundException;
 import com.project.mysell.infra.security.CustomAuthenticationProvider;
 import com.project.mysell.infra.security.jwt.JwtTokenProvider;
 import com.project.mysell.model.UserModel;
 import com.project.mysell.repository.UserRepository;
+import com.project.mysell.service.auth.code.EmailCodeService;
 
 import reactor.core.publisher.Mono;
 

@@ -1,8 +1,11 @@
-package com.project.mysell.service;
+package com.project.mysell.service.auth.attempt;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+
 import org.springframework.stereotype.Service;
-import com.project.mysell.exceptions.AccountLockedException;
+
+import com.project.mysell.exceptions.auth.locked.AccountLockedException;
+
 import reactor.core.publisher.Mono;
 
 @Service

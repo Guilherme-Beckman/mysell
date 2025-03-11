@@ -1,4 +1,4 @@
-package com.project.mysell.dto;
+package com.project.mysell.dto.category;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
