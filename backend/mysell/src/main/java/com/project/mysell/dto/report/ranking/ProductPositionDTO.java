@@ -4,6 +4,7 @@ import com.project.mysell.dto.product.ProductResponseDTO;
 
 public record ProductPositionDTO(
 		Long position,
+		Long saleCount,
 		ProductResponseDTO productResponseDTO
 		
 		) {
