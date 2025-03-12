@@ -11,7 +11,11 @@ import com.project.mysell.dto.report.SaleInformation;
 import com.project.mysell.dto.report.ranking.DailyProductRankingDTO;
 import com.project.mysell.dto.sell.SellResponseDTO;
 import com.project.mysell.infra.security.jwt.JwtTokenProvider;
+import com.project.mysell.model.report.DailyReportModel;
+import com.project.mysell.repository.DailyReportRepository;
 import com.project.mysell.service.SellService;
+import com.project.mysell.service.UserService;
+import com.project.mysell.service.report.ranking.DailyProductRankingService;
 import com.project.mysell.service.report.ranking.RankingService;
 
 import reactor.core.publisher.Flux;
@@ -25,6 +29,12 @@ public class ReportService {
     private SellService sellService;
     @Autowired
     private RankingService rankingService;
+    @Autowired
+	private UserService userService;
+    @Autowired
+	private DailyProductRankingService dailyProductRankingService;
+    @Autowired
+	private DailyReportRepository dailyReportRepository;
 
 
     public Mono<DailyReportResponseDTO> getDailyReport(String token) {
@@ -80,6 +90,20 @@ public class ReportService {
         String jwtToken = jwtTokenProvider.extractJwtToken(token);
         return jwtTokenProvider.getUserIdFromToken(jwtToken);
     }
+
+    public Mono<Void> saveDailyReport() {
+        return userService.getAllUsers()
+                .flatMap(user -> generateDailyReportResponse(user.getUsersId())
+                    .flatMap(dailyReport -> dailyProductRankingService.createDailyProductRanking(dailyReport.dailyProductRankingDTO())
+                        .flatMap(savedDailyRanking -> {
+                            DailyReportModel newDailyReportModel = new DailyReportModel(savedDailyRanking.getDailyRankingProductsId(), dailyReport);
+                            return dailyReportRepository.save(newDailyReportModel);
+                        })
+                    )
+                )
+                .then(); 
+    }
+
 
 
 }

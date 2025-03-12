@@ -10,6 +10,7 @@ import com.project.mysell.exceptions.user.UserNotFoundException;
 import com.project.mysell.model.UserModel;
 import com.project.mysell.repository.UserRepository;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -25,5 +26,8 @@ public class UserService {
 	public Mono<UserModel> getUserById(UUID userId) {
 		return this.userRepository.findById(userId)
 				.switchIfEmpty(Mono.error(new UserNotFoundException()));
+	}
+	public Flux<UserModel> getAllUsers() {
+		return this.userRepository.findAll();
 	}
 }
