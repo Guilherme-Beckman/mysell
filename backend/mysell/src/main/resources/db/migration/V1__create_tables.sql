@@ -1,5 +1,6 @@
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
+-- Tabela de usuários
 CREATE TABLE IF NOT EXISTS users (
     users_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email VARCHAR(255) NOT NULL UNIQUE,
@@ -9,22 +10,20 @@ CREATE TABLE IF NOT EXISTS users (
     role VARCHAR(10) DEFAULT 'USER' NOT NULL
 );
 
+-- Tabela de categorias
 CREATE TABLE IF NOT EXISTS categories (
     categories_id SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL
 );
-
 CREATE TABLE IF NOT EXISTS units_of_measure (
     units_of_measure_id SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL
 );
-
 CREATE TABLE IF NOT EXISTS products_units_of_measure (
     products_units_of_measure_id SERIAL PRIMARY KEY,
     quantity INT DEFAULT 0 NOT NULL,
     unit_of_measure_id BIGINT DEFAULT 1 NOT NULL
 );
-
 CREATE TABLE IF NOT EXISTS products (
     products_id SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
@@ -33,15 +32,22 @@ CREATE TABLE IF NOT EXISTS products (
     price_to_sell DOUBLE PRECISION NOT NULL,
     brand VARCHAR(100) DEFAULT 'NONE' NOT NULL,
     user_id UUID,
-    product_unit_of_measure_id BIGINT DEFAULT 1 NOT NULL
+    product_unit_of_measure_id BIGINT DEFAULT 1 NOT NULL,
+    FOREIGN KEY (category_id) REFERENCES categories(categories_id),
+    FOREIGN KEY (user_id) REFERENCES users(users_id),
+    FOREIGN KEY (product_unit_of_measure_id) REFERENCES products_units_of_measure(products_units_of_measure_id)
 );
+
 CREATE TABLE IF NOT EXISTS sells (
     sells_id SERIAL PRIMARY KEY,
     quantity BIGINT DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     user_id UUID NOT NULL,
-    product_id BIGINT NOT NULL
+    product_id BIGINT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(users_id),
+    FOREIGN KEY (product_id) REFERENCES products(products_id)
 );
+
 CREATE TABLE IF NOT EXISTS events (
     events_id SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
@@ -49,5 +55,27 @@ CREATE TABLE IF NOT EXISTS events (
     time TIME NOT NULL,
     color VARCHAR(50) NOT NULL,
     favorite BOOLEAN DEFAULT false NOT NULL,
-    user_id UUID NOT NULL
+    user_id UUID NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(users_id)
+);
+
+CREATE TABLE IF NOT EXISTS daily_product_rankings (
+    daily_ranking_products_id SERIAL PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS product_positions (
+    product_positions_id SERIAL PRIMARY KEY,
+    position BIGINT,
+    sale_count BIGINT,
+    product_id BIGINT,
+    daily_product_ranking_id BIGINT
+);
+
+CREATE TABLE IF NOT EXISTS daily_reports (
+	daily_reports_id SERIAL PRIMARY KEY,
+    date DATE, 
+    profit DOUBLE PRECISION,
+    gross_revenue DOUBLE PRECISION,
+    number_of_sales BIGINT,
+    daily_product_ranking_id BIGINT
 );

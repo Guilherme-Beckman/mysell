@@ -25,3 +25,15 @@ ALTER TABLE sells
 ALTER TABLE events
     ADD CONSTRAINT fk_user FOREIGN KEY (user_id)
     REFERENCES users(users_id);
+    
+ALTER TABLE product_positions
+    ADD CONSTRAINT fk_product_positions_daily_ranking FOREIGN KEY (daily_product_ranking_id)
+    REFERENCES daily_product_rankings(daily_ranking_products_id);
+
+ALTER TABLE product_positions
+    ADD CONSTRAINT fk_product_positions_product FOREIGN KEY (product_id)
+    REFERENCES products(products_id);
+
+ALTER TABLE daily_reports
+    ADD CONSTRAINT fk_daily_reports_daily_ranking FOREIGN KEY (daily_product_ranking_id)
+    REFERENCES daily_product_rankings(daily_ranking_products_id);

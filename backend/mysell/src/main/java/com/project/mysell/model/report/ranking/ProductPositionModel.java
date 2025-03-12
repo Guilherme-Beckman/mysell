@@ -1,8 +1,8 @@
 package com.project.mysell.model.report.ranking;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-import com.project.mysell.dto.product.ProductResponseDTO;
 import com.project.mysell.dto.report.ranking.ProductPositionDTO;
 
 import lombok.AllArgsConstructor;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductPositionModel {
-
+	@Id
 	private Long productPositionsId;
 	private Long position;
 	private Long saleCount;

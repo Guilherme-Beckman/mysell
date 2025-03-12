@@ -3,6 +3,8 @@ package com.project.mysell.service.report;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -92,16 +94,19 @@ public class ReportService {
     }
 
     public Mono<Void> saveDailyReport() {
+
         return userService.getAllUsers()
-                .flatMap(user -> generateDailyReportResponse(user.getUsersId())
-                    .flatMap(dailyReport -> dailyProductRankingService.createDailyProductRanking(dailyReport.dailyProductRankingDTO())
-                        .flatMap(savedDailyRanking -> {
-                            DailyReportModel newDailyReportModel = new DailyReportModel(savedDailyRanking.getDailyRankingProductsId(), dailyReport);
-                            return dailyReportRepository.save(newDailyReportModel);
-                        })
-                    )
-                )
-                .then(); 
+                .flatMap(user -> {
+                    return generateDailyReportResponse(user.getUsersId())
+                            .flatMap(dailyReport -> {
+                                return dailyProductRankingService.createDailyProductRanking(dailyReport.dailyProductRankingDTO())
+                                        .flatMap(savedDailyRanking -> {
+                                            DailyReportModel newDailyReportModel = new DailyReportModel(savedDailyRanking.getDailyRankingProductsId(), dailyReport);
+                                            return dailyReportRepository.save(newDailyReportModel);
+                                        });
+                            });
+                })
+                .then();// Retorna um Mono<Void> que completa quando a lista é processada
     }
 
 
