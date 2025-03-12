@@ -17,60 +17,69 @@ import com.project.mysell.service.report.ranking.RankingService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-
 @Service
 public class ReportService {
-	@Autowired
+    @Autowired
     private JwtTokenProvider jwtTokenProvider;
-	@Autowired
-	private SellService sellService;
-	@Autowired
-	private RankingService rankingService;
-	
-	public Mono<DailyReportResponseDTO> getDailyReport(String token) {
-    	final UUID userId = extractUserIdFromToken(token);
-    	return generateDailyReportResponse(userId);
-	}
-	private Mono<DailyReportResponseDTO> generateDailyReportResponse(UUID userId) {
-		var sales = getSalesForToday(userId);
-		Mono<DailyReportAccumulator> dailyReportAccumulator = calculateForDailyReport(sales);
-		Mono<DailyProductRankingDTO> ranking = rankingService.calculateDailyProductRanking(sales);
-		
-	    return Mono.zip(dailyReportAccumulator, ranking)
-	            .map(tuple -> {
-	                DailyReportAccumulator accumulator = tuple.getT1();
-	                DailyProductRankingDTO rankingDTO = tuple.getT2();
-	                return new DailyReportResponseDTO(
-	                        LocalDate.now(),
-	                        accumulator.getProfit(),
-	                        accumulator.getGrossRevenue(),
-	                        accumulator.getSaleCount(),
-	                        rankingDTO
-	                );
-	            });
-		
-	};
-	private Mono<DailyReportAccumulator> calculateForDailyReport (Flux<SellResponseDTO> sellResponseDTO) {
-		return sellResponseDTO
-				.map(this::getSaleInformation)
-				.reduce(new DailyReportAccumulator(), DailyReportAccumulator::accumulate);
-				
-	}
-
-	private SaleInformation getSaleInformation(SellResponseDTO sell) {
-	    double profit = (sell.productResponseDTO().priceToSell() - sell.productResponseDTO().purchasedPrice()) * sell.quantity();
-	    double grossRevenue = sell.productResponseDTO().priceToSell() * sell.quantity();
-	    return new SaleInformation(profit, grossRevenue, sell.quantity());
-	}
-
-	
-	private Flux<SellResponseDTO> getSalesForToday(UUID userId) {
-		  return sellService.getTodaySellByUserId(userId);	  
-		  }
+    @Autowired
+    private SellService sellService;
+    @Autowired
+    private RankingService rankingService;
 
 
-	private UUID extractUserIdFromToken(String token) {
-	        return jwtTokenProvider.getUserIdFromToken(jwtTokenProvider.extractJwtToken(token));
-	    }
+    public Mono<DailyReportResponseDTO> getDailyReport(String token) {
+        final UUID userId = extractUserIdFromToken(token);
+        return generateDailyReportResponse(userId);
+    }
+
+    private Mono<DailyReportResponseDTO> generateDailyReportResponse(UUID userId) {
+        Flux<SellResponseDTO> todaysSales = retrieveSalesForToday(userId);
+        
+        Mono<DailyReportAccumulator> reportAccumulator = calculateReportAccumulator(todaysSales);
+        Mono<DailyProductRankingDTO> productRanking = rankingService.calculateDailyProductRanking(todaysSales);
+
+        return createDailyReportResponse(reportAccumulator, productRanking);
+    }
+
+    private Mono<DailyReportResponseDTO> createDailyReportResponse(Mono<DailyReportAccumulator> tuple1, Mono<DailyProductRankingDTO> tuple2) {
+    	return Mono.zip(tuple1,tuple2)
+    	.map(tuple -> {
+    		 DailyReportAccumulator accumulator = tuple.getT1();
+             DailyProductRankingDTO ranking = tuple.getT2();
+             return new DailyReportResponseDTO(
+                     LocalDate.now(),
+                     accumulator.getProfit(),
+                     accumulator.getGrossRevenue(),
+                     accumulator.getSaleCount(),
+                     ranking
+                 );
+    	});
+    
+    }
+
+    private Mono<DailyReportAccumulator> calculateReportAccumulator(Flux<SellResponseDTO> sales) {
+        return sales.map(this::createSaleInformation)
+                    .reduce(new DailyReportAccumulator(), DailyReportAccumulator::accumulate);
+    }
+
+    private SaleInformation createSaleInformation(SellResponseDTO sell) {
+        double unitProfit = sell.productResponseDTO().priceToSell() 
+                          - sell.productResponseDTO().purchasedPrice();
+        
+        double totalProfit = unitProfit * sell.quantity();
+        double totalRevenue = sell.productResponseDTO().priceToSell() * sell.quantity();
+        
+        return new SaleInformation(totalProfit, totalRevenue, sell.quantity());
+    }
+
+    private Flux<SellResponseDTO> retrieveSalesForToday(UUID userId) {
+        return sellService.getTodaySellByUserId(userId);
+    }
+
+    private UUID extractUserIdFromToken(String token) {
+        String jwtToken = jwtTokenProvider.extractJwtToken(token);
+        return jwtTokenProvider.getUserIdFromToken(jwtToken);
+    }
+
 
 }
