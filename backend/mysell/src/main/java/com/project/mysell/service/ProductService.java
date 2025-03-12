@@ -68,6 +68,14 @@ public class ProductService {
     	            	then(convertToProductResponseDTO(existingProduct));
     	            	});
     }
+    public Mono<ProductResponseDTO> getProductById(Long id) {
+    	
+    	 return productRepository.findById(id)
+    	            .switchIfEmpty(Mono.error(new ProductNotFoundException(id)))
+    	            .flatMap(existingProduct -> {
+    	            	return convertToProductResponseDTO(existingProduct);    	            	
+    	            	});
+    }
 
     public Mono<ProductResponseDTO> updateProduct(Long id, ProductUpdateDTO productDTO, String token) {
         final UUID userId = extractUserIdFromToken(token);

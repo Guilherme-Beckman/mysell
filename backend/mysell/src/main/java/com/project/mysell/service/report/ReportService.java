@@ -37,8 +37,24 @@ public class ReportService {
 	private DailyProductRankingService dailyProductRankingService;
     @Autowired
 	private DailyReportRepository dailyReportRepository;
+    
 
-
+    public Mono<DailyReportResponseDTO> getDailyReportByDate(String token, LocalDate date){
+        final UUID userId = extractUserIdFromToken(token);
+    	return this.dailyReportRepository.findDailyReportByDate(userId, date)
+    			.flatMap(findedReport ->{
+    				return dailyProductRankingService.createDailyProductRankingDTO(findedReport.getDailyProductRankingId())
+    				.map(dailyProductRankingDTO-> 
+    				new DailyReportResponseDTO(
+    						findedReport.getDate(), 
+    						findedReport.getProfit(), 
+    						findedReport.getGrossRevenue(), 
+    						findedReport.getNumberOfSales(), 
+    						dailyProductRankingDTO
+    						));
+    			});
+    			
+    }
     public Mono<DailyReportResponseDTO> getDailyReport(String token) {
         final UUID userId = extractUserIdFromToken(token);
         return generateDailyReportResponse(userId);
@@ -101,7 +117,7 @@ public class ReportService {
                             .flatMap(dailyReport -> {
                                 return dailyProductRankingService.createDailyProductRanking(dailyReport.dailyProductRankingDTO())
                                         .flatMap(savedDailyRanking -> {
-                                            DailyReportModel newDailyReportModel = new DailyReportModel(savedDailyRanking.getDailyRankingProductsId(), dailyReport);
+                                            DailyReportModel newDailyReportModel = new DailyReportModel(user.getUsersId(), savedDailyRanking.getDailyRankingProductsId(), dailyReport);
                                             return dailyReportRepository.save(newDailyReportModel);
                                         });
                             });

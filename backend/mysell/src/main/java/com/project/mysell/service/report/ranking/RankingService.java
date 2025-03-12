@@ -18,7 +18,7 @@ import reactor.core.publisher.Mono;
 @Service
 public class RankingService {
 
-    private static final Comparator<ProductPositionDTO> SALE_COUNT_DESCENDING_COMPARATOR = 
+    public final Comparator<ProductPositionDTO> SALE_COUNT_DESCENDING_COMPARATOR = 
         Comparator.comparing(ProductPositionDTO::saleCount).reversed();
 
     public Mono<DailyProductRankingDTO> calculateDailyProductRanking(Flux<SellResponseDTO> salesFlux) {
@@ -44,7 +44,7 @@ public class RankingService {
         return new ProductPositionDTO(0L, updatedQuantity, product);
     }
 
-    private List<ProductPositionDTO> assignProductRanks(List<ProductPositionDTO> sortedProducts) {
+    public List<ProductPositionDTO> assignProductRanks(List<ProductPositionDTO> sortedProducts) {
         return IntStream.range(0, sortedProducts.size())
             .mapToObj(index -> createRankedPosition(index, sortedProducts.get(index)))
             .collect(Collectors.toList());

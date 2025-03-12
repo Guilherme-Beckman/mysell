@@ -1,6 +1,7 @@
 package com.project.mysell.model.report;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
@@ -23,15 +24,16 @@ public class DailyReportModel {
 	private Double grossRevenue;
 	private Long numberOfSales;
 	private Long dailyProductRankingId;
+	private UUID userId;
 	
 	
-	public DailyReportModel(Long dailyRankingProductsId, DailyReportResponseDTO dailyReport) {
+	public DailyReportModel(UUID uuid, Long dailyRankingProductsId, DailyReportResponseDTO dailyReport) {
 		this.date = dailyReport.date();
 		this.profit = dailyReport.profit();
 		this.grossRevenue = dailyReport.grossRevenue();
 		this.numberOfSales = dailyReport.numberOfSales();
 		this.dailyProductRankingId = dailyRankingProductsId;
-		
+		this.userId = uuid;
 	}
 	
 }

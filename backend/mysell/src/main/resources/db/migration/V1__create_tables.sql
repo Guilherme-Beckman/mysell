@@ -1,6 +1,5 @@
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
--- Tabela de usuários
 CREATE TABLE IF NOT EXISTS users (
     users_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email VARCHAR(255) NOT NULL UNIQUE,
@@ -10,7 +9,6 @@ CREATE TABLE IF NOT EXISTS users (
     role VARCHAR(10) DEFAULT 'USER' NOT NULL
 );
 
--- Tabela de categorias
 CREATE TABLE IF NOT EXISTS categories (
     categories_id SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL
@@ -32,10 +30,7 @@ CREATE TABLE IF NOT EXISTS products (
     price_to_sell DOUBLE PRECISION NOT NULL,
     brand VARCHAR(100) DEFAULT 'NONE' NOT NULL,
     user_id UUID,
-    product_unit_of_measure_id BIGINT DEFAULT 1 NOT NULL,
-    FOREIGN KEY (category_id) REFERENCES categories(categories_id),
-    FOREIGN KEY (user_id) REFERENCES users(users_id),
-    FOREIGN KEY (product_unit_of_measure_id) REFERENCES products_units_of_measure(products_units_of_measure_id)
+    product_unit_of_measure_id BIGINT DEFAULT 1 NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS sells (
@@ -43,9 +38,7 @@ CREATE TABLE IF NOT EXISTS sells (
     quantity BIGINT DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     user_id UUID NOT NULL,
-    product_id BIGINT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(users_id),
-    FOREIGN KEY (product_id) REFERENCES products(products_id)
+    product_id BIGINT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS events (
@@ -55,8 +48,7 @@ CREATE TABLE IF NOT EXISTS events (
     time TIME NOT NULL,
     color VARCHAR(50) NOT NULL,
     favorite BOOLEAN DEFAULT false NOT NULL,
-    user_id UUID NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(users_id)
+    user_id UUID NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS daily_product_rankings (
@@ -77,5 +69,6 @@ CREATE TABLE IF NOT EXISTS daily_reports (
     profit DOUBLE PRECISION,
     gross_revenue DOUBLE PRECISION,
     number_of_sales BIGINT,
-    daily_product_ranking_id BIGINT
+    daily_product_ranking_id BIGINT,
+    user_id UUID
 );
