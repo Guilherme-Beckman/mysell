@@ -58,30 +58,33 @@ public class ProductService {
         return productRepository.findAllByUserId(userId)
             .flatMap(this::convertToProductResponseDTO);
     }
-    public Mono<ProductResponseDTO> getProductById(String token, Long id) {
+    public Mono<ProductResponseDTO> getProductResponseById(String token, Long id) {
     	final UUID userId = extractUserIdFromToken(token);
     	
-    	 return productRepository.findById(id)
-    	            .switchIfEmpty(Mono.error(new ProductNotFoundException(id)))
+    	 return getProductById(id)
     	            .flatMap(existingProduct -> {
     	            	return validateOwnership(existingProduct.getUserId(), userId).
     	            	then(convertToProductResponseDTO(existingProduct));
     	            	});
     }
-    public Mono<ProductResponseDTO> getProductById(Long id) {
+    public Mono<ProductResponseDTO> getProductResponseById(Long id) {
     	
-    	 return productRepository.findById(id)
-    	            .switchIfEmpty(Mono.error(new ProductNotFoundException(id)))
+    	 return getProductById(id)
     	            .flatMap(existingProduct -> {
     	            	return convertToProductResponseDTO(existingProduct);    	            	
     	            	});
     }
+    private Mono<ProductModel> getProductById(Long id) {
+    	
+   	 return productRepository.findById(id)
+   	            .switchIfEmpty(Mono.error(new ProductNotFoundException(id)));
+   }
+
 
     public Mono<ProductResponseDTO> updateProduct(Long id, ProductUpdateDTO productDTO, String token) {
         final UUID userId = extractUserIdFromToken(token);
 
-        return productRepository.findById(id)
-            .switchIfEmpty(Mono.error(new ProductNotFoundException(id)))
+        return getProductById(id)
             .flatMap(existingProduct -> {
             	return validateOwnership(existingProduct.getUserId(), userId).
             			then(update(existingProduct, productDTO));
@@ -91,8 +94,7 @@ public class ProductService {
     public Mono<Void> deleteProduct(Long id, String token) {
         final UUID userId = extractUserIdFromToken(token);
 
-        return productRepository.findById(id)
-            .switchIfEmpty(Mono.error(new ProductNotFoundException(id)))
+        return getProductById(id)
             .flatMap(existingProduct -> {
                 return validateOwnership(existingProduct.getUserId(), userId)
                     .then(deleteProductAndMeasureUnit(existingProduct));
@@ -151,7 +153,7 @@ public class ProductService {
 
     private Mono<ProductResponseDTO> saveProductAndConvertToResponse(ProductModel product) {
         return productRepository.save(product)
-            .flatMap(savedProduct -> productRepository.findById(savedProduct.getProductsId()))
+            .flatMap(savedProduct -> getProductById(savedProduct.getProductsId()))
             .flatMap(this::convertToProductResponseDTO);
     }
 
