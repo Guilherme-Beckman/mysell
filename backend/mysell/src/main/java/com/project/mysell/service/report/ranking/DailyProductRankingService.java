@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.project.mysell.dto.report.ranking.DailyProductRankingDTO;
 import com.project.mysell.dto.report.ranking.ProductPositionDTO;
 import com.project.mysell.model.report.ranking.DailyProductRankingModel;
+import com.project.mysell.model.report.ranking.ProductPositionModel;
 import com.project.mysell.repository.DailyProductRankingRepository;
 
 import reactor.core.publisher.Flux;
@@ -16,25 +17,43 @@ import reactor.core.publisher.Mono;
 @Service
 public class DailyProductRankingService {
 	@Autowired
-	private DailyProductRankingRepository dailyProductRankingRepository;
+    private DailyProductRankingRepository dailyProductRankingRepository;
 	@Autowired
-	private ProductPositionService productPositionService;
+    private ProductPositionService productPositionService;
+    public Mono<DailyProductRankingModel> createDailyProductRanking(DailyProductRankingDTO dailyProductRankingDTO) {
+        return saveDailyProductRanking()
+            .flatMap(savedRanking -> saveProductPositions(savedRanking, dailyProductRankingDTO));
+    }
 
-	public Mono<DailyProductRankingModel> createDailyProductRanking(DailyProductRankingDTO dailyProductRankingDTO) {
-	    DailyProductRankingModel newDailyProductRanking = new DailyProductRankingModel();
-	    return dailyProductRankingRepository.save(newDailyProductRanking)
-	        .flatMap(savedRanking -> 
-	            Flux.fromIterable(dailyProductRankingDTO.productPositionDTO())
-	                .flatMap(productPosition -> 
-	                    this.productPositionService.createProductPosition(savedRanking.getDailyRankingProductsId(), productPosition)
-	                )
-	                .then(Mono.just(savedRanking))
-	        );
-	}
+    public Mono<DailyProductRankingDTO> createDailyProductRankingDTO(Long dailyProductRankingId) {
+        return productPositionService.getAllByIdDailyProductRankingId(dailyProductRankingId)
+            .map(this::buildDailyProductRankingDTO);
+    }
 
-	public Mono<DailyProductRankingDTO> createDailyProductRankingDTO(Long dailyProductRankingId) {
-		return this.productPositionService.getAllByIdDailyProductRankingId(dailyProductRankingId)
-		.map(list -> new DailyProductRankingDTO(list));
-	}
+    private Mono<DailyProductRankingModel> saveDailyProductRanking() {
+        return dailyProductRankingRepository.save(new DailyProductRankingModel());
+    }
 
+    private Mono<DailyProductRankingModel> saveProductPositions(
+        DailyProductRankingModel savedRanking,
+        DailyProductRankingDTO dailyProductRankingDTO
+    ) {
+        return Flux.fromIterable(dailyProductRankingDTO.productPositionDTO())
+            .flatMap(productPositionDTO -> saveProductPosition(savedRanking, productPositionDTO))
+            .then(Mono.just(savedRanking));
+    }
+
+    private Mono<ProductPositionModel> saveProductPosition(
+        DailyProductRankingModel savedRanking,
+        ProductPositionDTO productPositionDTO
+    ) {
+        return productPositionService.createProductPosition(
+            savedRanking.getDailyRankingProductsId(),
+            productPositionDTO
+        );
+    }
+
+    private DailyProductRankingDTO buildDailyProductRankingDTO(List<ProductPositionDTO> productPositions) {
+        return new DailyProductRankingDTO(productPositions);
+    }
 }

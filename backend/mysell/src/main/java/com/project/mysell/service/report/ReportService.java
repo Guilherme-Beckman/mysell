@@ -1,10 +1,9 @@
 package com.project.mysell.service.report;
 
+
 import java.time.LocalDate;
 import java.util.UUID;
 
-import org.apache.logging.log4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +11,11 @@ import com.project.mysell.dto.report.DailyReportResponseDTO;
 import com.project.mysell.dto.report.SaleInformation;
 import com.project.mysell.dto.report.ranking.DailyProductRankingDTO;
 import com.project.mysell.dto.sell.SellResponseDTO;
+import com.project.mysell.exceptions.sell.UserHasNoSalesTodayException;
 import com.project.mysell.infra.security.jwt.JwtTokenProvider;
+import com.project.mysell.model.UserModel;
 import com.project.mysell.model.report.DailyReportModel;
+import com.project.mysell.model.report.ranking.DailyProductRankingModel;
 import com.project.mysell.repository.DailyReportRepository;
 import com.project.mysell.service.SellService;
 import com.project.mysell.service.UserService;
@@ -39,22 +41,36 @@ public class ReportService {
 	private DailyReportRepository dailyReportRepository;
     
 
-    public Mono<DailyReportResponseDTO> getDailyReportByDate(String token, LocalDate date){
-        final UUID userId = extractUserIdFromToken(token);
-    	return this.dailyReportRepository.findDailyReportByDate(userId, date)
-    			.flatMap(findedReport ->{
-    				return dailyProductRankingService.createDailyProductRankingDTO(findedReport.getDailyProductRankingId())
-    				.map(dailyProductRankingDTO-> 
-    				new DailyReportResponseDTO(
-    						findedReport.getDate(), 
-    						findedReport.getProfit(), 
-    						findedReport.getGrossRevenue(), 
-    						findedReport.getNumberOfSales(), 
-    						dailyProductRankingDTO
-    						));
-    			});
-    			
+    public Mono<DailyReportResponseDTO> getDailyReportByDate(String token, LocalDate date) {
+        UUID userId = extractUserIdFromToken(token);
+        return findDailyReport(userId, date)
+                .flatMap(this::createDailyReportResponse);
     }
+
+    private Mono<DailyReportModel> findDailyReport(UUID userId, LocalDate date) {
+        return dailyReportRepository.findDailyReportByDate(userId, date);
+    }
+
+    private Mono<DailyReportResponseDTO> createDailyReportResponse(DailyReportModel dailyReport) {
+        return fetchProductRankingDTO(dailyReport)
+                .map(rankingDTO -> buildResponseDTO(dailyReport, rankingDTO));
+    }
+
+    private Mono<DailyProductRankingDTO> fetchProductRankingDTO(DailyReportModel dailyReport) {
+        return dailyProductRankingService.createDailyProductRankingDTO(dailyReport.getDailyProductRankingId());
+    }
+
+    private DailyReportResponseDTO buildResponseDTO(DailyReportModel dailyReport, DailyProductRankingDTO rankingDTO) {
+        return new DailyReportResponseDTO(
+                dailyReport.getDate(),
+                dailyReport.getProfit(),
+                dailyReport.getGrossRevenue(),
+                dailyReport.getNumberOfSales(),
+                rankingDTO
+        );
+    }
+
+
     public Mono<DailyReportResponseDTO> getDailyReport(String token) {
         final UUID userId = extractUserIdFromToken(token);
         return generateDailyReportResponse(userId);
@@ -110,21 +126,45 @@ public class ReportService {
     }
 
     public Mono<Void> saveDailyReport() {
-
         return userService.getAllUsers()
-                .flatMap(user -> {
-                    return generateDailyReportResponse(user.getUsersId())
-                            .flatMap(dailyReport -> {
-                                return dailyProductRankingService.createDailyProductRanking(dailyReport.dailyProductRankingDTO())
-                                        .flatMap(savedDailyRanking -> {
-                                            DailyReportModel newDailyReportModel = new DailyReportModel(user.getUsersId(), savedDailyRanking.getDailyRankingProductsId(), dailyReport);
-                                            return dailyReportRepository.save(newDailyReportModel);
-                                        });
-                            });
-                })
-                .then();// Retorna um Mono<Void> que completa quando a lista é processada
+                .flatMap(this::processUserDailyReport)
+                .then();
     }
 
+    private Mono<DailyReportModel> processUserDailyReport(UserModel user) {
+        return generateDailyReportForUser(user.getUsersId())
+                .onErrorResume(this::skipUserWithNoSales)
+                .flatMap(dailyReport -> createAndSaveDailyReport(user, dailyReport));
+    }
+
+    private Mono<DailyReportResponseDTO> generateDailyReportForUser(UUID userId) {
+        return generateDailyReportResponse(userId);
+    }
+
+    private Mono<DailyReportModel> createAndSaveDailyReport(UserModel user, DailyReportResponseDTO dailyReport) {
+        return dailyProductRankingService.createDailyProductRanking(dailyReport.dailyProductRankingDTO())
+                .flatMap(savedRanking -> persistDailyReport(user, dailyReport, savedRanking));
+    }
+
+    private Mono<DailyReportModel> persistDailyReport(UserModel user, DailyReportResponseDTO dailyReport, DailyProductRankingModel savedRanking) {
+        DailyReportModel reportModel = createDailyReportModel(user, savedRanking, dailyReport);
+        return dailyReportRepository.save(reportModel);
+    }
+
+    private DailyReportModel createDailyReportModel(UserModel user, DailyProductRankingModel ranking, DailyReportResponseDTO report) {
+        return new DailyReportModel(
+                user.getUsersId(),
+                ranking.getDailyRankingProductsId(),
+                report
+        );
+    }
+
+    private Mono<DailyReportResponseDTO> skipUserWithNoSales(Throwable error) {
+        if (error instanceof UserHasNoSalesTodayException) {
+            return Mono.empty();
+        }
+        return Mono.error(error);
+    }
 
 
 }

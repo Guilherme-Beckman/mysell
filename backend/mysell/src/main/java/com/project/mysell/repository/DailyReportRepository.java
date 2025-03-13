@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface DailyReportRepository extends ReactiveCrudRepository<DailyReportModel, Long> {
 
-	    @Query("SELECT * FROM daily_reports WHERE user_id = :userId AND date = :date")
+	    @Query("SELECT * FROM daily_reports WHERE user_id = :userId AND date = :date LIMIT 1")
 	    Mono<DailyReportModel> findDailyReportByDate(UUID userId, LocalDate date);
 	}
 
