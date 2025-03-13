@@ -30,12 +30,19 @@ public class SellService {
     private ProductService productService;
 
     public Mono<SellResponseDTO> createSell(@Valid SellDTO sellDTO, String token) {
-        final UUID userId = extractUserIdFromToken(token);
-        SellModel newSell = createNewSell(sellDTO, userId);
-        return saveSellAndConvertToResponse(token, newSell);
+        return verifyIfProductExist(sellDTO.productId())
+            .then(Mono.defer(() -> {
+                final UUID userId = extractUserIdFromToken(token);
+                SellModel newSell = createNewSell(sellDTO, userId);
+                return saveSellAndConvertToResponse(token, newSell);
+            }));
     }
 
-    public Flux<SellResponseDTO> getSellsByUserId(String token) {
+    private Mono<Void> verifyIfProductExist(Long productId) {
+    	return productService.getProductById(productId).then();
+	}
+
+	public Flux<SellResponseDTO> getSellsByUserId(String token) {
         final UUID userId = extractUserIdFromToken(token);
         return sellRepository.findAllByUserId(userId)
             .flatMap(sell -> convertToSellResponseDTO(token, sell));
