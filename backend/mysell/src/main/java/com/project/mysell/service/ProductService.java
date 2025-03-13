@@ -74,7 +74,7 @@ public class ProductService {
     	            	return convertToProductResponseDTO(existingProduct);    	            	
     	            	});
     }
-    private Mono<ProductModel> getProductById(Long id) {
+    public Mono<ProductModel> getProductById(Long id) {
     	
    	 return productRepository.findById(id)
    	            .switchIfEmpty(Mono.error(new ProductNotFoundException(id)));
