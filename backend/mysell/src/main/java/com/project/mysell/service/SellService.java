@@ -44,13 +44,17 @@ public class SellService {
     public Mono<SellResponseDTO> getSellResponseById(String token, Long id) {
         final UUID userId = extractUserIdFromToken(token);
         
-        return sellRepository.findById(id)
-                .switchIfEmpty(Mono.error(new SellNotFoundException(id)))
+        return getSellById(id) 
                 .flatMap(existingSell -> {
                     return validateOwnership(existingSell.getUserId(), userId)
                     .then(convertToSellResponseDTO(token, existingSell));
                 });
     }
+    public Mono<SellModel> getSellById(Long id) {
+    	
+        return sellRepository.findById(id)
+                .switchIfEmpty(Mono.error(new SellNotFoundException(id)));
+        }
 
     public Flux<SellResponseDTO> getAllSells() {
         return sellRepository.findAll()
@@ -60,8 +64,7 @@ public class SellService {
     public Mono<SellResponseDTO> updateSell(Long id, @Valid SellUpdateDTO sellDTO, String token) {
         final UUID userId = extractUserIdFromToken(token);
 
-        return sellRepository.findById(id)
-            .switchIfEmpty(Mono.error(new SellNotFoundException(id)))
+        return getSellById(id) 
             .flatMap(existingSell -> {
                 return validateOwnership(existingSell.getUserId(), userId)
                         .then(update(existingSell, sellDTO, token));
@@ -71,8 +74,7 @@ public class SellService {
     public Mono<Void> deleteSell(Long id, String token) {
         final UUID userId = extractUserIdFromToken(token);
 
-        return sellRepository.findById(id)
-            .switchIfEmpty(Mono.error(new SellNotFoundException(id)))
+        return getSellById(id) 
             .flatMap(existingSell -> {
                 return validateOwnership(existingSell.getUserId(), userId)
                     .then(sellRepository.deleteById(existingSell.getSellsId()));
@@ -116,7 +118,7 @@ public class SellService {
 
     private Mono<SellResponseDTO> saveSellAndConvertToResponse(String token, SellModel sellModel) {
         return sellRepository.save(sellModel)
-            .flatMap(savedSell -> sellRepository.findById(savedSell.getSellsId())
+            .flatMap(savedSell -> getSellById(savedSell.getSellsId())
             .flatMap(foundSell -> convertToSellResponseDTO(token, foundSell)));
     }
 
