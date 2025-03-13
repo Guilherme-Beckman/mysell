@@ -136,7 +136,7 @@ public class SellService {
     }
 
     private Mono<ProductResponseDTO> retrieveProductDetails(String token, Long productId) {
-        return productService.getProductById(token, productId);
+        return productService.getProductResponseById(token, productId);
     }
     private Mono<ProductResponseDTO> retrieveProductDetails(Long productId) {
             return productService.getAllProducts()

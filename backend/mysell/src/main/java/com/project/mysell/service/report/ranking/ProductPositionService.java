@@ -41,7 +41,7 @@ public class ProductPositionService {
     }
 
     private Mono<ProductPositionDTO> convertToDTO(ProductPositionModel model) {
-        return productService.getProductById(model.getProductId())
+        return productService.getProductResponseById(model.getProductId())
                 .map(product -> buildProductPositionDTO(model, product));
     }
 

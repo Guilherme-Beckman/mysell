@@ -46,7 +46,7 @@ public class ProductController {
     }
     @GetMapping("/{id}")
     public ResponseEntity<Mono<ProductResponseDTO>> getProductById(@RequestHeader("Authorization") String token, @PathVariable Long id) {
-    	Mono<ProductResponseDTO> product  = this.productService.getProductById(token, id);
+    	Mono<ProductResponseDTO> product  = this.productService.getProductResponseById(token, id);
         return ResponseEntity.ok().body(product);
     }
     @GetMapping()
