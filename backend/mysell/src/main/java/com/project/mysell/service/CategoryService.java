@@ -26,19 +26,20 @@ public class CategoryService {
 		return this.categoryRepository.findAll();
 	}
 	public Mono<CategoryModel> getCategoryById(Long id) {
-		return this.categoryRepository.findById(id);
+		return this.categoryRepository.findById(id)
+				.switchIfEmpty(Mono.error(new CategoryNotFoundException()));
 	}
 
 
 	public Mono<CategoryModel> updateCategory(Long id, CategoryDTO categoryDTO) {
-		return this.categoryRepository.findById(id).flatMap(category -> {
+		return getCategoryById(id).flatMap(category -> {
 			category.setName(categoryDTO.name());
 			return this.categoryRepository.save(category);
-		}).switchIfEmpty(Mono.error(new CategoryNotFoundException()));
+		});
 	}
 
 	public Mono<Void> deleteCategory(Long id) {
-		return this.categoryRepository.findById(id).switchIfEmpty(Mono.error(new CategoryNotFoundException()))
+		return getCategoryById(id)
 				.flatMap(category -> {
 					return this.categoryRepository.deleteById(id);
 				});

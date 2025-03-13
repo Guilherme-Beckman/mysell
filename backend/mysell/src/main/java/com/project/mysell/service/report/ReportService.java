@@ -11,6 +11,7 @@ import com.project.mysell.dto.report.DailyReportResponseDTO;
 import com.project.mysell.dto.report.SaleInformation;
 import com.project.mysell.dto.report.ranking.DailyProductRankingDTO;
 import com.project.mysell.dto.sell.SellResponseDTO;
+import com.project.mysell.exceptions.report.DailyReportNotFoundException;
 import com.project.mysell.exceptions.sell.UserHasNoSalesTodayException;
 import com.project.mysell.infra.security.jwt.JwtTokenProvider;
 import com.project.mysell.model.UserModel;
@@ -48,7 +49,8 @@ public class ReportService {
     }
 
     private Mono<DailyReportModel> findDailyReport(UUID userId, LocalDate date) {
-        return dailyReportRepository.findDailyReportByDate(userId, date);
+        return dailyReportRepository.findDailyReportByDate(userId, date)
+        		.switchIfEmpty(Mono.error(new DailyReportNotFoundException(date)));
     }
 
     private Mono<DailyReportResponseDTO> createDailyReportResponse(DailyReportModel dailyReport) {

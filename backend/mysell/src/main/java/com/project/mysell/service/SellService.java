@@ -30,27 +30,38 @@ public class SellService {
     private ProductService productService;
 
     public Mono<SellResponseDTO> createSell(@Valid SellDTO sellDTO, String token) {
-        final UUID userId = extractUserIdFromToken(token);
-        SellModel newSell = createNewSell(sellDTO, userId);
-        return saveSellAndConvertToResponse(token, newSell);
+        return verifyIfProductExist(sellDTO.productId())
+            .then(Mono.defer(() -> {
+                final UUID userId = extractUserIdFromToken(token);
+                SellModel newSell = createNewSell(sellDTO, userId);
+                return saveSellAndConvertToResponse(token, newSell);
+            }));
     }
 
-    public Flux<SellResponseDTO> getSellsByUserId(String token) {
+    private Mono<Void> verifyIfProductExist(Long productId) {
+    	return productService.getProductById(productId).then();
+	}
+
+	public Flux<SellResponseDTO> getSellsByUserId(String token) {
         final UUID userId = extractUserIdFromToken(token);
         return sellRepository.findAllByUserId(userId)
             .flatMap(sell -> convertToSellResponseDTO(token, sell));
     }
 
-    public Mono<SellResponseDTO> getSellById(String token, Long id) {
+    public Mono<SellResponseDTO> getSellResponseById(String token, Long id) {
         final UUID userId = extractUserIdFromToken(token);
         
-        return sellRepository.findById(id)
-                .switchIfEmpty(Mono.error(new SellNotFoundException(id)))
+        return getSellById(id) 
                 .flatMap(existingSell -> {
                     return validateOwnership(existingSell.getUserId(), userId)
                     .then(convertToSellResponseDTO(token, existingSell));
                 });
     }
+    public Mono<SellModel> getSellById(Long id) {
+    	
+        return sellRepository.findById(id)
+                .switchIfEmpty(Mono.error(new SellNotFoundException(id)));
+        }
 
     public Flux<SellResponseDTO> getAllSells() {
         return sellRepository.findAll()
@@ -60,8 +71,7 @@ public class SellService {
     public Mono<SellResponseDTO> updateSell(Long id, @Valid SellUpdateDTO sellDTO, String token) {
         final UUID userId = extractUserIdFromToken(token);
 
-        return sellRepository.findById(id)
-            .switchIfEmpty(Mono.error(new SellNotFoundException(id)))
+        return getSellById(id) 
             .flatMap(existingSell -> {
                 return validateOwnership(existingSell.getUserId(), userId)
                         .then(update(existingSell, sellDTO, token));
@@ -71,8 +81,7 @@ public class SellService {
     public Mono<Void> deleteSell(Long id, String token) {
         final UUID userId = extractUserIdFromToken(token);
 
-        return sellRepository.findById(id)
-            .switchIfEmpty(Mono.error(new SellNotFoundException(id)))
+        return getSellById(id) 
             .flatMap(existingSell -> {
                 return validateOwnership(existingSell.getUserId(), userId)
                     .then(sellRepository.deleteById(existingSell.getSellsId()));
@@ -116,7 +125,7 @@ public class SellService {
 
     private Mono<SellResponseDTO> saveSellAndConvertToResponse(String token, SellModel sellModel) {
         return sellRepository.save(sellModel)
-            .flatMap(savedSell -> sellRepository.findById(savedSell.getSellsId())
+            .flatMap(savedSell -> getSellById(savedSell.getSellsId())
             .flatMap(foundSell -> convertToSellResponseDTO(token, foundSell)));
     }
 
@@ -136,7 +145,7 @@ public class SellService {
     }
 
     private Mono<ProductResponseDTO> retrieveProductDetails(String token, Long productId) {
-        return productService.getProductById(token, productId);
+        return productService.getProductResponseById(token, productId);
     }
     private Mono<ProductResponseDTO> retrieveProductDetails(Long productId) {
             return productService.getAllProducts()

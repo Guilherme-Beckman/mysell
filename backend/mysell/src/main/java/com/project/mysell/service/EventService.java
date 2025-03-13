@@ -43,22 +43,24 @@ public class EventService {
             .map(this::convertToEventResponseDTO);
     }
     
-    public Mono<EventResponseDTO> getEventById(String token, Long id) {
+    public Mono<EventResponseDTO> getEventResponseById(String token, Long id) {
         final UUID userId = extractUserIdFromToken(token);
         
-        return eventRepository.findById(id)
-            .switchIfEmpty(Mono.error(new EventNotFoundException(id)))
+        return getEventById(id)
             .flatMap(existingEvent -> {
                 return validateOwnership(existingEvent.getUserId(), userId)
                 .then(Mono.just(convertToEventResponseDTO(existingEvent)));
             });
     }
+    private Mono<EventModel> getEventById(Long id) {
+        return eventRepository.findById(id)
+            .switchIfEmpty(Mono.error(new EventNotFoundException(id)));
+    }
 
     public Mono<EventResponseDTO> updateEvent(Long id, EventUpdateDTO eventDTO, String token) {
         final UUID userId = extractUserIdFromToken(token);
 
-        return eventRepository.findById(id)
-            .switchIfEmpty(Mono.error(new EventNotFoundException(id)))
+        return getEventById(id)
             .flatMap(existingEvent -> {
                 return validateOwnership(existingEvent.getUserId(), userId)
                 .then(update(existingEvent, eventDTO));
@@ -68,9 +70,8 @@ public class EventService {
     public Mono<Void> deleteEvent(Long id, String token) {
         final UUID userId = extractUserIdFromToken(token);
 
-        return eventRepository.findById(id)
-            .switchIfEmpty(Mono.error(new EventNotFoundException(id)))
-            .flatMap(existingEvent -> {
+        return getEventById(id)
+        		.flatMap(existingEvent -> {
                 return validateOwnership(existingEvent.getUserId(), userId)
                     .then(eventRepository.deleteById(existingEvent.getEventsId()));
             });

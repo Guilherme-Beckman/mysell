@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.project.mysell.dto.product.unit.ProductUnitOfMeasureDTO;
+import com.project.mysell.exceptions.product.ProductUnitOfMeasureByIdNotFoundException;
 import com.project.mysell.model.ProductUnitOfMeasureModel;
 import com.project.mysell.repository.ProductUnitOfMeasureRepository;
 
@@ -23,12 +24,11 @@ public class ProductUnitOfMeasureService {
     
     public Mono<ProductUnitOfMeasureModel> getProductUnitOfMeasureById(Long id) {
         return productUnitOfMeasureRepository.findById(id)
-            .switchIfEmpty(Mono.error(new RuntimeException("ProductUnitOfMeasure not found with id: " + id)));
+            .switchIfEmpty(Mono.error(new ProductUnitOfMeasureByIdNotFoundException()));
     }
     
     public Mono<ProductUnitOfMeasureModel> updateProductUnitOfMeasure(Long id, ProductUnitOfMeasureDTO productUnitOfMeasureDTO) {
-        return productUnitOfMeasureRepository.findById(id)
-            .switchIfEmpty(Mono.error(new RuntimeException("ProductUnitOfMeasure not found with id: " + id)))
+        return getProductUnitOfMeasureById(id)
             .flatMap(existingUnitOfMeasure -> {
             	updateProductUnitOfMeasureFields(existingUnitOfMeasure, productUnitOfMeasureDTO);
                 return productUnitOfMeasureRepository.save(existingUnitOfMeasure);
@@ -48,8 +48,7 @@ public class ProductUnitOfMeasureService {
         }
     }
     public Mono<Void> deleteProductUnitOfMeasure(Long id) {
-        return productUnitOfMeasureRepository.findById(id)
-            .switchIfEmpty(Mono.error(new RuntimeException("ProductUnitOfMeasure not found with id: " + id)))
+        return getProductUnitOfMeasureById(id)
             .flatMap(unitOfMeasure -> productUnitOfMeasureRepository.delete(unitOfMeasure));
     }
 }

@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component;
 public class DailyReportScheduler {
 	@Autowired
 	private ReportService reportService;
-	
+	/*
 	@Scheduled(initialDelay = 5000)
 	private void saveDailyReport() {
 	    reportService.saveDailyReport().subscribe();
-	}
+	}*/
 
 
 }
