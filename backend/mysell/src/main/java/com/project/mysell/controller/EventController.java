@@ -40,7 +40,7 @@ public class EventController {
     }
     @GetMapping("/{id}")
     public ResponseEntity<Mono<EventResponseDTO>> getEventById(@RequestHeader("Authorization") String token, @PathVariable Long id) {
-    	Mono<EventResponseDTO> event= this.eventService.getEventById(token, id);
+    	Mono<EventResponseDTO> event= this.eventService.getEventResponseById(token, id);
         return ResponseEntity.ok().body(event);
     }
     @GetMapping()
