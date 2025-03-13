@@ -40,7 +40,7 @@ public class SellController {
     }
     @GetMapping("/{id}")
     public ResponseEntity<Mono<SellResponseDTO>> getSellById(@RequestHeader("Authorization") String token, @PathVariable Long id) {
-    	Mono<SellResponseDTO> sell  = this.sellService.getSellById(token, id);
+    	Mono<SellResponseDTO> sell  = this.sellService.getSellResponseById(token, id);
         return ResponseEntity.ok().body(sell);
     }
     @GetMapping()

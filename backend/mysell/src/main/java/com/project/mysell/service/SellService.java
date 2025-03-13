@@ -41,7 +41,7 @@ public class SellService {
             .flatMap(sell -> convertToSellResponseDTO(token, sell));
     }
 
-    public Mono<SellResponseDTO> getSellById(String token, Long id) {
+    public Mono<SellResponseDTO> getSellResponseById(String token, Long id) {
         final UUID userId = extractUserIdFromToken(token);
         
         return sellRepository.findById(id)
