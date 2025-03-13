@@ -21,24 +21,23 @@ public class UnityOfMeasureService {
 		return this.unityOfMeasureRepository.save(newUnityOfMeasureModel);
 	}
 	public Mono<UnityOfMeasureModel> getUnityOfMeasureById(Long id) {
-		return this.unityOfMeasureRepository.findById(id);
+		return this.unityOfMeasureRepository.findById(id).
+				switchIfEmpty(Mono.error(new UnityOfMeasureNotFoundException()));
 	}
 	public Flux<UnityOfMeasureModel> getAllUnitsOfMeasure() {
 		return this.unityOfMeasureRepository.findAll();
 	}
 
 	public Mono<UnityOfMeasureModel> updateUnityOfMeasure(Long id, UnityOfMeasureDTO unityOfMeasureDTO) {
-		return this.unityOfMeasureRepository.findById(id)
+		return getUnityOfMeasureById(id)
 				.flatMap(unityOfMeasure ->{
 					unityOfMeasure.setName(unityOfMeasureDTO.name());
 					return this.unityOfMeasureRepository.save(unityOfMeasure);
-				})
-				.switchIfEmpty(Mono.error(new UnityOfMeasureNotFoundException()));
+				});
 	}
 
 	public Mono<Void> deleteUnityOfMeasure(Long id) {
-		return this.unityOfMeasureRepository.findById(id)
-				.switchIfEmpty(Mono.error(new UnityOfMeasureNotFoundException()))
+		return getUnityOfMeasureById(id)
 				.flatMap(unityOfMeasure ->{
 					return this.unityOfMeasureRepository.deleteById(id);
 				});
