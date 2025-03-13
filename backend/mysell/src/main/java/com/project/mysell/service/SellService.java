@@ -11,6 +11,7 @@ import com.project.mysell.dto.sell.SellUpdateDTO;
 import com.project.mysell.exceptions.product.ProductNotFoundException;
 import com.project.mysell.exceptions.sell.DoesNotOwnSellException;
 import com.project.mysell.exceptions.sell.SellNotFoundException;
+import com.project.mysell.exceptions.sell.UserHasNoSalesTodayException;
 import com.project.mysell.infra.security.jwt.JwtTokenProvider;
 import com.project.mysell.model.SellModel;
 import com.project.mysell.repository.SellRepository;
@@ -155,4 +156,12 @@ public class SellService {
             productResponseDTO
         );
     }
+
+	public Flux<SellResponseDTO> getTodaySellByUserId(UUID userId) {
+		return sellRepository.getTodaySellById(userId)
+				.switchIfEmpty(Mono.error(new UserHasNoSalesTodayException()))
+				.flatMap(this::convertToSellResponseDTO);
+				
+
+	}
 }
