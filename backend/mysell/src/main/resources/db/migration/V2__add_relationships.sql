@@ -26,17 +26,14 @@ ALTER TABLE events
     ADD CONSTRAINT fk_user FOREIGN KEY (user_id)
     REFERENCES users(users_id);
     
-ALTER TABLE product_positions
-    ADD CONSTRAINT fk_product_positions_daily_ranking FOREIGN KEY (daily_product_ranking_id)
-    REFERENCES daily_product_rankings(daily_ranking_products_id);
+ALTER TABLE sells_by_products
+    ADD CONSTRAINT fk_daily_report FOREIGN KEY (daily_report_id)
+    REFERENCES daily_reports(daily_reports_id);
 
-ALTER TABLE product_positions
+ALTER TABLE sells_by_products
     ADD CONSTRAINT fk_product_positions_product FOREIGN KEY (product_id)
     REFERENCES products(products_id);
 
-ALTER TABLE daily_reports
-    ADD CONSTRAINT fk_daily_reports_daily_ranking FOREIGN KEY (daily_product_ranking_id)
-    REFERENCES daily_product_rankings(daily_ranking_products_id);
 ALTER TABLE daily_reports
     ADD CONSTRAINT fk_user FOREIGN KEY (user_id)
     REFERENCES users(users_id);

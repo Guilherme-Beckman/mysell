@@ -3,29 +3,31 @@ package com.project.mysell.model.report.ranking;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-import com.project.mysell.dto.report.ranking.ProductPositionDTO;
+import com.project.mysell.dto.report.ranking.SellsByProductDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Table("product_positions")
+@Table("sells_by_products")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductPositionModel {
+public class SellsByProductsModel{
 	@Id
-	private Long productPositionsId;
-	private Long position;
+	private Long sellsByProductsId;
 	private Long saleCount;
+	private Double profit;
+	private Double grossRevenue;
 	private Long productId;
-	private Long dailyProductRankingId;
+	private Long dailyReportId;
 	
-	public ProductPositionModel(Long dailyRankingId, ProductPositionDTO productPosition) {
-		this.position = productPosition.position();
+	public SellsByProductsModel(Long dailyReportId, SellsByProductDTO productPosition) {
 		this.saleCount = productPosition.saleCount();
+		this.profit = productPosition.profit();
+		this.grossRevenue = productPosition.grossRevenue();
 		this.productId = productPosition.productResponseDTO().productsId();
-		this.dailyProductRankingId = dailyRankingId;
+		this.dailyReportId = dailyReportId;
 		
 	}
 }
