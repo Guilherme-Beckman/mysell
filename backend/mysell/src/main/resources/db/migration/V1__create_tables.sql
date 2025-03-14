@@ -51,16 +51,14 @@ CREATE TABLE IF NOT EXISTS events (
     user_id UUID NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS daily_product_rankings (
-    daily_ranking_products_id SERIAL PRIMARY KEY
-);
 
-CREATE TABLE IF NOT EXISTS product_positions (
-    product_positions_id SERIAL PRIMARY KEY,
-    position BIGINT,
+CREATE TABLE IF NOT EXISTS sells_by_products (
+    sells_by_products_id SERIAL PRIMARY KEY,
     sale_count BIGINT,
+    profit DOUBLE PRECISION,
+	gross_revenue DOUBLE PRECISION,
     product_id BIGINT,
-    daily_product_ranking_id BIGINT
+    daily_report_id BIGINT
 );
 
 CREATE TABLE IF NOT EXISTS daily_reports (
@@ -69,6 +67,5 @@ CREATE TABLE IF NOT EXISTS daily_reports (
     profit DOUBLE PRECISION,
     gross_revenue DOUBLE PRECISION,
     number_of_sales BIGINT,
-    daily_product_ranking_id BIGINT,
     user_id UUID
 );

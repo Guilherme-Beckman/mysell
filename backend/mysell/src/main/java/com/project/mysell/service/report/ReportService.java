@@ -1,6 +1,7 @@
 package com.project.mysell.service.report;
 
 
+
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -9,19 +10,17 @@ import org.springframework.stereotype.Service;
 
 import com.project.mysell.dto.report.DailyReportResponseDTO;
 import com.project.mysell.dto.report.SaleInformation;
-import com.project.mysell.dto.report.ranking.DailyProductRankingDTO;
+import com.project.mysell.dto.report.ranking.SellsByProductDTO;
 import com.project.mysell.dto.sell.SellResponseDTO;
 import com.project.mysell.exceptions.report.DailyReportNotFoundException;
 import com.project.mysell.exceptions.sell.UserHasNoSalesTodayException;
 import com.project.mysell.infra.security.jwt.JwtTokenProvider;
 import com.project.mysell.model.UserModel;
 import com.project.mysell.model.report.DailyReportModel;
-import com.project.mysell.model.report.ranking.DailyProductRankingModel;
 import com.project.mysell.repository.DailyReportRepository;
 import com.project.mysell.service.SellService;
 import com.project.mysell.service.UserService;
-import com.project.mysell.service.report.ranking.DailyProductRankingService;
-import com.project.mysell.service.report.ranking.RankingService;
+import com.project.mysell.service.report.ranking.SellsByProductService;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -33,11 +32,9 @@ public class ReportService {
     @Autowired
     private SellService sellService;
     @Autowired
-    private RankingService rankingService;
+    private SellsByProductService sellsByProductService;
     @Autowired
 	private UserService userService;
-    @Autowired
-	private DailyProductRankingService dailyProductRankingService;
     @Autowired
 	private DailyReportRepository dailyReportRepository;
     
@@ -54,23 +51,22 @@ public class ReportService {
     }
 
     private Mono<DailyReportResponseDTO> createDailyReportResponse(DailyReportModel dailyReport) {
-        return fetchProductRankingDTO(dailyReport)
-                .map(rankingDTO -> buildResponseDTO(dailyReport, rankingDTO));
+    	 var sellsByProduct = sellsByProductService.getAllSellsByProductResponseByDailyReportId(dailyReport.getDailyReportsId());
+    			return buildResponseDTO(dailyReport, sellsByProduct);
     }
 
-    private Mono<DailyProductRankingDTO> fetchProductRankingDTO(DailyReportModel dailyReport) {
-        return dailyProductRankingService.createDailyProductRankingDTO(dailyReport.getDailyProductRankingId());
+ 
+    private Mono<DailyReportResponseDTO> buildResponseDTO(DailyReportModel dailyReport, Flux<SellsByProductDTO> sellsByProductDTO) {
+        return sellsByProductDTO.collectList()
+                .map(sellsList -> new DailyReportResponseDTO(
+                    dailyReport.getDate(),
+                    dailyReport.getProfit(),
+                    dailyReport.getGrossRevenue(),
+                    dailyReport.getNumberOfSales(),
+                    sellsList
+                ));
     }
 
-    private DailyReportResponseDTO buildResponseDTO(DailyReportModel dailyReport, DailyProductRankingDTO rankingDTO) {
-        return new DailyReportResponseDTO(
-                dailyReport.getDate(),
-                dailyReport.getProfit(),
-                dailyReport.getGrossRevenue(),
-                dailyReport.getNumberOfSales(),
-                rankingDTO
-        );
-    }
 
 
     public Mono<DailyReportResponseDTO> getDailyReport(String token) {
@@ -82,26 +78,25 @@ public class ReportService {
         Flux<SellResponseDTO> todaysSales = retrieveSalesForToday(userId);
         
         Mono<DailyReportAccumulator> reportAccumulator = calculateReportAccumulator(todaysSales);
-        Mono<DailyProductRankingDTO> productRanking = rankingService.calculateDailyProductRanking(todaysSales);
-
-        return createDailyReportResponse(reportAccumulator, productRanking);
+        Flux<SellsByProductDTO> sellsByProducts = this.sellsByProductService.calculateSellsByProductId(todaysSales);
+        return createDailyReportResponse(reportAccumulator, sellsByProducts);
+    }
+    private Mono<DailyReportResponseDTO> createDailyReportResponse(Mono<DailyReportAccumulator> accumulatorMono, Flux<SellsByProductDTO> sellsByProductFlux) {
+        return Mono.zip(
+                accumulatorMono,
+                sellsByProductFlux.collectList()
+            ).map(tuple -> 
+                new DailyReportResponseDTO(
+                    LocalDate.now(),
+                    tuple.getT1().getProfit(),
+                    tuple.getT1().getGrossRevenue(),
+                    tuple.getT1().getSaleCount(),
+                    tuple.getT2()
+                )
+            );
     }
 
-    private Mono<DailyReportResponseDTO> createDailyReportResponse(Mono<DailyReportAccumulator> tuple1, Mono<DailyProductRankingDTO> tuple2) {
-    	return Mono.zip(tuple1,tuple2)
-    	.map(tuple -> {
-    		 DailyReportAccumulator accumulator = tuple.getT1();
-             DailyProductRankingDTO ranking = tuple.getT2();
-             return new DailyReportResponseDTO(
-                     LocalDate.now(),
-                     accumulator.getProfit(),
-                     accumulator.getGrossRevenue(),
-                     accumulator.getSaleCount(),
-                     ranking
-                 );
-    	});
-    
-    }
+
 
     private Mono<DailyReportAccumulator> calculateReportAccumulator(Flux<SellResponseDTO> sales) {
         return sales.map(this::createSaleInformation)
@@ -133,7 +128,7 @@ public class ReportService {
                 .then();
     }
 
-    private Mono<DailyReportModel> processUserDailyReport(UserModel user) {
+    private Mono<Void> processUserDailyReport(UserModel user) {
         return generateDailyReportForUser(user.getUsersId())
                 .onErrorResume(this::skipUserWithNoSales)
                 .flatMap(dailyReport -> createAndSaveDailyReport(user, dailyReport));
@@ -143,20 +138,20 @@ public class ReportService {
         return generateDailyReportResponse(userId);
     }
 
-    private Mono<DailyReportModel> createAndSaveDailyReport(UserModel user, DailyReportResponseDTO dailyReport) {
-        return dailyProductRankingService.createDailyProductRanking(dailyReport.dailyProductRankingDTO())
-                .flatMap(savedRanking -> persistDailyReport(user, dailyReport, savedRanking));
+    private Mono<Void> createAndSaveDailyReport(UserModel user, DailyReportResponseDTO dailyReport) {
+    	return this.persistDailyReport(user, dailyReport)
+    			.flatMap(persistDailyReport-> 
+    			this.sellsByProductService.createSellsByProductByFlux(persistDailyReport.getDailyReportsId(), dailyReport.sellsByProduct()));
     }
 
-    private Mono<DailyReportModel> persistDailyReport(UserModel user, DailyReportResponseDTO dailyReport, DailyProductRankingModel savedRanking) {
-        DailyReportModel reportModel = createDailyReportModel(user, savedRanking, dailyReport);
+    private Mono<DailyReportModel> persistDailyReport(UserModel user, DailyReportResponseDTO dailyReport) {
+        DailyReportModel reportModel = createDailyReportModel(user, dailyReport);
         return dailyReportRepository.save(reportModel);
     }
 
-    private DailyReportModel createDailyReportModel(UserModel user, DailyProductRankingModel ranking, DailyReportResponseDTO report) {
+    private DailyReportModel createDailyReportModel(UserModel user, DailyReportResponseDTO report) {
         return new DailyReportModel(
                 user.getUsersId(),
-                ranking.getDailyRankingProductsId(),
                 report
         );
     }

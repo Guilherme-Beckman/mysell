@@ -23,16 +23,14 @@ public class DailyReportModel {
 	private Double profit;
 	private Double grossRevenue;
 	private Long numberOfSales;
-	private Long dailyProductRankingId;
 	private UUID userId;
 	
 	
-	public DailyReportModel(UUID uuid, Long dailyRankingProductsId, DailyReportResponseDTO dailyReport) {
+	public DailyReportModel(UUID uuid, DailyReportResponseDTO dailyReport) {
 		this.date = dailyReport.date();
 		this.profit = dailyReport.profit();
 		this.grossRevenue = dailyReport.grossRevenue();
 		this.numberOfSales = dailyReport.numberOfSales();
-		this.dailyProductRankingId = dailyRankingProductsId;
 		this.userId = uuid;
 	}
 	

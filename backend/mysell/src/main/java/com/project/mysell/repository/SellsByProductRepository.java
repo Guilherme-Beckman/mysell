@@ -8,8 +8,8 @@ import com.project.mysell.model.report.ranking.SellsByProductsModel;
 import reactor.core.publisher.Flux;
 
 @Repository
-public interface ProductPositionRepository extends ReactiveCrudRepository<SellsByProductsModel, Long> {
+public interface SellsByProductRepository extends ReactiveCrudRepository<SellsByProductsModel, Long> {
 
-	Flux<SellsByProductsModel> findAllByDailyReportId(Long dailyProductRankingId);
+	Flux<SellsByProductsModel> findAllByDailyReportId(Long dailyReportId);
 
 }
