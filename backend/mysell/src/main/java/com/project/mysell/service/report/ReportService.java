@@ -1,6 +1,7 @@
 package com.project.mysell.service.report;
 
 import java.sql.Date;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.project.mysell.dto.report.DailyReportResponseDTO;
+import com.project.mysell.dto.report.DailyReportResponseDTOSimplified;
 import com.project.mysell.dto.report.SaleInformation;
 import com.project.mysell.dto.report.SellsByProductDTO;
 import com.project.mysell.dto.report.WeeklyReportResponseDTO;
@@ -76,6 +78,10 @@ public class ReportService {
     public Mono<DailyReportResponseDTO> getDailyReport(String token) {
         final UUID userId = extractUserIdFromToken(token);
         return generateDailyReportResponse(userId);
+    }
+    public Mono<WeeklyReportResponseDTO> getWeeklyReport(String token) {
+        final UUID userId = extractUserIdFromToken(token);
+        return generateWeeklyReportResponse(userId);
     }
 
     private Mono<DailyReportResponseDTO> generateDailyReportResponse(UUID userId) {
@@ -183,23 +189,36 @@ public class ReportService {
         Flux<SellResponseDTO> weekSales = retrieveSalesForThisWeek(userId);
         
         Mono<ReportAccumulator> reportAccumulator = calculateReportAccumulator(weekSales);
-        Flux<DailyReportResponseDTO> dailyReportsWeek = this.dailyReportRepository.getThisWeekDailyReportByUserId(userId)
-        		.flatMap(this::createDailyReportResponse);
+        Flux<DailyReportResponseDTOSimplified> dailyReportsWeek = this.dailyReportRepository.getThisWeekDailyReportByUserId(userId)
+        	    .flatMap(this::createDailyReportResponseSimplified);
+
         return createWeeklyReportResponse(reportAccumulator, dailyReportsWeek);
     }
-    private Mono<WeeklyReportResponseDTO> createWeeklyReportResponse(Mono<ReportAccumulator> accumulatorMono, Flux<DailyReportResponseDTO> dailyReportsWeek) {
+
+    private Mono<DailyReportResponseDTOSimplified> createDailyReportResponseSimplified(DailyReportModel dailyReport) {
+    			return buildResponseDTOSimplified(dailyReport);
+    }
+
+    private Mono<DailyReportResponseDTOSimplified> buildResponseDTOSimplified(DailyReportModel dailyReport) {
+    	return Mono.just(new DailyReportResponseDTOSimplified(
+    			dailyReport.getDate(),
+    			dailyReport.getProfit(),
+    			dailyReport.getGrossRevenue(),
+    			dailyReport.getNumberOfSales()
+    			));
+    }
+    private Mono<WeeklyReportResponseDTO> createWeeklyReportResponse(Mono<ReportAccumulator> accumulatorMono, Flux<DailyReportResponseDTOSimplified> dailyReportsWeek) {
         return Mono.zip(
                 accumulatorMono,
                 dailyReportsWeek.collectList()
             )
             .map(tuple -> {
                 ReportAccumulator accumulator = tuple.getT1();
-                List<DailyReportResponseDTO> dailyReports = tuple.getT2();
+                List<DailyReportResponseDTOSimplified> dailyReports = tuple.getT2();
                 LocalDate now = LocalDate.now();
                 LocalDate monday = now.with(DayOfWeek.MONDAY);
                 Date firstDay = Date.valueOf(monday);
                 Date lastDay = Date.valueOf(now);
-                
                 return new WeeklyReportResponseDTO(
                     firstDay,
                     lastDay,

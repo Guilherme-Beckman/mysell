@@ -9,6 +9,7 @@ public class DailyReportScheduler {
 	private ReportService reportService;
 	
 	@Scheduled(cron = "0 0 0 * * ?")
+	//@Scheduled(initialDelay = 1000)
 	private void saveDailyReport() {
 	    reportService.saveDailyReport().subscribe();
 	}

@@ -16,9 +16,9 @@ public interface DailyReportRepository extends ReactiveCrudRepository<DailyRepor
 
 	    @Query("SELECT * FROM daily_reports WHERE user_id = :userId AND date = :date LIMIT 1")
 	    Mono<DailyReportModel> findDailyReportByDate(UUID userId, LocalDate date);
-		@Query("SELECT * FROM daily_report WHERE user_id = :userId " +
-			       "AND created_at >= date_trunc('week', CURRENT_DATE) " +
-			       "AND created_at < date_trunc('week', CURRENT_DATE) + interval '1 week'")
+		@Query("SELECT * FROM daily_reports WHERE user_id = :userId " +
+			       "AND date >= date_trunc('week', CURRENT_DATE) " +
+			       "AND date < date_trunc('week', CURRENT_DATE) + interval '1 week'")
 		Flux<DailyReportModel> getThisWeekDailyReportByUserId(UUID userId);
 	}
 

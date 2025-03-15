@@ -9,7 +9,7 @@ public record WeeklyReportResponseDTO(
 		Double profit,
 		Double grossRevenue,
 		Long numberOfSales,
-		List<DailyReportResponseDTO> dailyReports
+		List<DailyReportResponseDTOSimplified> dailyReports
 		) {
 
 }
