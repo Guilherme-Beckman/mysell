@@ -9,12 +9,17 @@ import org.springframework.stereotype.Repository;
 
 import com.project.mysell.model.report.DailyReportModel;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 @Repository
 public interface DailyReportRepository extends ReactiveCrudRepository<DailyReportModel, Long> {
 
 	    @Query("SELECT * FROM daily_reports WHERE user_id = :userId AND date = :date LIMIT 1")
 	    Mono<DailyReportModel> findDailyReportByDate(UUID userId, LocalDate date);
+		@Query("SELECT * FROM daily_reports WHERE user_id = :userId " +
+			       "AND date >= date_trunc('week', CURRENT_DATE) " +
+			       "AND date < date_trunc('week', CURRENT_DATE) + interval '1 week'")
+		Flux<DailyReportModel> getThisWeekDailyReportByUserId(UUID userId);
 	}
 
 

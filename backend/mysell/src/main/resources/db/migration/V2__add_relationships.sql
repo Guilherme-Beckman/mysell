@@ -37,3 +37,7 @@ ALTER TABLE sells_by_products
 ALTER TABLE daily_reports
     ADD CONSTRAINT fk_user FOREIGN KEY (user_id)
     REFERENCES users(users_id);
+    
+ALTER TABLE weekly_reports
+    ADD CONSTRAINT fk_weekly_report_user FOREIGN KEY (user_id)
+    REFERENCES users(users_id);

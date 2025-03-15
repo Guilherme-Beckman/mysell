@@ -1,9 +1,9 @@
-package com.project.mysell.model.report.ranking;
+package com.project.mysell.model.report;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-import com.project.mysell.dto.report.ranking.SellsByProductDTO;
+import com.project.mysell.dto.report.SellsByProductDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

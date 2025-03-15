@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.mysell.dto.report.DailyReportResponseDTO;
+import com.project.mysell.dto.report.WeeklyReportResponseDTO;
 import com.project.mysell.service.report.ReportService;
 
 import reactor.core.publisher.Mono;
@@ -28,6 +28,11 @@ public class ReportController {
 	@GetMapping("/daily/{date}")
 	private ResponseEntity<Mono<DailyReportResponseDTO>> getDailyReportByDate (@RequestHeader("Authorization") String token, @PathVariable LocalDate date){
 		Mono<DailyReportResponseDTO> dailyReport = this.reportService.getDailyReportByDate(token, date);
+		return ResponseEntity.ok().body(dailyReport);
+	}
+	@GetMapping("/weekly")
+	private ResponseEntity<Mono<WeeklyReportResponseDTO>> getWeeklyReport (@RequestHeader("Authorization") String token){
+		Mono<WeeklyReportResponseDTO> dailyReport = this.reportService.getWeeklyReport(token);
 		return ResponseEntity.ok().body(dailyReport);
 	}
 }
