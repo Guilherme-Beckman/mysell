@@ -2,12 +2,12 @@ package com.project.mysell.service.report;
 
 import com.project.mysell.dto.report.SaleInformation;
 
-public class DailyReportAccumulator {
+public class ReportAccumulator {
 	    private Double profit = 0.0;
 	    private Double grossRevenue = 0.0;
 	    private Long saleCount = 0L;
 
-	    public DailyReportAccumulator accumulate(SaleInformation saleData) {
+	    public ReportAccumulator accumulate(SaleInformation saleData) {
 	        this.profit += saleData.profit();
 	        this.grossRevenue += saleData.grossRevenue();
 	        this.saleCount += saleData.saleCount();

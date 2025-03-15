@@ -1,4 +1,4 @@
-package com.project.mysell.dto.report.ranking;
+package com.project.mysell.dto.report;
 
 import com.project.mysell.dto.product.ProductResponseDTO;
 

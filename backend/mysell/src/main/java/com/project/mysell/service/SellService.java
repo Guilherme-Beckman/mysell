@@ -173,4 +173,10 @@ public class SellService {
 				
 
 	}
+
+	public Flux<SellResponseDTO> getThisWeekSellByUserId(UUID userId) {
+		return sellRepository.getThisWeekSellByUserId(userId)
+				.switchIfEmpty(Mono.error(new UserHasNoSalesTodayException()))
+				.flatMap(this::convertToSellResponseDTO);
+	}
 }

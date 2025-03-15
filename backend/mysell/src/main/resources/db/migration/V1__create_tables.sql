@@ -69,3 +69,12 @@ CREATE TABLE IF NOT EXISTS daily_reports (
     number_of_sales BIGINT,
     user_id UUID
 );
+CREATE TABLE IF NOT EXISTS weekly_reports (
+    weekly_reports_id BIGSERIAL PRIMARY KEY,
+    first_day DATE NOT NULL,
+    last_day DATE NOT NULL,
+    profit DOUBLE PRECISION,
+    gross_revenue DOUBLE PRECISION,
+    number_of_sales BIGINT,
+    user_id UUID
+);
