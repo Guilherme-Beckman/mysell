@@ -50,10 +50,9 @@ public class APIProductBarCodeService {
     		productMono = measureService.getListUnitsName().flatMap(list->{
     			String[] components = APIProductBarCodeUtils.parse(responseDTO.description(), list);
     			String name = components[0];
-    			Long quantity = null;
+    			Double quantity = null;
     			try {
-    				System.out.println(components[1]);
-					quantity = Long.parseLong(components[1]);
+					quantity = Double.parseDouble(components[1]);
 				} catch (Exception e) {
 				}
     			String unit = components[2];
