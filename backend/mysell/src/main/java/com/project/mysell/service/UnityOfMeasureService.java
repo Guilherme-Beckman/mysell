@@ -43,5 +43,8 @@ public class UnityOfMeasureService {
 				});
 				
 	}
+	public Mono<UnityOfMeasureModel> getUnityOfMeasureByName(String name){
+		return this.unityOfMeasureRepository.findUnityOfMeasureByName(name);
+	}
 
 }

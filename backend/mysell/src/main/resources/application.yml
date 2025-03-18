@@ -39,3 +39,9 @@ spring:
 
 jwt:
   secret: ${SECRET}
+api:
+  product:
+    barcode:
+      url: ${BARCODE_API_BASE_URL}
+      token: ${BARCODE_API_BASE_TOKEN}
+      header: ${BARCODE_API_BASE_HEADER}

@@ -11,7 +11,7 @@ import com.project.mysell.dto.report.SellsByProductDTO;
 import com.project.mysell.dto.sell.SellResponseDTO;
 import com.project.mysell.model.report.SellsByProductsModel;
 import com.project.mysell.repository.SellsByProductRepository;
-import com.project.mysell.service.ProductService;
+import com.project.mysell.service.product.ProductService;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
