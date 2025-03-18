@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS categories (
     categories_id SERIAL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL
+    name VARCHAR(100) NOT NULL
 );
 CREATE TABLE IF NOT EXISTS units_of_measure (
     units_of_measure_id SERIAL PRIMARY KEY,

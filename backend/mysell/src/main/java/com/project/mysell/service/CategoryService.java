@@ -1,13 +1,17 @@
 package com.project.mysell.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.project.mysell.dto.category.CategoryDTO;
+import com.project.mysell.dto.unit.UnityOfMeasureDTO;
 import com.project.mysell.exceptions.category.CategoryNotFoundException;
 import com.project.mysell.model.CategoryModel;
 import com.project.mysell.repository.CategoryRepository;
 
+import jakarta.annotation.PostConstruct;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -16,7 +20,14 @@ public class CategoryService {
 
 	@Autowired
 	private CategoryRepository categoryRepository;
-
+	  private Flux<CategoryDTO> cachedFlux;
+	@PostConstruct
+	public void init () {
+		this.cachedFlux = 
+			    this.getAllCategories()
+			        .map(unit -> new CategoryDTO(unit.getName()))
+			        .cache();
+	}
 	public Mono<CategoryModel> createCategory(CategoryDTO categoryDTO) {
 		CategoryModel categoryModel = new CategoryModel(categoryDTO);
 		return this.categoryRepository.save(categoryModel);
@@ -44,5 +55,8 @@ public class CategoryService {
 					return this.categoryRepository.deleteById(id);
 				});
 
+	}
+	public Mono<List<String>> getListCategoriesName() {
+	    return cachedFlux.map(category -> category.name()).collectList();
 	}
 }
