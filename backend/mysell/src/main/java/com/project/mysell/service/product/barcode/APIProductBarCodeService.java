@@ -14,6 +14,7 @@ import com.project.mysell.dto.product.unit.ProductUnitOfMeasureResponseDTO;
 import com.project.mysell.dto.unit.UnityOfMeasureDTO;
 import com.project.mysell.exceptions.product.ProductNotFoundException;
 import com.project.mysell.exceptions.server.InternalServerErrorException;
+import com.project.mysell.exceptions.server.TooManyRequestsException;
 import com.project.mysell.service.CategoryService;
 import com.project.mysell.service.UnityOfMeasureService;
 
@@ -44,7 +45,9 @@ public class APIProductBarCodeService {
             .uri(barcode.toString())
             .header(properties.getHeader(), properties.getToken())
             .retrieve()
-            .onStatus(status -> status.is4xxClientError(), 
+            .onStatus(status -> status.value() == 429, 
+            	response -> Mono.error(new TooManyRequestsException()))
+            .onStatus(status -> status.value() == 404, 
                 response -> Mono.error(new ProductNotFoundException(barcode)))
             .onStatus(status -> status.is5xxServerError(), 
                 response -> Mono.error(new InternalServerErrorException()))
