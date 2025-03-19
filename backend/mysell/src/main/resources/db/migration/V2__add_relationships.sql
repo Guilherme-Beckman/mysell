@@ -41,3 +41,7 @@ ALTER TABLE daily_reports
 ALTER TABLE weekly_reports
     ADD CONSTRAINT fk_weekly_report_user FOREIGN KEY (user_id)
     REFERENCES users(users_id);
+
+ALTER TABLE brick_codes
+	ADD CONSTRAINT fk_brick_code_gpc_code FOREIGN KEY (gpc_code)
+	REFERENCES categories(gpc_code); 
