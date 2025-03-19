@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class ProductUnitOfMeasureModel {
 	@Id
 	private Long productsUnitsOfMeasureId;
-    private Long quantity;
+    private Double quantity;
     private Long unitOfMeasureId;
 	public ProductUnitOfMeasureModel(ProductUnitOfMeasureDTO productUnitOfMeasureDTO) {
 		this.quantity = productUnitOfMeasureDTO.quantity();

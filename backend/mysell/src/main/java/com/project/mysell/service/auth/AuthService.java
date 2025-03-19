@@ -6,10 +6,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.project.mysell.dto.auth.LoginDTO;
 import com.project.mysell.dto.auth.ResponseDTO;
 import com.project.mysell.dto.auth.UserDTO;
 import com.project.mysell.dto.auth.email.VerificationCodeDTO;
-import com.project.mysell.dto.category.LoginDTO;
 import com.project.mysell.exceptions.auth.ValidEmailException;
 import com.project.mysell.exceptions.user.UserAlreadyExistsException;
 import com.project.mysell.exceptions.user.UserNotFoundException;

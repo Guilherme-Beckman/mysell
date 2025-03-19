@@ -11,7 +11,12 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS categories (
     categories_id SERIAL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL
+    gpc_code INT UNIQUE,
+    name VARCHAR(100) NOT NULL
+);
+CREATE TABLE IF NOT EXISTS brick_codes(
+	brick_codes_id BIGINT PRIMARY KEY,
+	gpc_code INT NOT NULL 
 );
 CREATE TABLE IF NOT EXISTS units_of_measure (
     units_of_measure_id SERIAL PRIMARY KEY,
@@ -19,7 +24,7 @@ CREATE TABLE IF NOT EXISTS units_of_measure (
 );
 CREATE TABLE IF NOT EXISTS products_units_of_measure (
     products_units_of_measure_id SERIAL PRIMARY KEY,
-    quantity INT DEFAULT 0 NOT NULL,
+    quantity DOUBLE PRECISION DEFAULT 0 NOT NULL,
     unit_of_measure_id BIGINT DEFAULT 1 NOT NULL
 );
 CREATE TABLE IF NOT EXISTS products (

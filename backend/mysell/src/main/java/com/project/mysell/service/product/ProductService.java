@@ -1,4 +1,4 @@
-package com.project.mysell.service;
+package com.project.mysell.service.product;
 
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -18,6 +18,8 @@ import com.project.mysell.infra.security.jwt.JwtTokenProvider;
 import com.project.mysell.model.ProductModel;
 import com.project.mysell.model.ProductUnitOfMeasureModel;
 import com.project.mysell.repository.ProductRepository;
+import com.project.mysell.service.CategoryService;
+import com.project.mysell.service.UnityOfMeasureService;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -173,7 +175,7 @@ public class ProductService {
 
     private Mono<CategoryDTO> retrieveCategoryDetails(Long categoryId) {
         return categoryService.getCategoryById(categoryId)
-            .map(category -> new CategoryDTO(category.getName()));
+            .map(category -> new CategoryDTO(category.getName(), category.getGpcCode()));
     }
 
     private Mono<ProductUnitOfMeasureResponseDTO> retrieveUnitOfMeasureDetails(ProductModel product) {

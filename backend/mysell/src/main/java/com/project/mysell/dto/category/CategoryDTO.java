@@ -6,7 +6,8 @@ import jakarta.validation.constraints.NotNull;
 public record CategoryDTO(
         @NotNull(message = "Name must not be null")
         @NotBlank(message = "Name must not be blank")
-		String name
+		String name,
+		Long gpcCode
 		) {
 
 }

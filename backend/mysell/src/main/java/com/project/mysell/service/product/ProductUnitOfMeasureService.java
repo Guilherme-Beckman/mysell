@@ -1,4 +1,4 @@
-package com.project.mysell.service;
+package com.project.mysell.service.product;
 
 import java.util.function.Consumer;
 

@@ -1,7 +1,7 @@
 package com.project.mysell.dto.product.unit;
 
 public record ProductUnitOfMeasureDTO(
-	    Long quantity,
+	    Double quantity,
 	    Long unitOfMeasureId
 		) {
 

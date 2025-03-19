@@ -10,13 +10,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.mysell.dto.product.ProductDTO;
 import com.project.mysell.dto.product.ProductResponseDTO;
 import com.project.mysell.dto.product.ProductUpdateDTO;
-import com.project.mysell.service.ProductService;
+import com.project.mysell.dto.product.barcode.ProductStructure;
+import com.project.mysell.service.product.ProductService;
+import com.project.mysell.service.product.barcode.APIProductBarCodeService;
 
 import jakarta.validation.Valid;
 import reactor.core.publisher.Flux;
@@ -28,15 +29,17 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+    @Autowired
+    private APIProductBarCodeService apiProductBarCodeService;
 
     @PostMapping()
     public ResponseEntity<Mono<ProductResponseDTO>> createProduct(@Valid @RequestBody ProductDTO productDTO, @RequestHeader("Authorization") String token) {
         Mono<ProductResponseDTO> newProduct = this.productService.createProduct(productDTO, token);
         return ResponseEntity.ok().body(newProduct);
     }
-    @GetMapping("/code")
-    public ResponseEntity<Mono<ProductResponseDTO>> getProductByBarcode(@RequestParam String barcode) {
-        Mono<ProductResponseDTO> newProduct = this.productService.getProductByBarcode(barcode);
+    @GetMapping("/code/{barcode}")
+    public ResponseEntity<Mono<ProductStructure>> getProductByBarcode(@PathVariable Long barcode) {
+        Mono<ProductStructure> newProduct = this.apiProductBarCodeService.getProductByBarCode(barcode);
         return ResponseEntity.ok().body(newProduct);
     }
     @GetMapping("/my")
