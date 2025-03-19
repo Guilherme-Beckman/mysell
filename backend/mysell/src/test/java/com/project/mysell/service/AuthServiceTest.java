@@ -12,9 +12,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.project.mysell.dto.auth.LoginDTO;
 import com.project.mysell.dto.auth.ResponseDTO;
 import com.project.mysell.dto.auth.UserDTO;
-import com.project.mysell.dto.category.LoginDTO;
 import com.project.mysell.exceptions.auth.credential.InvalidCredentialsException;
 import com.project.mysell.exceptions.user.UserAlreadyExistsException;
 import com.project.mysell.infra.security.CustomAuthenticationProvider;
