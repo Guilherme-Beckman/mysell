@@ -1,11 +1,10 @@
 package com.project.mysell.service.product.barcode;
 
-
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.project.mysell.dto.category.CategoryDTO;
@@ -19,79 +18,161 @@ import com.project.mysell.service.CategoryService;
 import com.project.mysell.service.UnityOfMeasureService;
 
 import reactor.core.publisher.Mono;
+
 @Service
 public class APIProductBarCodeService {
+    private static final int MIN_CATEGORY_CODE_LENGTH = 2;
+    
     private final WebClient webClient;
     private final APIProductBarCodeProperties properties;
-    @Autowired
-    private UnityOfMeasureService measureService;
-    @Autowired
-    private CategoryService categoryService;
+    private final UnityOfMeasureService measureService;
+    private final CategoryService categoryService;
+
     public APIProductBarCodeService(
-            WebClient.Builder builder,
-            APIProductBarCodeProperties properties) {
+            WebClient.Builder webClientBuilder,
+            APIProductBarCodeProperties properties,
+            UnityOfMeasureService measureService,
+            CategoryService categoryService) {
         this.properties = properties;
-        this.webClient = builder.baseUrl(properties.getUrl()).build();
+        this.measureService = measureService;
+        this.categoryService = categoryService;
+        this.webClient = webClientBuilder.baseUrl(properties.getUrl()).build();
     }
+
     public Mono<ProductStructure> getProductByBarCode(Long barcode) {
         return webClient.get()
             .uri(barcode.toString())
             .header(properties.getHeader(), properties.getToken())
             .retrieve()
-            .onStatus(status -> status.is4xxClientError(), response -> {
-                return Mono.error(new ProductNotFoundException(barcode));
-            })
-            .onStatus(status -> status.is5xxServerError(), response -> {
-            	return Mono.error(new InternalServerErrorException());
-            })
+            .onStatus(status -> status.is4xxClientError(), 
+                response -> Mono.error(new ProductNotFoundException(barcode)))
+            .onStatus(status -> status.is5xxServerError(), 
+                response -> Mono.error(new InternalServerErrorException()))
             .bodyToMono(APIProductBarCodeResponseDTO.class)
-            .flatMap(this::convertResponseToProduct);
+            .flatMap(this::convertToProductStructure);
     }
-    private Mono<ProductStructure> convertResponseToProduct(APIProductBarCodeResponseDTO responseDTO) {
+
+    private Mono<ProductStructure> convertToProductStructure(APIProductBarCodeResponseDTO response) {
         ProductStructure product = new ProductStructure();
-        
         Mono<ProductStructure> productMono = Mono.just(product);
         
-        if(responseDTO.description() != null && !responseDTO.description().isEmpty()) {
-            productMono = productMono.flatMap(prod -> 
-                measureService.getListUnitsName().flatMap(list -> {
-                    String[] components = APIProductBarCodeUtils.parse(responseDTO.description(), list);
-                    String name = components[0];
-                    Double quantity = null;
-                    try {
-                        quantity = Double.parseDouble(components[1]);
-                    } catch (Exception e) {
-                    }
-                    String unit = components[2];
-                    
-                    if (name != null && !name.isEmpty()) {
-                        prod.setName(name);
-                    }
-                    prod.setProductUnitOfMeasureDTO(new ProductUnitOfMeasureResponseDTO(quantity, new UnityOfMeasureDTO(unit)));
-                    return Mono.just(prod);
-                })
-            );
-        }
-        
-        if(responseDTO.gpc() != null && responseDTO.gpc().description() != null && !responseDTO.gpc().description().isEmpty()) {
-            productMono = productMono.flatMap(prod ->
-                categoryService.getListCategoriesName().flatMap(list -> {
-                    String category = APIProductBarCodeUtils.containsCategory(responseDTO.gpc().description(), list);
-                    prod.setCategory(new CategoryDTO(category));
-                    return Mono.just(prod);
-                })
-            );
-        }
-        
-        productMono = productMono.doOnNext(prod -> {
-            if (responseDTO.brand() != null && responseDTO.brand().name() != null && !responseDTO.brand().name().isEmpty())
-                prod.setBrand(responseDTO.brand().name());
-            if (responseDTO.avgPrice() != null)
-                prod.setPurchasedPrice(responseDTO.avgPrice());
-        });
+        productMono = processProductDescription(response, productMono);
+        productMono = processProductCategory(response, productMono);
+        productMono = setAdditionalProductInfo(response, productMono);
         
         return productMono;
     }
 
-}	
+    private Mono<ProductStructure> processProductDescription(APIProductBarCodeResponseDTO response, 
+                                                           Mono<ProductStructure> productMono) {
+        if (response.description() == null || response.description().isEmpty()) {
+            return productMono;
+        }
+        
+        return productMono.flatMap(product -> 
+            measureService.getListUnitsName().flatMap(units -> {
+                String[] parsedComponents = APIProductBarCodeUtils.parseProductDescription(
+                    response.description(), 
+                    units
+                );
+                
+                return updateProductWithParsedComponents(product, parsedComponents);
+            })
+        );
+    }
 
+    private Mono<ProductStructure> updateProductWithParsedComponents(ProductStructure product, String[] components) {
+        String productName = components[0];
+        String quantityString = components[1];
+        String unitName = components[2];
+        
+        if (productName != null && !productName.isEmpty()) {
+            product.setName(productName);
+        }
+        
+        Double quantity = parseQuantitySafely(quantityString);
+        UnityOfMeasureDTO unitDto = new UnityOfMeasureDTO(unitName);
+        product.setProductUnitOfMeasureDTO(new ProductUnitOfMeasureResponseDTO(quantity, unitDto));
+        
+        return Mono.just(product);
+    }
+
+    private Double parseQuantitySafely(String quantityString) {
+        try {
+            return quantityString != null ? Double.parseDouble(quantityString) : null;
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private Mono<ProductStructure> processProductCategory(APIProductBarCodeResponseDTO response, 
+                                                        Mono<ProductStructure> productMono) {
+        if (response.gpc() == null || response.gpc().code() == null || response.gpc().code().isEmpty()) {
+            return productMono;
+        }
+        return productMono.flatMap(product -> 
+            categoryService.getListCategories().flatMap(categories -> {
+            	
+                Long categoryCode = APIProductBarCodeUtils.findMatchingCategoryCode(
+                    response.gpc().code(), 
+                    categories.stream()
+                        .map(CategoryDTO::gpcCode)
+                        .collect(Collectors.toList())
+                );
+                
+                return handleCategoryMapping(product, categoryCode, categories);
+            })
+        );
+    }
+
+    private Mono<ProductStructure> handleCategoryMapping(ProductStructure product, Long categoryCode, 
+                                                       List<CategoryDTO> categories) {
+        if (categoryCode == null) {
+            return Mono.just(product);
+        }
+        if (String.valueOf(categoryCode).length() > MIN_CATEGORY_CODE_LENGTH) {
+            return handleExtendedCategoryMapping(product, categoryCode);
+        }
+        
+        return handleSimpleCategoryMapping(product, categoryCode, categories);
+    }
+
+    private Mono<ProductStructure> handleExtendedCategoryMapping(ProductStructure product, Long categoryCode) {
+        return categoryService.getBrickCodeModel(categoryCode)
+            .flatMap(brickModel -> categoryService.getCategoryByGpcCode(brickModel.getGpcCode())
+                .map(categoryModel -> {
+                    product.setCategory(new CategoryDTO(
+                        categoryModel.getName(), 
+                        brickModel.getGpcCode()
+                    ));
+                    return product;
+                })
+            ).onErrorResume(e->  Mono.just(product));
+    }
+
+    private Mono<ProductStructure> handleSimpleCategoryMapping(ProductStructure product, Long categoryCode,
+                                                            List<CategoryDTO> categories) {
+        Optional<CategoryDTO> matchingCategory = categories.stream()
+            .filter(c -> c.gpcCode().equals(categoryCode))
+            .findFirst();
+        
+        matchingCategory.ifPresent(category -> 
+            product.setCategory(new CategoryDTO(category.name(), categoryCode))
+        );
+        
+        return Mono.just(product);
+    }
+
+    private Mono<ProductStructure> setAdditionalProductInfo(APIProductBarCodeResponseDTO response,
+                                                          Mono<ProductStructure> productMono) {
+        return productMono.doOnNext(product -> {
+            if (response.brand() != null && response.brand().name() != null && 
+                !response.brand().name().isEmpty()) {
+                product.setBrand(response.brand().name());
+            }
+            if (response.avgPrice() != null) {
+                product.setPurchasedPrice(response.avgPrice());
+            }
+        });
+    }
+}
