@@ -175,7 +175,7 @@ public class ProductService {
 
     private Mono<CategoryDTO> retrieveCategoryDetails(Long categoryId) {
         return categoryService.getCategoryById(categoryId)
-            .map(category -> new CategoryDTO(category.getName()));
+            .map(category -> new CategoryDTO(category.getName(), category.getGpcCode()));
     }
 
     private Mono<ProductUnitOfMeasureResponseDTO> retrieveUnitOfMeasureDetails(ProductModel product) {
