@@ -1,12 +1,15 @@
 package com.project.mysell.service.product.barcode;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.mysell.dto.category.CategoryDTO;
 import com.project.mysell.dto.product.barcode.APIProductBarCodeResponseDTO;
 import com.project.mysell.dto.product.barcode.ProductStructure;
@@ -15,6 +18,7 @@ import com.project.mysell.dto.unit.UnityOfMeasureDTO;
 import com.project.mysell.exceptions.product.ProductNotFoundException;
 import com.project.mysell.exceptions.server.InternalServerErrorException;
 import com.project.mysell.exceptions.server.TooManyRequestsException;
+import com.project.mysell.infra.redis.RedisService;
 import com.project.mysell.service.CategoryService;
 import com.project.mysell.service.UnityOfMeasureService;
 
@@ -23,11 +27,16 @@ import reactor.core.publisher.Mono;
 @Service
 public class APIProductBarCodeService {
     private static final int MIN_CATEGORY_CODE_LENGTH = 2;
-    
     private final WebClient webClient;
     private final APIProductBarCodeProperties properties;
     private final UnityOfMeasureService measureService;
     private final CategoryService categoryService;
+    
+    @Autowired
+    private RedisService redisService;
+    
+    @Autowired
+    private ObjectMapper objectMapper;
 
     public APIProductBarCodeService(
             WebClient.Builder webClientBuilder,
@@ -39,20 +48,50 @@ public class APIProductBarCodeService {
         this.categoryService = categoryService;
         this.webClient = webClientBuilder.baseUrl(properties.getUrl()).build();
     }
+    
+    private String getBarcodeCacheKey(Long barcode) {
+        return "barcode:" + barcode;
+    }
 
     public Mono<ProductStructure> getProductByBarCode(Long barcode) {
+        String cacheKey = getBarcodeCacheKey(barcode);
+        
+        return redisService.getValue(cacheKey)
+            .flatMap(value -> {
+                if (value instanceof ProductStructure) {
+                    return Mono.just((ProductStructure) value);
+                } else if (value instanceof Map) {
+                    ProductStructure product = objectMapper.convertValue(value, ProductStructure.class);
+                    return Mono.just(product);
+                }
+                return Mono.empty();
+            })
+            .switchIfEmpty(
+                fetchProductFromAPI(barcode)
+                    .flatMap(product -> 
+                        cacheProduct(cacheKey, product)
+                            .thenReturn(product)
+                    )
+            );
+    }
+    
+    private Mono<ProductStructure> fetchProductFromAPI(Long barcode) {
         return webClient.get()
             .uri(barcode.toString())
             .header(properties.getHeader(), properties.getToken())
             .retrieve()
             .onStatus(status -> status.value() == 429, 
-            	response -> Mono.error(new TooManyRequestsException()))
+                response -> Mono.error(new TooManyRequestsException()))
             .onStatus(status -> status.value() == 404, 
                 response -> Mono.error(new ProductNotFoundException(barcode)))
             .onStatus(status -> status.is5xxServerError(), 
                 response -> Mono.error(new InternalServerErrorException()))
             .bodyToMono(APIProductBarCodeResponseDTO.class)
             .flatMap(this::convertToProductStructure);
+    }
+    
+    private Mono<Boolean> cacheProduct(String cacheKey, ProductStructure product) {
+        return redisService.setValue(cacheKey, product);
     }
 
     private Mono<ProductStructure> convertToProductStructure(APIProductBarCodeResponseDTO response) {
@@ -115,7 +154,7 @@ public class APIProductBarCodeService {
         }
         return productMono.flatMap(product -> 
             categoryService.getListCategories().flatMap(categories -> {
-            	
+                
                 Long categoryCode = APIProductBarCodeUtils.findMatchingCategoryCode(
                     response.gpc().code(), 
                     categories.stream()
@@ -177,5 +216,11 @@ public class APIProductBarCodeService {
                 product.setPurchasedPrice(response.avgPrice());
             }
         });
+    }
+    
+    // Method to invalidate cached barcode data if needed
+    public Mono<Boolean> invalidateBarCodeCache(Long barcode) {
+        String cacheKey = getBarcodeCacheKey(barcode);
+        return redisService.deleteKey(cacheKey);
     }
 }
