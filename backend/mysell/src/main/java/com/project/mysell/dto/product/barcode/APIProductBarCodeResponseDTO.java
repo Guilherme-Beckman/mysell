@@ -1,7 +1,8 @@
 package com.project.mysell.dto.product.barcode;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record APIProductBarCodeResponseDTO(
     @JsonProperty("avg_price") Double avgPrice,
     BrandDTO brand,

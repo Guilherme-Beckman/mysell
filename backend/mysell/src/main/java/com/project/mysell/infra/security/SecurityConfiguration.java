@@ -35,7 +35,6 @@ public class SecurityConfiguration {
 	                 .pathMatchers(HttpMethod.POST, "/unity").hasAuthority("ADMIN")
 	                 .pathMatchers(HttpMethod.PUT, "/unity").hasAuthority("ADMIN")
 	                 .pathMatchers(HttpMethod.DELETE, "/unity").hasAuthority("ADMIN")
-	                 .pathMatchers(HttpMethod.POST, "/product").permitAll()
 	                 .pathMatchers(HttpMethod.GET, "/product").hasAuthority("ADMIN")
 	                 .pathMatchers(HttpMethod.GET, "/sell").hasAuthority("ADMIN")
 	                 .pathMatchers(HttpMethod.GET, "/event").hasAuthority("ADMIN")
