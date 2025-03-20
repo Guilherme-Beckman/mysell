@@ -36,7 +36,6 @@ spring:
           auth: true
           starttls:
             enable: true
-
 jwt:
   secret: ${SECRET}
 api:
