@@ -67,11 +67,11 @@ public class APIProductBarCodeService {
                 return Mono.empty();
             })
             .switchIfEmpty(
-                fetchProductFromAPI(barcode)
+                Mono.defer(()->fetchProductFromAPI(barcode)
                     .flatMap(product -> 
                         cacheProduct(cacheKey, product)
                             .thenReturn(product)
-                    )
+                    )) 
             );
     }
     

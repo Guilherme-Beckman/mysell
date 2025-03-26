@@ -225,7 +225,6 @@ public class SellService {
             .flatMap(this::convertToSellResponseDTO);
     }
     
-    // Armazena a venda no cache com expiração
     private Mono<Boolean> cacheSell(SellModel sell) {
         String cacheKey = getSellCacheKey(sell.getSellsId());
         return redisService.setValueWithExpiration(cacheKey, sell, CACHE_TTL.getSeconds());

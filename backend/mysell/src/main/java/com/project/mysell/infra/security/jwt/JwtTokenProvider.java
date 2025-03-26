@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,6 +20,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 
 import com.project.mysell.infra.security.CustomUserDetails;
+import com.project.mysell.repository.UserRepository;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -27,6 +29,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
@@ -34,6 +37,8 @@ public class JwtTokenProvider {
 	private static final String AUTHORITIES_KEY = "role";
 	private final JwtProperties jwtProperties;
 	private SecretKey secretKey;
+	@Autowired
+	private UserRepository userRepository;
 	@PostConstruct
 	public void init() {
 	
@@ -97,26 +102,40 @@ public class JwtTokenProvider {
         return false;
     }
 	
-	public String createTokenFromOAuth2(Authentication authentication) {
-		OAuth2AuthenticationToken auth2AuthenticationToken  = (OAuth2AuthenticationToken) authentication;
-		OAuth2User auth2User =  auth2AuthenticationToken.getPrincipal();
-		String username = auth2User.getAttribute("email");
-		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-		Claims claims = Jwts.claims().setSubject(username);
-		
-		if(!authorities.isEmpty()) {
-			claims.put(AUTHORITIES_KEY, authorities.stream().map(GrantedAuthority::getAuthority)
-					.collect(Collectors.joining(",")));
-		}
-		Date now = new Date();
-		Date validity = new Date(now.getTime()+ this.jwtProperties.getValidityInMs());
-		
-        return Jwts.builder()
-        		.setClaims(claims)
-        		.setIssuedAt(now)
-        		.setExpiration(validity)
-                .signWith(this.secretKey, SignatureAlgorithm.HS256).compact();
+	public Mono<String> createTokenFromOAuth2(Authentication authentication) {
+
+	    OAuth2AuthenticationToken auth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
+	    OAuth2User auth2User = auth2AuthenticationToken.getPrincipal();
+	    String username = auth2User.getAttribute("email");
+	    Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+	    Claims claims = Jwts.claims().setSubject(username);
+
+	    return userRepository.findByEmail(username)
+	        .flatMap(user -> {
+	            claims.put("userId", user.getUsersId());
+	            if (!authorities.isEmpty()) {
+	                String authoritiesString = authorities.stream()
+	                    .map(GrantedAuthority::getAuthority)
+	                    .collect(Collectors.joining(","));
+	                claims.put(AUTHORITIES_KEY, authoritiesString);
+	            }
+
+	            Date now = new Date();
+
+	            Date validity = new Date(now.getTime() + jwtProperties.getValidityInMs());
+
+	            String token = Jwts.builder()
+	                .setClaims(claims)
+	                .setIssuedAt(now)
+	                .setExpiration(validity)
+	                .signWith(secretKey, SignatureAlgorithm.HS256)
+	                .compact();
+
+
+	            return Mono.just(token);
+	        });
 	}
+
     public String extractJwtToken(String authorizationHeader) {
         return authorizationHeader.substring(7);
         }
