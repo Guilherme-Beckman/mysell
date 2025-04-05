@@ -32,6 +32,7 @@ export class AuthFormComponent  implements OnInit {
       group[field.name] = new FormControl(field.defaultValue || '', field.validators || []);
     });
     this.form = this.fb.group(group);
+    console.log(this.fields);
   }
 
   onSubmit() { 
