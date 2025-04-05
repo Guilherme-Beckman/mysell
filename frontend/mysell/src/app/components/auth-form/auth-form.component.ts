@@ -1,8 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { IonicModule } from '@ionic/angular';
+
+
 export interface AuthFormField {
   name: string;
+  label: string;
   placeholder: string;
   type: string;
   defaultValue?: any;  
@@ -12,10 +16,11 @@ export interface AuthFormField {
   selector: 'app-auth-form',
   templateUrl: './auth-form.component.html',
   styleUrls: ['./auth-form.component.scss'],
-  imports:  [CommonModule, ReactiveFormsModule],
+  imports:  [CommonModule, ReactiveFormsModule, IonicModule]
 })
 export class AuthFormComponent  implements OnInit {
-  
+  @Input() title: string = '';
+  @Input() buttonText: string = ''; 
   @Input() fields: AuthFormField[] = [];
   @Output() formSubmitted =  new EventEmitter<any>();
   form!: FormGroup;

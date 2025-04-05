@@ -1,0 +1,29 @@
+<div class="content-space">
+  <ion-content class="content-padding">
+    <ion-header>
+      <ion-title>
+        {{ title}}
+      </ion-title>
+    </ion-header>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <ng-container *ngFor="let field of fields">
+      <ion-item>
+        <ion-label>
+          {{ field.label }}
+        </ion-label>
+        <ion-input        
+        [formControlName]="field.name"
+        [type]="field.type"
+        [placeholder]="field.placeholder"
+        >
+        </ion-input>
+      </ion-item>
+      <ion-button expand="block" type="submit" [disabled]="form.invalid">
+        {{ buttonText }}
+      </ion-button>
+    </ng-container>
+  </form>
+
+  </ion-content>
+
+</div>
