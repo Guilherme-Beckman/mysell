@@ -1,0 +1,38 @@
+import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+export interface AuthFormField {
+  name: string;
+  placeholder: string;
+  type: string;
+  defaultValue?: any;  
+  validators?: any[]; 
+}
+@Component({
+  selector: 'app-auth-form',
+  templateUrl: './auth-form.component.html',
+  styleUrls: ['./auth-form.component.scss'],
+  imports:  [CommonModule, ReactiveFormsModule],
+})
+export class AuthFormComponent  implements OnInit {
+  
+  @Input() fields: AuthFormField[] = [];
+  @Output() formSubmitted =  new EventEmitter<any>();
+  form!: FormGroup;
+  constructor(private fb: FormBuilder) {}
+
+  ngOnInit() {
+    const group: { [key: string]: FormControl } = {};
+    this.fields.forEach(field => {
+      group[field.name] = new FormControl(field.defaultValue || '', field.validators || []);
+    });
+    this.form = this.fb.group(group);
+  }
+
+  onSubmit() { 
+    if (this.form.valid) {
+      this.formSubmitted.emit(this.form.value);
+    }
+  }
+
+}
