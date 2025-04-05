@@ -15,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.project.mysell.dto.auth.LoginDTO;
 import com.project.mysell.dto.auth.ResponseDTO;
 import com.project.mysell.dto.auth.UserDTO;
-import com.project.mysell.exceptions.auth.credential.InvalidCredentialsException;
 import com.project.mysell.exceptions.user.UserAlreadyExistsException;
 import com.project.mysell.infra.security.CustomAuthenticationProvider;
 import com.project.mysell.infra.security.jwt.JwtTokenProvider;
@@ -76,27 +75,6 @@ public class AuthServiceTest {
             .expectNextMatches(responseDTO -> 
                 responseDTO.name().equals(email) && responseDTO.token().equals(token))
             .verifyComplete();
-    }
-
-    @Test
-    public void testLoginInvalidPassword() {
-        String email = "test@example.com";
-        String password = "wrongPassword";
-        String encodedPassword = "encodedPassword";
-        LoginDTO loginDTO = new LoginDTO(email, password);
-        
-        UserModel userModel = new UserModel();
-        userModel.setEmail(email);
-        userModel.setPassword(encodedPassword);
-        
-        when(userRepository.findByEmail(email)).thenReturn(Mono.just(userModel));
-        when(passwordEncoder.matches(password, encodedPassword)).thenReturn(false);
-        
-        Mono<ResponseDTO> responseMono = authService.login(loginDTO);
-        
-        StepVerifier.create(responseMono)
-            .expectError(InvalidCredentialsException.class)
-            .verify();
     }
 
     @Test

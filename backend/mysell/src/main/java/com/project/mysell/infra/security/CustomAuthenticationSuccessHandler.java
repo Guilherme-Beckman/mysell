@@ -56,7 +56,7 @@ public class CustomAuthenticationSuccessHandler implements ServerAuthenticationS
     }
 
     private Mono<String> createToken(Authentication authentication) {
-        return Mono.just(jwtTokenProvider.createTokenFromOAuth2(authentication));
+        return jwtTokenProvider.createTokenFromOAuth2(authentication);
     }
 
     private Mono<String> createNewUserAndGenerateToken(String email, Authentication authentication) {

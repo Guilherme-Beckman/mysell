@@ -172,6 +172,7 @@ public class EventService {
     
     private EventResponseDTO convertToEventResponseDTO(EventModel event) {
         return new EventResponseDTO(
+        	event.getEventsId(),
             event.getName(),
             event.getDate(),
             event.getTime(),

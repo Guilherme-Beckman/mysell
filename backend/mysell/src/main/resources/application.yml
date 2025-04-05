@@ -17,14 +17,12 @@ spring:
     url: r2dbc:postgresql://localhost:5432/mysell
     username: postgres
     password: ${DB_PASSWORD}
-
   flyway:
     enabled: true
     url: jdbc:postgresql://localhost:5432/mysell
     user: postgres
     password: ${DB_PASSWORD}
     locations: classpath:db/migration
-
   mail:
     host: smtp.gmail.com
     port: 587
@@ -44,3 +42,4 @@ api:
       url: ${BARCODE_API_BASE_URL}
       token: ${BARCODE_API_BASE_TOKEN}
       header: ${BARCODE_API_BASE_HEADER}
+

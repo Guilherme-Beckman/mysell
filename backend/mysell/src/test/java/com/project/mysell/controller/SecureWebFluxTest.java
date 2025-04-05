@@ -10,6 +10,7 @@ import org.springframework.core.annotation.AliasFor;
 import org.springframework.test.context.TestPropertySource;
 
 import com.project.mysell.MockConfig;
+import com.project.mysell.infra.security.CustomAuthenticationProvider;
 import com.project.mysell.infra.security.CustomReactiveUserDetailsService;
 import com.project.mysell.infra.security.SecurityConfiguration;
 import com.project.mysell.infra.security.jwt.JwtProperties;
@@ -22,6 +23,7 @@ import com.project.mysell.infra.security.jwt.JwtTokenProvider;
 @Import({
     SecurityConfiguration.class,
     CustomReactiveUserDetailsService.class,
+    CustomAuthenticationProvider.class,
     JwtTokenProvider.class,
     JwtTokenAuthenticationFilter.class,
     JwtProperties.class,
