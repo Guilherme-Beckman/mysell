@@ -207,6 +207,7 @@ public class SellService {
             ProductResponseDTO productResponseDTO
         ) {
         return new SellResponseDTO(
+        	sellModel.getSellsId(),
             sellModel.getQuantity(),
             sellModel.getCreatedAt(),
             productResponseDTO
