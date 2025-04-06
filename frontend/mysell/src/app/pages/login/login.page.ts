@@ -9,7 +9,7 @@ import { AuthFormComponent } from 'src/app/components/auth-form/auth-form.compon
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, AuthFormComponent]
+  imports: [CommonModule, FormsModule, AuthFormComponent]
 })
 export class LoginPage implements OnInit {
 
