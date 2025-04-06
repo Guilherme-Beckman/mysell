@@ -11,17 +11,18 @@
   }
   
   .successMessage, .errorMessage {
+    display: flex;
     padding: 0.75rem;
     border-radius: 4px;
     text-align: center;
     font-size: 1rem;
-    color: white;
+    color: black;
   }
   
   .successMessage {
-    background-color: #28a745;
+    background-color: #ffffff;
   }
   
   .errorMessage {
-    background-color: #dc3545;
+    background-color: #ffffff;
   }

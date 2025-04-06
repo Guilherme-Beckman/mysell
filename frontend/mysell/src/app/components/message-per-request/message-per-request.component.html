@@ -1,4 +1,17 @@
 <div class="message-container">
-  <div *ngIf="successMessage" class="successMessage">{{ successMessage }}</div>
-  <div *ngIf="errorMessage" class="errorMessage">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="successMessage">
+   <p>{{ successMessage }}</p> 
+    <svg width="24" height="14" viewBox="0 0 31 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2.33325 8.33341L12.3333 18.3334L28.9999 1.66675" 
+            stroke="#E86868" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <div *ngIf="errorMessage" class="errorMessage">
+    <p>{{ errorMessage }}</p>
+    <svg width="24" height="24" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M21.4732 4.22009C20.8966 3.13009 19.1032 3.13009 18.5266 4.22009L3.52655 32.5534C3.39203 32.8074 3.32549 33.0919 3.33339 33.3792C3.3413 33.6666 3.42337 33.947 3.57165 34.1932C3.71993 34.4394 3.92937 34.6431 4.17962 34.7845C4.42988 34.9259 4.71245 35.0002 4.99988 35.0001H34.9999C35.2873 35.0007 35.57 34.9268 35.8203 34.7856C36.0707 34.6444 36.2802 34.4408 36.4284 34.1945C36.5766 33.9483 36.6585 33.6678 36.6661 33.3805C36.6736 33.0932 36.6066 32.8088 36.4715 32.5551L21.4732 4.22009ZM21.6666 30.0001H18.3332V26.6668H21.6666V30.0001ZM18.3332 23.3334V15.0001H21.6666L21.6682 23.3334H18.3332Z" 
+            fill="#E86868"/>
+    </svg>
+  </div>
 </div>
