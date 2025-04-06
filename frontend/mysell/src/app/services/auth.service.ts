@@ -21,6 +21,16 @@ export class AuthService{
       withCredentials: true
     });
   }
+  register(email: string, password: string): Observable<any> {
+    const headers = new HttpHeaders()
+      .set('Content-Type', 'application/json')
+      .set('Access-Control-Allow-Origin', '*');
+    const body = JSON.stringify({ email, password });
+    return this.httpClient.post<any>(`${this.apiUrl}register`, body, {
+      headers,
+      withCredentials: true
+    });
+  }
   saveToken(token: string):void{
     if(this.isLocalStorageAvailable()){
       localStorage.setItem('token', token);

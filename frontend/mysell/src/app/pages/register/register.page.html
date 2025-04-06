@@ -7,7 +7,7 @@
     { name: 'password', label: 'Senha', placeholder: '', type: 'password', validators: [] },
     { name: 'confirmPassword', label: 'Confirmar Senha', placeholder: '', type: 'password', validators: [] }
 ]"
-  (formSubmitted)="handleForm($event)"
+  (formSubmitted)="onRegister($event)"
   [textGoogleButton]="'Registrar com Google'"
   [textFacebookButton]="'Registrar com Facebook'"
   [textFooter]="'Já possui uma conta?'"
@@ -16,4 +16,7 @@
   >
   
 </app-auth-form>
+
+<app-message-per-request [errorMessage]="(errorMessage$ | async) ?? ''" [successMessage]="(successMessage$ | async) ?? ''"></app-message-per-request>
+<app-loading-sppiner [isLoading]="isLoading"></app-loading-sppiner>
 

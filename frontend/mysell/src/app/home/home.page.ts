@@ -9,4 +9,10 @@ import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/stan
 })
 export class HomePage {
   constructor() {}
+
+  token: string | null = null;
+  ngOnInit() {  
+    this.token = localStorage.getItem('token');
+    console.log(this.token);
+  }
 }
