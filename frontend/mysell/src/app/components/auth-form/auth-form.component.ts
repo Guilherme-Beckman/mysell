@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-
+import { ScreenOrientation, OrientationType } from '@capawesome/capacitor-screen-orientation';
 
 export interface AuthFormField {
   name: string;
@@ -34,13 +34,28 @@ export class AuthFormComponent  implements OnInit {
   form!: FormGroup;
   constructor(private fb: FormBuilder) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     const group: { [key: string]: FormControl } = {};
     this.fields.forEach(field => {
       group[field.name] = new FormControl(field.defaultValue || '', field.validators || []);
     });
     this.form = this.fb.group(group);
     console.log(this.fields);
+    try {
+      await ScreenOrientation.lock({ type: OrientationType.PORTRAIT });
+      console.log('Locked to portrait mode for auth form');
+    } catch (error) {
+      console.error('Error locking orientation:', error);
+    }
+  }
+  async ngOnDestroy() {
+    // Unlock orientation when component is destroyed
+    try {
+      await ScreenOrientation.unlock();
+      console.log('Orientation unlocked');
+    } catch (error) {
+      console.error('Error unlocking orientation:', error);
+    }
   }
 
   onSubmit() { 
