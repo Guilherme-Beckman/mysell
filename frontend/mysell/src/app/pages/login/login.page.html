@@ -1,0 +1,17 @@
+
+<app-auth-form
+  [title]="'Login'"
+  [buttonText]="'Continuar'"
+  [fields]="[
+    { name: 'email', label: 'Email', placeholder: '', type: 'email', validators: [] },
+    { name: 'password', label: 'Senha', placeholder: '', type: 'password', validators: [] }
+  ]"
+  (formSubmitted)="handleForm($event)"
+  [textGoogleButton]="'Fazer login com Google'"
+  [textFacebookButton]="'Fazer login com Facebook'"
+  [textFooter]="'Não possui uma conta?'"
+  [textLink]="'Crie uma aqui'"
+  >
+  
+</app-auth-form>
+

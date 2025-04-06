@@ -21,8 +21,16 @@ export interface AuthFormField {
 export class AuthFormComponent  implements OnInit {
   @Input() title: string = '';
   @Input() buttonText: string = ''; 
+  @Input() textGoogleButton: string = '';
+  @Input() textFacebookButton: string = '';
   @Input() fields: AuthFormField[] = [];
+  @Input() textFooter: string = '';
+  @Input() textLink: string = '';
+
   @Output() formSubmitted =  new EventEmitter<any>();
+  @Output() googleButtonClicked = new EventEmitter<void>();
+  @Output() facebookButtonClicked = new EventEmitter<void>(); 
+  @Output() footerClicked = new EventEmitter<void>(); 
   form!: FormGroup;
   constructor(private fb: FormBuilder) {}
 
@@ -32,6 +40,7 @@ export class AuthFormComponent  implements OnInit {
       group[field.name] = new FormControl(field.defaultValue || '', field.validators || []);
     });
     this.form = this.fb.group(group);
+    console.log(this.fields);
   }
 
   onSubmit() { 
@@ -40,4 +49,14 @@ export class AuthFormComponent  implements OnInit {
     }
   }
 
+  googleEvent() { 
+    this.googleButtonClicked.emit();
+  }
+  facebookEvent() { 
+    this.facebookButtonClicked.emit();
+  }
+
+  handleFooterClick(){
+    this.footerClicked.emit();
+  }
 }
