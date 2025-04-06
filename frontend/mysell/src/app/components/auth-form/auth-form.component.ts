@@ -26,7 +26,7 @@ export class AuthFormComponent  implements OnInit {
   @Input() fields: AuthFormField[] = [];
   @Input() textFooter: string = '';
   @Input() textLink: string = '';
-
+  @Input() link: string = ''; 
   @Output() formSubmitted =  new EventEmitter<any>();
   @Output() googleButtonClicked = new EventEmitter<void>();
   @Output() facebookButtonClicked = new EventEmitter<void>(); 

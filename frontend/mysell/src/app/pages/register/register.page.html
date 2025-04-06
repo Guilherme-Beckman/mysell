@@ -1,0 +1,19 @@
+
+<app-auth-form
+  [title]="'Registro'"
+  [buttonText]="'Continuar'"
+  [fields]="[
+    { name: 'email', label: 'Email', placeholder: '', type: 'email', validators: [] },
+    { name: 'password', label: 'Senha', placeholder: '', type: 'password', validators: [] },
+    { name: 'confirmPassword', label: 'Confirmar Senha', placeholder: '', type: 'password', validators: [] }
+]"
+  (formSubmitted)="handleForm($event)"
+  [textGoogleButton]="'Registrar com Google'"
+  [textFacebookButton]="'Registrar com Facebook'"
+  [textFooter]="'Já possui uma conta?'"
+  [textLink]="'Faça login'"
+  [link]="'/login'"
+  >
+  
+</app-auth-form>
+
