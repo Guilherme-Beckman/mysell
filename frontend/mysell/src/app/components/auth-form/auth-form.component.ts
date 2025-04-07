@@ -49,7 +49,6 @@ export class AuthFormComponent  implements OnInit {
     }
   }
   async ngOnDestroy() {
-    // Unlock orientation when component is destroyed
     try {
       await ScreenOrientation.unlock();
       console.log('Orientation unlocked');
