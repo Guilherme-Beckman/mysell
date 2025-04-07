@@ -8,7 +8,7 @@ import { MessagePerRequestComponent } from 'src/app/components/message-per-reque
 import { LoadingSppinerComponent } from 'src/app/components/loading-sppiner/loading-sppiner.component';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
-
+import { Browser } from '@capacitor/browser';
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
@@ -52,5 +52,29 @@ export class RegisterPage implements OnInit {
     });
   }
 
+  async onGoogleRegister(): Promise<void>{
+    Browser.addListener('browserFinished', async() => {
+      console.log('Browser closed');
+    
+  })
+  await Browser.open({
+    url: 'https://501a-2804-6194-1f74-d900-1fef-1108-9d04-adfc.ngrok-free.app/oauth2/authorization/google'
+  });
+}
+  
+  onFacebookRegister(): void {
+    const facebookAuthWindow = window.open('http://localhost:8080/oauth2/authorization/facebook', 'GoogleAuth', 'width=500,height=600');
+    window.addEventListener('message', (event) => {
+      if(event.origin !== 'http://localhost:8080') return;
+
+      const token = event.data.token;
+
+      if(token){
+        this.authService.saveToken(token);
+        console.log(token);
+        this.router.navigate(['/home']);
+    }
+  });
+  }
 }
 
