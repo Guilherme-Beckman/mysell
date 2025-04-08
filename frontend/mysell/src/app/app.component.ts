@@ -10,37 +10,38 @@ import { App } from '@capacitor/app';
   imports: [IonApp, IonRouterOutlet],
 })
 export class AppComponent {
-  constructor(private platform: Platform, private authService: AuthService, private router:Router) {
-   // if(this.authService.isLoggedIn()) this.router.navigate(['/home']);  
+  constructor(
+    private platform: Platform,
+    private authService: AuthService,
+    private router: Router
+  ) {
+    //if (this.authService.isLoggedIn()) this.router.navigate(['/home']);
     this.initializeApp();
-    
   }
 
-
-initializeApp() {
-  //When the platform is ready, we can set up the deep link listener
-  this.platform.ready().then(() => {
-    // Listen for deep link events
-    App.addListener('appUrlOpen', (event: { url: string }) => {
-      console.log('Deep link received:', event.url);
-      this.handleDeepLink(event.url);
+  initializeApp() {
+    //When the platform is ready, we can set up the deep link listener
+    this.platform.ready().then(() => {
+      // Listen for deep link events
+      App.addListener('appUrlOpen', (event: { url: string }) => {
+        this.handleDeepLink(event.url);
+      });
     });
-  });
-}
+  }
 
-handleDeepLink(url: string) {
-  // Check if this is our callback URL
-  if (url.includes('mysell://callback')) {
-    // Parse the URL to get the token
-    const urlObj = new URL(url);
-    const token = urlObj.searchParams.get('token');
-    
-    if (token) {
-      // Save the token
-      this.authService.saveToken(token);
-      // Navigate to home
-      this.router.navigate(['/home']);
+  handleDeepLink(url: string) {
+    // Check if this is our callback URL
+    if (url.includes('mysell://callback')) {
+      // Parse the URL to get the token
+      const urlObj = new URL(url);
+      const token = urlObj.searchParams.get('token');
+
+      if (token) {
+        // Save the token
+        this.authService.saveToken(token);
+        // Navigate to home
+        this.router.navigate(['/home']);
+      }
     }
   }
-}
 }
