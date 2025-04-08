@@ -15,6 +15,7 @@ import {
   ScreenOrientation,
   OrientationType,
 } from '@capawesome/capacitor-screen-orientation';
+import { EyeSvgComponent } from '../eye-svg/eye-svg.component';
 
 export interface AuthFormField {
   name: string;
@@ -28,7 +29,7 @@ export interface AuthFormField {
   selector: 'app-auth-form',
   templateUrl: './auth-form.component.html',
   styleUrls: ['./auth-form.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule, IonicModule],
+  imports: [CommonModule, ReactiveFormsModule, IonicModule, EyeSvgComponent],
 })
 export class AuthFormComponent implements OnInit {
   @Input() title: string = '';
