@@ -1,9 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { GoogleSvgComponent } from '../google-svg/google-svg.component';
+import { FacebookSvgComponent } from '../facebook-svg/facebook-svg.component';
 
 @Component({
   selector: 'app-social-media-buttons',
   templateUrl: './social-media-buttons.component.html',
   styleUrls: ['./social-media-buttons.component.scss'],
+  imports: [GoogleSvgComponent, FacebookSvgComponent],
 })
 export class SocialMediaButtonsComponent implements OnInit {
   @Input() textGoogleButton: string = '';
