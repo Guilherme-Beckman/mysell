@@ -4,6 +4,7 @@ import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -24,8 +25,7 @@ import reactor.core.publisher.Mono;
 public class CustomAuthenticationSuccessHandler implements ServerAuthenticationSuccessHandler {
 
     private static final String EMAIL_ATTRIBUTE = "email";
-    private static final String AUTH_LOGIN_URL = "http://localhost:8080/auth/login";
-
+    private static final String APP_CALLBACK = "mysell://callback";
     @Autowired
     private UserRepository userRepository;
 
@@ -70,10 +70,10 @@ public class CustomAuthenticationSuccessHandler implements ServerAuthenticationS
 
     private Mono<Void> redirectToLogin(ServerWebExchange exchange, String token) {
         URI redirectUri = UriComponentsBuilder
-                .fromUriString(AUTH_LOGIN_URL)
-                .queryParam("token", token)
-                .build()
-                .toUri();
+                    .fromUriString(APP_CALLBACK)
+                    .queryParam("token", token)
+                    .build()
+                    .toUri();
 
         exchange.getResponse().setStatusCode(HttpStatus.FOUND);
         exchange.getResponse().getHeaders().setLocation(redirectUri);

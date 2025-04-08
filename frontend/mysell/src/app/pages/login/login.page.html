@@ -6,13 +6,13 @@
     { name: 'email', label: 'Email', placeholder: '', type: 'email', validators: [] },
     { name: 'password', label: 'Senha', placeholder: '', type: 'password', validators: [] }
   ]"
-  (formSubmitted)="handleForm($event)"
+  (formSubmitted)="onLogin($event)"
   [textGoogleButton]="'Fazer login com Google'"
   [textFacebookButton]="'Fazer login com Facebook'"
   [textFooter]="'Não possui uma conta?'"
   [textLink]="'Crie uma aqui'"
   [link]="'/register'"
   >
-  
 </app-auth-form>
-
+<app-message-per-request [errorMessage]="(errorMessage$ | async) ?? ''" [successMessage]="(successMessage$ | async) ?? ''"></app-message-per-request>
+<app-loading-sppiner [isLoading]="isLoading"></app-loading-sppiner>
