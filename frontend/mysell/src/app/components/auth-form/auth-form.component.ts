@@ -1,52 +1,77 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validator,
+  ValidatorFn,
+} from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { ScreenOrientation, OrientationType } from '@capawesome/capacitor-screen-orientation';
+import {
+  ScreenOrientation,
+  OrientationType,
+} from '@capawesome/capacitor-screen-orientation';
 
 export interface AuthFormField {
   name: string;
   label: string;
   placeholder: string;
   type: string;
-  defaultValue?: any;  
-  validators?: any[]; 
+  defaultValue?: any;
+  validators?: any[];
 }
 @Component({
   selector: 'app-auth-form',
   templateUrl: './auth-form.component.html',
   styleUrls: ['./auth-form.component.scss'],
-  imports:  [CommonModule, ReactiveFormsModule, IonicModule]
+  imports: [CommonModule, ReactiveFormsModule, IonicModule],
 })
-export class AuthFormComponent  implements OnInit {
+export class AuthFormComponent implements OnInit {
   @Input() title: string = '';
-  @Input() buttonText: string = ''; 
+  @Input() buttonText: string = '';
   @Input() textGoogleButton: string = '';
   @Input() textFacebookButton: string = '';
   @Input() fields: AuthFormField[] = [];
   @Input() textFooter: string = '';
   @Input() textLink: string = '';
-  @Input() link: string = ''; 
-  @Output() formSubmitted =  new EventEmitter<any>();
+  @Input() link: string = '';
+  @Output() formSubmitted = new EventEmitter<any>();
   @Output() googleButtonClicked = new EventEmitter<void>();
-  @Output() facebookButtonClicked = new EventEmitter<void>(); 
-  @Output() footerClicked = new EventEmitter<void>(); 
+  @Output() facebookButtonClicked = new EventEmitter<void>();
+  @Output() footerClicked = new EventEmitter<void>();
   form!: FormGroup;
+  showPassword: { [key: string]: boolean } = {};
   constructor(private fb: FormBuilder) {}
 
   async ngOnInit() {
     const group: { [key: string]: FormControl } = {};
-    this.fields.forEach(field => {
-      group[field.name] = new FormControl(field.defaultValue || '', field.validators || []);
+    this.fields.forEach((field) => {
+      group[field.name] = new FormControl(
+        field.defaultValue || '',
+        field.validators || []
+      );
+
+      if (field.type === 'password') {
+        this.showPassword[field.name] = false;
+      }
     });
     this.form = this.fb.group(group);
-    console.log(this.fields);
+    if (
+      this.form.contains('password') &&
+      this.form.contains('confirmPassword')
+    ) {
+      this.form.setValidators(
+        this.passwordMatchValidator('password', 'confirmPassword')
+      );
+    }
+
     try {
       await ScreenOrientation.lock({ type: OrientationType.PORTRAIT });
-      console.log('Locked to portrait mode for auth form');
-    } catch (error) {
-      console.error('Error locking orientation:', error);
-    }
+    } catch (error) {}
   }
   async ngOnDestroy() {
     try {
@@ -56,21 +81,42 @@ export class AuthFormComponent  implements OnInit {
       console.error('Error unlocking orientation:', error);
     }
   }
-
-  onSubmit() { 
+  togglePasswordVisibility(fieldName: string): void {
+    this.showPassword[fieldName] = !this.showPassword[fieldName];
+  }
+  onSubmit() {
     if (this.form.valid) {
       this.formSubmitted.emit(this.form.value);
     }
   }
 
-  googleEvent() { 
+  googleEvent() {
     this.googleButtonClicked.emit();
   }
-  facebookEvent() { 
+  facebookEvent() {
     this.facebookButtonClicked.emit();
   }
 
-  handleFooterClick(){
+  handleFooterClick() {
     this.footerClicked.emit();
+  }
+
+  passwordMatchValidator(
+    passwordField: string,
+    confirmPasswordField: string
+  ): ValidatorFn {
+    return (formGroup: AbstractControl): ValidationErrors | null => {
+      const password = formGroup.get(passwordField)?.value;
+      const confirmPassword = formGroup.get(confirmPasswordField)?.value;
+      if (password !== confirmPassword) {
+        formGroup
+          .get(confirmPasswordField)
+          ?.setErrors({ passwordMismatch: true });
+        return { passwordMismatch: true };
+      } else {
+        formGroup.get(confirmPasswordField)?.setErrors(null);
+        return null;
+      }
+    };
   }
 }
