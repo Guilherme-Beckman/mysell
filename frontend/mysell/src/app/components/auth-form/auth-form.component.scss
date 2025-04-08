@@ -105,65 +105,6 @@
   
   
   
-  /* Botões de Redes Sociais */
-  .social-media-buttons {
-    padding-top: 2rem;
-  }
-  
-  .social-button-container {
-    padding-bottom: 1.5rem;
-  }
-  
-  .social-button {
-    height: 5vh;
-    background-color: var(--medium-gray);
-    border-radius: 10px;
-    width: 100%;
-    padding: 0.75rem 1rem;
-    font-size: 4vmin;
-    border: none;
-    color: var(--text-gray);
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-  
-  /* Efeito visual ao pressionar no celular */
-  .social-button:active {
-    background-color: var(--light-gray);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-  }
-  
-  
-  /* Ícone + texto */
-  .icon-and-text {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-  
-  .icon-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: left;
-  }
-  
-  .icon-container svg {
-    padding-right: 2rem;
-    width: 24px;
-    height: 24px;
-    transition: transform 0.2s ease;
-  }
-  
-  /* Animação sutil no ícone ao tocar */
-  .social-button:active .icon-container svg {
-    transform: scale(1.1);
-  }
-  
   
   /* Rodapé */
   footer {
