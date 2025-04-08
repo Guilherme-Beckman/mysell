@@ -33,7 +33,7 @@ export class AuthService {
 
   register(email: string, password: string): Observable<any> {
     return this.httpClient.post<any>(
-      `${this.apiUrl}register`,
+      `${this.apiUrl}auth/register`,
       { email, password },
       {
         headers: this.getJsonHeaders(),
