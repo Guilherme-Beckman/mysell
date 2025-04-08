@@ -75,7 +75,7 @@ export class RegisterPage implements OnInit {
     this.authService.onGoogleOAuth2();
   }
 
-  onFacebookRegister(): void {
+  async onFacebookRegister(): Promise<void> {
     this.authService.onFacebookOAuth2();
   }
 }
