@@ -1,12 +1,14 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Browser } from '@capacitor/browser';
 import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly apiUrl = 'http://192.168.100.105:8080/auth/';
+  private readonly apiUrl =
+    'https://cef6-2804-6194-1f74-d900-8862-d27d-aaf6-ef5a.ngrok-free.app/';
   private readonly expirationTimeValue = 60 * 60 * 1000; // 1 hora
 
   constructor(private httpClient: HttpClient) {}
@@ -17,13 +19,16 @@ export class AuthService {
 
   login(email: string, password: string): Observable<any> {
     return this.httpClient.post<any>(
-      `${this.apiUrl}login`,
+      `${this.apiUrl}auth/login`,
       { email, password },
       {
         headers: this.getJsonHeaders(),
         withCredentials: true,
       }
     );
+  }
+  logout(): void {
+    this.clearToken();
   }
 
   register(email: string, password: string): Observable<any> {
@@ -37,6 +42,26 @@ export class AuthService {
     );
   }
 
+  async onGoogleOAuth2(): Promise<void> {
+    Browser.addListener('browserFinished', async () => {
+      // Navegador fechado
+    });
+
+    await Browser.open({
+      url: `${this.apiUrl}oauth2/authorization/google`,
+    });
+  }
+
+  async onFacebookOAuth2(): Promise<void> {
+    Browser.addListener('browserFinished', async () => {
+      // Navegador fechado
+    });
+
+    await Browser.open({
+      url: `${this.apiUrl}oauth2/authorization/facebook`,
+    });
+  }
+
   // ============
   // Token Control
   // ============
@@ -45,7 +70,6 @@ export class AuthService {
     if (!this.isLocalStorageAvailable()) return;
 
     localStorage.setItem('token', token);
-
     this.setExpirationTime();
   }
 
@@ -57,6 +81,7 @@ export class AuthService {
       this.clearToken();
       return true;
     }
+
     return false;
   }
 
@@ -92,9 +117,11 @@ export class AuthService {
       'Access-Control-Allow-Origin': '*',
     });
   }
+
   private isLocalStorageAvailable(): boolean {
     return typeof window !== 'undefined' && !!window.localStorage;
   }
+
   private setExpirationTime(): void {
     const expiration = Date.now() + this.expirationTimeValue;
     localStorage.setItem('expiration', expiration.toString());
