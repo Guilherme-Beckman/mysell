@@ -1,28 +1,96 @@
+/* Enhanced Message Container */
 .message-container {
-    position: fixed;
-    top: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1000; 
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    max-width: 400px;
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 400px;
+  animation: slide-in 0.3s ease-out;
+  pointer-events: auto;
+}
+
+@keyframes slide-in {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* Common styles for both message types */
+.successMessage, .errorMessage {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  gap: 12px;
+  transition: all 0.2s ease;
+}
+
+/* Success message styling */
+.successMessage {
+  background-color: #f0fdf4;
+  border-left: 4px solid #22c55e;
+  color: #166534;
+}
+
+/* Error message styling */
+.errorMessage {
+  background-color: #fef2f2;
+  border-left: 4px solid #ef4444;
+  color: #991b1b;
+}
+
+/* Message text styling */
+.successMessage p, .errorMessage p {
+  margin: 0;
+  flex-grow: 1;
+  text-align: left;
+  font-weight: 500;
+}
+
+/* Success icon styling */
+.successMessage svg {
+  stroke: #22c55e;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+/* Error icon styling */
+.errorMessage svg {
+  fill: #ef4444;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+/* Hover effect for messages */
+.successMessage:hover, .errorMessage:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .message-container {
+    max-width: 90%;
+    top: 5%;
   }
   
   .successMessage, .errorMessage {
-    display: flex;
-    padding: 0.75rem;
-    border-radius: 4px;
-    text-align: center;
-    font-size: 1rem;
-    color: black;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
   }
-  
-  .successMessage {
-    background-color: #ffffff;
-  }
-  
-  .errorMessage {
-    background-color: #ffffff;
-  }
+}

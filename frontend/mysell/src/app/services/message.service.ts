@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MessageService {
   private successMessageSource = new BehaviorSubject<string>('');
@@ -10,20 +10,20 @@ export class MessageService {
 
   successMessage$ = this.successMessageSource.asObservable();
   errorMessage$ = this.errorMessageSource.asObservable();
-  constructor() { }
+  constructor() {}
 
   setSuccessMessage(message: string, next: any): void {
-    const nextMessage = next?.title ? next.title : 'Informação não disponível';
+    const nextMessage = next?.title ? next.title : '';
     this.successMessageSource.next(message + ' ' + nextMessage);
     this.clearMessagesAfterDelay();
   }
-  
+
   setErrorMessage(message: string, error: any): void {
-    const errorMessage = error?.error?.title ? error.error.title : 'Erro desconhecido';
+    const errorMessage = error?.error?.title ? error.error.title : '';
     this.errorMessageSource.next(message + ' ' + errorMessage);
     this.clearMessagesAfterDelay();
   }
-  
+
   private clearMessagesAfterDelay() {
     setTimeout(() => {
       this.successMessageSource.next('');

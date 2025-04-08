@@ -71,8 +71,12 @@
     height: 6%;
     border: none;
     border-bottom: 2px solid var(--medium-gray);
+    transition: border-color 0.3s ease, background-color 0.3s ease;
   }
   input:focus {
+    outline: none;
+    border-color: var(--mysell-red);
+    background-color: var(--white);
     outline: none;
   }
   
@@ -90,7 +94,16 @@
     font-size: 3.125vh;
     border: none;
     color: var(--white);
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
   }
+  
+  button:active {
+    background-color: var(--mysell-dark-red);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+  }
+  
+  
   
   /* Botões de Redes Sociais */
   .social-media-buttons {
@@ -113,8 +126,19 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
   
+  /* Efeito visual ao pressionar no celular */
+  .social-button:active {
+    background-color: var(--light-gray);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  }
+  
+  
+  /* Ícone + texto */
   .icon-and-text {
     display: flex;
     align-items: center;
@@ -126,13 +150,20 @@
     align-items: center;
     justify-content: center;
     text-align: left;
-  } 
+  }
   
   .icon-container svg {
     padding-right: 2rem;
     width: 24px;
     height: 24px;
+    transition: transform 0.2s ease;
   }
+  
+  /* Animação sutil no ícone ao tocar */
+  .social-button:active .icon-container svg {
+    transform: scale(1.1);
+  }
+  
   
   /* Rodapé */
   footer {
@@ -144,6 +175,28 @@
   a {
     color: var(--mysell-red);
   }
+  a {
+    color: var(--mysell-red);
+    position: relative;
+    text-decoration: none;
+  }
+  
+  a::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background-color: var(--mysell-red);
+    left: 0;
+    bottom: -2px;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+  
+  a:active::after {
+    transform: scaleX(1);
+  }
+  
   /* Para dispositivos médios (361px a 768px de largura) */
 @media (min-width: 361px) and (max-width: 768px) {
     .content-padding {
