@@ -10,9 +10,6 @@
         <ng-container *ngFor="let field of fields">
           <div class="form-item">
             <label>{{ field.label }}</label>
-          
-
-            <!-- Password input with toggle eye -->
             <div class="input-wrapper" *ngIf="field.type === 'password'; else regularInput">
               <div *ngIf="form.get('confirmPassword')?.errors?.['passwordMismatch'] && form.get('confirmPassword')?.touched">
                 <h6 class="error-text">As senhas não coincidem.</h6>
@@ -21,18 +18,10 @@
                 [formControlName]="field.name"
                 [type]="showPassword[field.name] ? 'text' : 'password'"
                 [placeholder]="field.placeholder">
-              <button 
-                type="button" 
-                class="toggle-password"
-                (click)="togglePasswordVisibility(field.name)">
-                <svg *ngIf="!showPassword[field.name]" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 5C7.453 5 3.57 7.909 2 12C3.57 16.091 7.453 19 12 19C16.547 19 20.43 16.091 22 12C20.43 7.909 16.547 5 12 5ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17ZM12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9Z" fill="#606060"/>
-                </svg>
-                <svg *ngIf="showPassword[field.name]" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 5C7.453 5 3.57 7.909 2 12C3.57 16.091 7.453 19 12 19C16.547 19 20.43 16.091 22 12C20.43 7.909 16.547 5 12 5ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17ZM12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9Z" fill="#606060"/>
-                  <path d="M3 3L21 21" stroke="#606060" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-              </button>
+                <app-eye-svg
+                [isEyeOpen]="showPassword[field.name]"
+                (toggle)="togglePasswordVisibility(field.name)">
+              </app-eye-svg>
             </div>
             <!-- Regular input for non-password fields -->
             <ng-template #regularInput>
@@ -51,34 +40,12 @@
         </button>
       </div>
     </form>
-    <div class="social-media-buttons">
-      <div class="social-button-container">
-        <button type="button" (click)="googleEvent()" class="social-button">
-          <div class="icon-and-text">
-            <div class="icon-container">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                xmlns="http://www.w3.org/2000/svg">
-                <path d="M3.064 7.51C3.89638 5.85353 5.17282 4.46106 6.7508 3.48806C8.32878 2.51507 10.1462 1.99987 12 2C14.695 2 16.959 2.991 18.69 4.605L15.823 7.473C14.786 6.482 13.468 5.977 12 5.977C9.395 5.977 7.19 7.737 6.405 10.1C6.205 10.7 6.091 11.34 6.091 12C6.091 12.66 6.205 13.3 6.405 13.9C7.191 16.264 9.395 18.023 12 18.023C13.345 18.023 14.49 17.668 15.386 17.068C15.9054 16.726 16.3501 16.2822 16.6932 15.7635C17.0363 15.2448 17.2706 14.6619 17.382 14.05H12V10.182H21.418C21.536 10.836 21.6 11.518 21.6 12.227C21.6 15.273 20.51 17.837 18.618 19.577C16.964 21.105 14.7 22 12 22C10.6866 22.0005 9.38604 21.7422 8.17254 21.2399C6.95905 20.7375 5.85645 20.0009 4.92776 19.0722C3.99907 18.1436 3.2625 17.0409 2.76013 15.8275C2.25777 14.614 1.99948 13.3134 2 12C2 10.386 2.386 8.86 3.064 7.51Z" fill="#606060"/>
-              </svg>
-            </div>
-            <span>{{ textGoogleButton }}</span>
-          </div>
-        </button>
-      </div>
-      <div class="social-button-container">
-        <button type="button" (click)="facebookEvent()" class="social-button">
-          <div class="icon-and-text">
-            <div class="icon-container">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                xmlns="http://www.w3.org/2000/svg">
-                <path d="M22 12C22 6.48 17.52 2 12 2C6.48 2 2 6.48 2 12C2 16.84 5.44 20.87 10 21.8V15H8V12H10V9.5C10 7.57 11.57 6 13.5 6H16V9H14C13.45 9 13 9.45 13 10V12H16V15H13V21.95C18.05 21.45 22 17.19 22 12Z" fill="#606060"/>
-              </svg>
-            </div>
-            <span>{{ textFacebookButton }}</span>
-          </div>
-        </button>
-      </div>
-    </div>
+    <app-social-media-buttons
+    [textGoogleButton]="textGoogleButton"
+    (googleEvent)="googleEvent()"
+    [textFacebookButton]="textFacebookButton"
+    (facebookEvent)="facebookEvent()"
+    ></app-social-media-buttons>
     <footer>
       <p>
         {{ textFooter }}
