@@ -5,15 +5,12 @@ import { Component, Input, OnInit } from '@angular/core';
   selector: 'app-message-per-request',
   templateUrl: './message-per-request.component.html',
   styleUrls: ['./message-per-request.component.scss'],
-  imports: [CommonModule]
+  imports: [CommonModule],
 })
-export class MessagePerRequestComponent  implements OnInit {
-  @Input() successMessage: string= '' ;    
-  @Input() errorMessage: string= '' ; 
-  constructor() { }
+export class MessagePerRequestComponent implements OnInit {
+  @Input() successMessage: string = '';
+  @Input() errorMessage: string = '';
+  constructor() {}
 
   ngOnInit() {}
-
-  
-
 }
