@@ -42,4 +42,5 @@ api:
       url: ${BARCODE_API_BASE_URL}
       token: ${BARCODE_API_BASE_TOKEN}
       header: ${BARCODE_API_BASE_HEADER}
-
+server:
+  forward-headers-strategy: framework
