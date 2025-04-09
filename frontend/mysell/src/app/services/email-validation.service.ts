@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
@@ -14,9 +15,6 @@ export class EmailValidationService {
     this.httpClient
       .get(`${this.apiUrl}auth/sendCode`, {
         responseType: 'text',
-        headers: {
-          'ngrok-skip-browser-warning': 'true',
-        },
       })
       .subscribe({
         next: (response) => {
@@ -29,5 +27,12 @@ export class EmailValidationService {
           console.log('Email code sending process completed.');
         },
       });
+  }
+  verifyEmailCode(code: string): Observable<any> {
+    return this.httpClient.post(
+      `${this.apiUrl}auth/verify`,
+      { code: code },
+      { responseType: 'text' }
+    );
   }
 }
