@@ -57,6 +57,7 @@
     maxlength="1"
     formControlName="digit5"
     (keydown)="onBackspace($event, digit4Input)"
+    (input)="onInputChange($event)"
     (paste)="onPaste($event)"
 
   />

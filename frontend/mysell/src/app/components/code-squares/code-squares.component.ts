@@ -67,11 +67,14 @@ export class CodeSquaresComponent implements OnInit {
   }
   onInputChange(event: Event, nextInput?: HTMLInputElement) {
     const input = event.target as HTMLInputElement;
+
     if (input.value.length === 1 && nextInput) {
       nextInput.focus();
-    }
-    if (this.codeForm.valid) {
-      this.onSubmit();
+    } else if (input.value.length === 1 && !nextInput) {
+      // Se não houver nextInput significa que estamos no último campo
+      if (this.codeForm.valid) {
+        this.onSubmit();
+      }
     }
   }
 
