@@ -68,12 +68,9 @@ export class AuthFormComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.initializeFormGroup();
     this.applyPasswordValidator();
-    this.lockOrientation();
   }
 
-  async ngOnDestroy() {
-    await this.unlockOrientation();
-  }
+  async ngOnDestroy() {}
 
   // Inicializa o FormGroup baseado no array de fields
   private initializeFormGroup(): void {
@@ -126,23 +123,6 @@ export class AuthFormComponent implements OnInit, OnDestroy {
   }
 
   // Tenta bloquear a orientação para portrait, logando erros se ocorrerem
-  private async lockOrientation(): Promise<void> {
-    try {
-      await ScreenOrientation.lock({ type: OrientationType.PORTRAIT });
-    } catch (error) {
-      // Opcional: log do erro para depuração
-    }
-  }
-
-  // Tenta desbloquear a orientação, logando erros se ocorrerem
-  private async unlockOrientation(): Promise<void> {
-    try {
-      await ScreenOrientation.unlock();
-      console.log('Orientation unlocked');
-    } catch (error) {
-      console.error('Error unlocking orientation:', error);
-    }
-  }
 
   // Alterna a visibilidade da senha para o campo especificado
   togglePasswordVisibility(fieldName: string): void {

@@ -7,15 +7,24 @@ export const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'email-validation',
     pathMatch: 'full',
   },
   {
     path: 'login',
-    loadComponent: () => import('./pages/login/login.page').then( m => m.LoginPage)
+    loadComponent: () =>
+      import('./pages/login/login.page').then((m) => m.LoginPage),
   },
   {
     path: 'register',
-    loadComponent: () => import('./pages/register/register.page').then( m => m.RegisterPage)
+    loadComponent: () =>
+      import('./pages/register/register.page').then((m) => m.RegisterPage),
+  },
+  {
+    path: 'email-validation',
+    loadComponent: () =>
+      import('./pages/email-validation/email-validation.page').then(
+        (m) => m.EmailValidationPage
+      ),
   },
 ];
