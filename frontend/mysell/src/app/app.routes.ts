@@ -7,7 +7,7 @@ export const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'email-validation',
+    redirectTo: 'login',
     pathMatch: 'full',
   },
   {

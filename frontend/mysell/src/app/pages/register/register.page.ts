@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { NavController } from '@ionic/angular';
 import {
   IonContent,
   IonHeader,
@@ -14,6 +15,7 @@ import { LoadingSppinerComponent } from 'src/app/components/loading-sppiner/load
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
 import { Browser } from '@capacitor/browser';
+import { EmailValidationService } from 'src/app/services/email-validation.service';
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
@@ -34,7 +36,9 @@ export class RegisterPage implements OnInit {
   constructor(
     private messageService: MessageService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private navController: NavController, // injetando o NavController
+    private emailValidationService: EmailValidationService
   ) {
     this.successMessage$ = this.messageService.successMessage$;
     this.errorMessage$ = this.messageService.errorMessage$;
@@ -50,12 +54,13 @@ export class RegisterPage implements OnInit {
       next: (next) => {
         this.isLoading = false;
         this.authService.saveToken(next.token);
+        this.emailValidationService.sendEmailCode();
         this.messageService.setSuccessMessage(
           'Cadastro realizado com sucesso!',
           next
         );
         setTimeout(() => {
-          this.router.navigate(['/home']);
+          this.navController.navigateRoot('/email-validation');
         }, 2000);
       },
       error: (error) => {

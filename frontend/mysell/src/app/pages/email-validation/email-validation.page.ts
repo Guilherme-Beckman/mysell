@@ -18,7 +18,7 @@ import { EmailValidationService } from 'src/app/services/email-validation.servic
   imports: [CommonModule, CodeSquaresComponent],
 })
 export class EmailValidationPage implements OnInit {
-  sendCodeLink = '/email-validation/send-code';
+  sendCodeLink = '/auth/send-code';
   constructor(private emailValidationService: EmailValidationService) {}
 
   ngOnInit() {}
