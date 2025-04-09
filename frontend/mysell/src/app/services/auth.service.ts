@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class AuthService {
   private readonly apiUrl =
-    'https://cef6-2804-6194-1f74-d900-8862-d27d-aaf6-ef5a.ngrok-free.app/';
+    'https://6891-2804-6194-1f74-d900-fc25-4839-ab9b-e2a7.ngrok-free.app/';
   private readonly expirationTimeValue = 60 * 60 * 1000; // 1 hora
 
   constructor(private httpClient: HttpClient) {}
