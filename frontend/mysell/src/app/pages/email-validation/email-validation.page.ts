@@ -17,7 +17,12 @@ import { CodeSquaresComponent } from 'src/app/components/code-squares/code-squar
   imports: [CommonModule, CodeSquaresComponent],
 })
 export class EmailValidationPage implements OnInit {
+  sendCodeLink = '/email-validation/send-code';
   constructor() {}
 
   ngOnInit() {}
+
+  getCode(event: string) {
+    console.log('Code received:', event);
+  }
 }

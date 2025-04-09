@@ -2,4 +2,7 @@
     <h1>Verificação</h1>
     <h3>Enviamos um código de verificação por email.</h3>
 </div>
-<app-code-squares></app-code-squares>
+<app-code-squares (submitCode)="getCode($event)"></app-code-squares>
+<div class="resend-code">
+    <a href=" {{sendCodeLink}}">Reenviar código</a>
+</div>
