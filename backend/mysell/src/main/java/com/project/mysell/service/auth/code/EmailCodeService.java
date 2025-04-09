@@ -30,7 +30,6 @@ public class EmailCodeService {
 	public Mono<Void> sendVerificationCode(String email) {
 		return verifyNoExistingCode(email).then(generateVerificationCode()).flatMap(code -> {
 			storeAndSendCode(email, code).subscribe(null, error -> {
-				// Aqui você pode logar ou tratar o erro se necessário
 				System.err.println("Erro ao executar storeAndSendCode: " + error.getMessage());
 			});
 			return Mono.empty();
