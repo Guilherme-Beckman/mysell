@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, output } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -16,6 +16,7 @@ import {
   imports: [ReactiveFormsModule, CommonModule],
 })
 export class CodeSquaresComponent implements OnInit {
+  @Output() submitCode = new EventEmitter<string>();
   codeForm = new FormGroup({
     digit1: new FormControl('', [
       Validators.required,
@@ -43,9 +44,9 @@ export class CodeSquaresComponent implements OnInit {
 
   onSubmit() {
     if (this.codeForm.valid) {
-      const { digit1, digit2, digit3, digit4 } = this.codeForm.value;
-      const fullCode = `${digit1}${digit2}${digit3}${digit4}`;
-      console.log('Código completo:', fullCode);
+      const { digit1, digit2, digit3, digit4, digit5 } = this.codeForm.value;
+      const fullCode = `${digit1}${digit2}${digit3}${digit4}${digit5}`;
+      this.submitCode.emit(fullCode);
     } else {
       console.log('Formulário inválido.');
     }
@@ -69,12 +70,34 @@ export class CodeSquaresComponent implements OnInit {
     if (input.value.length === 1 && nextInput) {
       nextInput.focus();
     }
+    if (this.codeForm.valid) {
+      this.onSubmit();
+    }
   }
 
   onBackspace(event: KeyboardEvent, previousInput?: HTMLInputElement) {
     const input = event.target as HTMLInputElement;
     if (event.key === 'Backspace' && input.value === '' && previousInput) {
       previousInput.focus();
+    }
+  }
+  onPaste(event: ClipboardEvent) {
+    event.preventDefault();
+    const pastedText = event.clipboardData?.getData('text') || '';
+    const digits = pastedText.replace(/\D/g, '').slice(0, 5); // remove não-dígitos e pega no máximo 5
+
+    const controls = ['digit1', 'digit2', 'digit3', 'digit4', 'digit5'];
+
+    digits.split('').forEach((char, index) => {
+      const controlName = controls[index];
+      if (controlName) {
+        this.codeForm.get(controlName)?.setValue(char);
+      }
+    });
+
+    // Se colou os 5 dígitos, envia automaticamente
+    if (digits.length === 5 && this.codeForm.valid) {
+      this.onSubmit();
     }
   }
 }
