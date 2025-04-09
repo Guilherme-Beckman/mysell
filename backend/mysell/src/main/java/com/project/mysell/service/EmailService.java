@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import jakarta.mail.internet.MimeMessage;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
 
 @Service
@@ -55,7 +57,7 @@ public class EmailService {
             } catch (Exception e) {
                 throw new RuntimeException("Erro ao enviar e-mail", e);
             }
-        });
+        }).subscribeOn(Schedulers.boundedElastic()).then();
     }
     public Mono<Void> sendWelcomeEmail(String to) {
         return Mono.fromRunnable(() -> {
