@@ -8,6 +8,7 @@ import {
   IonToolbar,
 } from '@ionic/angular/standalone';
 import { CodeSquaresComponent } from 'src/app/components/code-squares/code-squares.component';
+import { EmailValidationService } from 'src/app/services/email-validation.service';
 
 @Component({
   selector: 'app-email-validation',
@@ -18,7 +19,7 @@ import { CodeSquaresComponent } from 'src/app/components/code-squares/code-squar
 })
 export class EmailValidationPage implements OnInit {
   sendCodeLink = '/email-validation/send-code';
-  constructor() {}
+  constructor(private emailValidationService: EmailValidationService) {}
 
   ngOnInit() {}
 
