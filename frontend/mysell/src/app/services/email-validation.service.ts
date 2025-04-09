@@ -12,7 +12,12 @@ export class EmailValidationService {
 
   sendEmailCode(): void {
     this.httpClient
-      .get(`${this.apiUrl}auth/sendCode`, { responseType: 'text' })
+      .get(`${this.apiUrl}auth/sendCode`, {
+        responseType: 'text',
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+        },
+      })
       .subscribe({
         next: (response) => {
           console.log('Email code sent successfully:', response);
