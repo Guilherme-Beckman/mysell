@@ -31,6 +31,7 @@ export class EmailValidationPage implements OnInit {
   private readonly apiUrl = environment.apiUrl;
   email: string = '';
   countdown: number = 60;
+  timeToUserResendCode = 60000; // 1 minute
   private interval: any;
   sendCodeLink = `${this.apiUrl}auth/sendCode`;
   errorMessage$;
@@ -79,6 +80,8 @@ export class EmailValidationPage implements OnInit {
 
   getCode(event: string) {
     this.isLoading = true;
+    if (!this.userCanResendCode) return;
+
     this.emailValidationService.verifyEmailCode(event).subscribe({
       next: (response: any) => {
         this.isLoading = false;
@@ -99,4 +102,13 @@ export class EmailValidationPage implements OnInit {
       },
     });
   }
+  private userCanResendCode(): boolean {
+    const now = Date.now();
+    const lastSend = Number(localStorage.getItem('lastSend'));
+    if (lastSend && now - lastSend < this.timeToUserResendCode) {
+      return false;
+    }
+    return true;
+  }
+  resendCode() {}
 }

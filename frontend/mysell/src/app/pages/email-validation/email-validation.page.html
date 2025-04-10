@@ -5,12 +5,18 @@
 <div class="email">
     <span>{{email}}</span>
 </div>
-<div class="timer">
+<div class="timer" *ngIf="countdown > 0">
     <p>O código expira em: <span>{{countdown}}</span></p>
 </div>
+<div class="expired-message" *ngIf="countdown === 0">
+    <p>O código expirou. Por favor, solicite um novo código.</p>
+</div>
 <app-code-squares (submitCode)="getCode($event)"></app-code-squares>
-<div class="resend-code">
-    <a href=" {{sendCodeLink}}">Reenviar código</a>
+<div class="resend-code" >
+    <button
+    [disabled]=" timeToUserResendCode === 0 || countdown === 0"
+    (click)="resendCode()"
+    >Reenviar código</button>
 </div>
 <app-message-per-request [errorMessage]="(errorMessage$ | async) ?? ''" [successMessage]="(successMessage$ | async) ?? ''"></app-message-per-request>
 <app-loading-sppiner [isLoading]="isLoading"></app-loading-sppiner>
