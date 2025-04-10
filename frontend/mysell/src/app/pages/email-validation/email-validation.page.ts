@@ -49,11 +49,25 @@ export class EmailValidationPage implements OnInit {
     this.route.queryParamMap.subscribe((params) => {
       this.email = params.get('email') || '';
     });
-    this.startCountdown();
+
+    this.loadCodeWithTimer();
+  }
+
+  loadCodeWithTimer(): void {
+    this.emailValidationService.sendEmailCode().subscribe({
+      next: (duration) => {
+        this.countdown = parseInt(duration, 10);
+        this.startCountdown();
+      },
+      error: (error) => {},
+    });
   }
 
   startCountdown(): void {
-    this.countdown = 60;
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
+
     this.interval = setInterval(() => {
       if (this.countdown > 0) {
         this.countdown--;
@@ -82,8 +96,6 @@ export class EmailValidationPage implements OnInit {
       },
       complete: () => {
         this.isLoading = false;
-
-        console.log('Code verification process completed.');
       },
     });
   }

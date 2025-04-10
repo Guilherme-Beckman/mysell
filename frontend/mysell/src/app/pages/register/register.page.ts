@@ -54,7 +54,6 @@ export class RegisterPage implements OnInit {
       next: (next) => {
         this.isLoading = false;
         this.authService.saveToken(next.token);
-        this.emailValidationService.sendEmailCode();
         this.messageService.setSuccessMessage(
           'Cadastro realizado com sucesso!',
           next
