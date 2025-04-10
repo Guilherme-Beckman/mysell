@@ -13,7 +13,7 @@ import { environment } from 'src/environments/environment.prod';
 import { MessageService } from 'src/app/services/message.service';
 import { MessagePerRequestComponent } from 'src/app/components/message-per-request/message-per-request.component';
 import { LoadingSppinerComponent } from 'src/app/components/loading-sppiner/loading-sppiner.component';
-import { ActivatedRoute, Route } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-email-validation',
@@ -28,15 +28,15 @@ import { ActivatedRoute, Route } from '@angular/router';
   ],
 })
 export class EmailValidationPage implements OnInit {
-  private readonly apiUrl = environment.apiUrl;
-  email: string = '';
-  countdown: number = 60;
-  timeToUserResendCode = 60000; // 1 minute
+  private readonly apiUrl: string = environment.apiUrl;
+  public email: string = '';
+  public countdown: number = 60;
+  private readonly timeToUserResendCode: number = 60000; // 1 minuto
   private interval: any;
-  sendCodeLink = `${this.apiUrl}auth/sendCode`;
-  errorMessage$;
-  successMessage$;
-  isLoading = false;
+  public sendCodeLink: string = `${this.apiUrl}auth/sendCode`;
+  public errorMessage$;
+  public successMessage$;
+  public isLoading: boolean = false;
 
   constructor(
     private emailValidationService: EmailValidationService,
@@ -47,48 +47,23 @@ export class EmailValidationPage implements OnInit {
     this.successMessage$ = this.messageService.successMessage$;
   }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.route.queryParamMap.subscribe((params) => {
       this.email = params.get('email') || '';
     });
 
+    if (!localStorage.getItem('emailToValidate')) {
+      this.sendCode();
+    }
+
     this.loadCodeWithTimer();
   }
 
-  loadCodeWithTimer(): void {
-    this.initValidationSession();
-    this.emailValidationService.sendEmailCode().subscribe({
-      next: (duration) => {
-        this.countdown = parseInt(duration, 10);
-        this.startCountdown();
-      },
-      error: (error) => {},
-    });
-  }
-  private initValidationSession(): void {
-    localStorage.setItem('emailToValidate', 'true');
-  }
-  private removeValidationSession(): void {
-    localStorage.removeItem('emailToValidate');
-  }
-
-  startCountdown(): void {
-    if (this.interval) {
-      clearInterval(this.interval);
-    }
-
-    this.interval = setInterval(() => {
-      if (this.countdown > 0) {
-        this.countdown--;
-      } else {
-        clearInterval(this.interval);
-      }
-    }, 1000);
-  }
-
-  getCode(event: string) {
+  public getCode(event: string): void {
     this.isLoading = true;
-    if (!this.userCanResendCode) return;
+    if (!this.userCanResendCode()) {
+      return;
+    }
 
     this.emailValidationService.verifyEmailCode(event).subscribe({
       next: (response: any) => {
@@ -111,6 +86,61 @@ export class EmailValidationPage implements OnInit {
       },
     });
   }
+
+  public startCountdown(): void {
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
+
+    this.interval = setInterval(() => {
+      if (this.countdown > 0) {
+        this.countdown--;
+      } else {
+        clearInterval(this.interval);
+        localStorage.removeItem('lastSend');
+      }
+    }, 1000);
+  }
+
+  public resendCode(): void {}
+
+  private loadCodeWithTimer(): void {
+    const lastSendFromStorage = localStorage.getItem('lastSend');
+    if (!lastSendFromStorage) {
+      const currentTimestamp = Date.now().toString();
+      localStorage.setItem('lastSend', currentTimestamp);
+    }
+    const lastSend = Number(localStorage.getItem('lastSend'));
+    const now = Date.now();
+    const elapsedTime = now - lastSend;
+    let remaining = this.timeToUserResendCode - elapsedTime;
+    if (remaining < 0) {
+      remaining = 0;
+    }
+    this.countdown = remaining < 1000 ? 0 : Math.floor(remaining / 1000);
+    if (this.countdown > 0) {
+      this.startCountdown();
+    }
+  }
+
+  private sendCode(): void {
+    this.initValidationSession();
+    this.emailValidationService.sendEmailCode().subscribe({
+      next: (duration) => {
+        this.countdown = parseInt(duration, 10);
+        this.startCountdown();
+      },
+      error: (error) => {},
+    });
+  }
+
+  private initValidationSession(): void {
+    localStorage.setItem('emailToValidate', 'true');
+  }
+
+  private removeValidationSession(): void {
+    localStorage.removeItem('emailToValidate');
+  }
   private userCanResendCode(): boolean {
     const now = Date.now();
     const lastSend = Number(localStorage.getItem('lastSend'));
@@ -119,5 +149,4 @@ export class EmailValidationPage implements OnInit {
     }
     return true;
   }
-  resendCode() {}
 }

@@ -14,7 +14,7 @@
 <app-code-squares (submitCode)="getCode($event)"></app-code-squares>
 <div class="resend-code" >
     <button
-    [disabled]=" timeToUserResendCode === 0 || countdown === 0"
+    [disabled]=" countdown > 0"
     (click)="resendCode()"
     >Reenviar código</button>
 </div>
