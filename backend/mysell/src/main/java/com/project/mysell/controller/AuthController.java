@@ -39,8 +39,8 @@ public class AuthController {
 	}
 	@GetMapping("/sendCode")
 	public ResponseEntity<Mono<String>> sendCode(@Valid @RequestHeader("Authorization") String token){
-		Mono<String> sucessMessage = this.authService.sendVerificationCode(token);
-		return ResponseEntity.ok().body(sucessMessage);
+		Mono<String> countdownTime = this.authService.sendVerificationCode(token);
+		return ResponseEntity.ok().body(countdownTime);
 	}
 	@PostMapping("/verify")
 	public ResponseEntity<Mono<String>> verifyEmail(@Valid @RequestHeader("Authorization") String token, @RequestBody VerificationCodeDTO verificationCodeDTO){

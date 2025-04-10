@@ -105,7 +105,7 @@ public class AuthService {
         }
         
         return emailCodeService.sendVerificationCode(email)
-            .thenReturn("Verification code sent successfully");
+            .map(duration -> String.valueOf(duration.toSeconds()));
     }
 
     private Mono<String> processEmailVerification(UserModel user, String email, String verificationCode) {

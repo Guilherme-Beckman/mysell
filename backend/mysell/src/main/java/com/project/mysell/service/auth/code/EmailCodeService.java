@@ -27,12 +27,12 @@ public class EmailCodeService {
 		return this.emailService.sendVerificationEmail(to, verificationCode);
 	}
 
-	public Mono<Void> sendVerificationCode(String email) {
+	public Mono<Duration> sendVerificationCode(String email) {
 		return verifyNoExistingCode(email).then(generateVerificationCode()).flatMap(code -> {
 			storeAndSendCode(email, code).subscribe(null, error -> {
 				System.err.println("Erro ao executar storeAndSendCode: " + error.getMessage());
 			});
-			return Mono.empty();
+			return Mono.just(codeExpirationDuration);
 		});
 	}
 
