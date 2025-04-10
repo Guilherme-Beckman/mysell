@@ -97,7 +97,6 @@ export class EmailValidationPage implements OnInit {
         this.countdown--;
       } else {
         clearInterval(this.interval);
-        localStorage.removeItem('lastSend');
       }
     }, 1000);
   }
@@ -110,14 +109,17 @@ export class EmailValidationPage implements OnInit {
       const currentTimestamp = Date.now().toString();
       localStorage.setItem('lastSend', currentTimestamp);
     }
+
     const lastSend = Number(localStorage.getItem('lastSend'));
     const now = Date.now();
     const elapsedTime = now - lastSend;
     let remaining = this.timeToUserResendCode - elapsedTime;
+
     if (remaining < 0) {
       remaining = 0;
     }
-    this.countdown = remaining < 1000 ? 0 : Math.floor(remaining / 1000);
+
+    this.countdown = remaining < 1500 ? 0 : Math.floor(remaining / 1000);
     if (this.countdown > 0) {
       this.startCountdown();
     }
