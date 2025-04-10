@@ -5,6 +5,9 @@
 <div class="email">
     <span>{{email}}</span>
 </div>
+<div class="timer">
+    <p>O código expira em: <span>{{countdown}}</span></p>
+</div>
 <app-code-squares (submitCode)="getCode($event)"></app-code-squares>
 <div class="resend-code">
     <a href=" {{sendCodeLink}}">Reenviar código</a>

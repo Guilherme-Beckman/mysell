@@ -31,6 +31,7 @@ export class EmailValidationPage implements OnInit {
   private readonly apiUrl = environment.apiUrl;
   email: string = '';
   countdown: number = 60;
+  private interval: any;
   sendCodeLink = `${this.apiUrl}auth/sendCode`;
   errorMessage$;
   successMessage$;
@@ -48,6 +49,18 @@ export class EmailValidationPage implements OnInit {
     this.route.queryParamMap.subscribe((params) => {
       this.email = params.get('email') || '';
     });
+    this.startCountdown();
+  }
+
+  startCountdown(): void {
+    this.countdown = 60;
+    this.interval = setInterval(() => {
+      if (this.countdown > 0) {
+        this.countdown--;
+      } else {
+        clearInterval(this.interval);
+      }
+    }, 1000);
   }
 
   getCode(event: string) {
