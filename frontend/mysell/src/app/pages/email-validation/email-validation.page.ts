@@ -55,6 +55,7 @@ export class EmailValidationPage implements OnInit {
   }
 
   loadCodeWithTimer(): void {
+    this.initValidationSession();
     this.emailValidationService.sendEmailCode().subscribe({
       next: (duration) => {
         this.countdown = parseInt(duration, 10);
@@ -62,6 +63,12 @@ export class EmailValidationPage implements OnInit {
       },
       error: (error) => {},
     });
+  }
+  private initValidationSession(): void {
+    localStorage.setItem('emailToValidate', 'true');
+  }
+  private removeValidationSession(): void {
+    localStorage.removeItem('emailToValidate');
   }
 
   startCountdown(): void {
@@ -89,6 +96,7 @@ export class EmailValidationPage implements OnInit {
           'Código de verificação enviado com sucesso!',
           response
         );
+        this.removeValidationSession();
       },
       error: (error: any) => {
         this.isLoading = false;

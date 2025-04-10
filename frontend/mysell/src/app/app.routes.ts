@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { redirectGuard } from './guards/redirect.guard';
 
 export const routes: Routes = [
   {
@@ -8,6 +9,7 @@ export const routes: Routes = [
   {
     path: '',
     redirectTo: 'login',
+    canActivate: [redirectGuard],
     pathMatch: 'full',
   },
   {
