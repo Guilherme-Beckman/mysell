@@ -1,14 +1,17 @@
-import { CanActivateFn, Router } from '@angular/router';
+import { CanActivateFn, Router, UrlTree } from '@angular/router';
 import { inject } from '@angular/core';
 
-export const redirectGuard: CanActivateFn = (route, state) => {
+export const redirectGuard: CanActivateFn = (
+  route,
+  state
+): boolean | UrlTree => {
   const router = inject(Router);
-
   const emailToValidate = localStorage.getItem('emailToValidate');
 
   if (emailToValidate) {
-    router.navigate(['/email-validation']);
-    return false;
+    // Retorna UrlTree, e o Angular redireciona para '/email-validation'
+    return router.parseUrl('/email-validation');
   }
-  return true;
+  // Caso contrário, retorna UrlTree redirecionando para '/login'
+  return router.parseUrl('/login');
 };

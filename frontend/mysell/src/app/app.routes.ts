@@ -8,9 +8,9 @@ export const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'login',
     canActivate: [redirectGuard],
-    pathMatch: 'full',
+    loadComponent: () =>
+      import('./pages/empty/empty.page').then((m) => m.EmptyPage),
   },
   {
     path: 'login',

@@ -37,6 +37,7 @@ export class EmailValidationPage implements OnInit {
   errorMessage$;
   successMessage$;
   isLoading = false;
+
   constructor(
     private emailValidationService: EmailValidationService,
     private messageService: MessageService,
