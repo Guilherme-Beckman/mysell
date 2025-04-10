@@ -60,7 +60,9 @@ export class RegisterPage implements OnInit {
           next
         );
         setTimeout(() => {
-          this.navController.navigateRoot('/email-validation');
+          this.navController.navigateRoot('/email-validation', {
+            queryParams: { email: event.email },
+          });
         }, 2000);
       },
       error: (error) => {

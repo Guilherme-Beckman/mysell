@@ -13,6 +13,7 @@ import { environment } from 'src/environments/environment.prod';
 import { MessageService } from 'src/app/services/message.service';
 import { MessagePerRequestComponent } from 'src/app/components/message-per-request/message-per-request.component';
 import { LoadingSppinerComponent } from 'src/app/components/loading-sppiner/loading-sppiner.component';
+import { ActivatedRoute, Route } from '@angular/router';
 
 @Component({
   selector: 'app-email-validation',
@@ -28,19 +29,25 @@ import { LoadingSppinerComponent } from 'src/app/components/loading-sppiner/load
 })
 export class EmailValidationPage implements OnInit {
   private readonly apiUrl = environment.apiUrl;
+  email: string = '';
   sendCodeLink = `${this.apiUrl}auth/sendCode`;
   errorMessage$;
   successMessage$;
   isLoading = false;
   constructor(
     private emailValidationService: EmailValidationService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private route: ActivatedRoute
   ) {
     this.errorMessage$ = this.messageService.errorMessage$;
     this.successMessage$ = this.messageService.successMessage$;
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.route.queryParamMap.subscribe((params) => {
+      this.email = params.get('email') || '';
+    });
+  }
 
   getCode(event: string) {
     this.isLoading = true;
