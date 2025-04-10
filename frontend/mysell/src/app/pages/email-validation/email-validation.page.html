@@ -1,6 +1,9 @@
 <div class="text-content">
     <h1>Verificação</h1>
-    <h3>Enviamos um código de verificação para o email: <span>{{email}}</span></h3>
+    <h3>Enviamos um código de verificação para o email: </h3>
+</div>
+<div class="email">
+    <span>{{email}}</span>
 </div>
 <app-code-squares (submitCode)="getCode($event)"></app-code-squares>
 <div class="resend-code">

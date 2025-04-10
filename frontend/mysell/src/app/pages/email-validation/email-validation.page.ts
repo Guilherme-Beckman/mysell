@@ -30,6 +30,7 @@ import { ActivatedRoute, Route } from '@angular/router';
 export class EmailValidationPage implements OnInit {
   private readonly apiUrl = environment.apiUrl;
   email: string = '';
+  countdown: number = 60;
   sendCodeLink = `${this.apiUrl}auth/sendCode`;
   errorMessage$;
   successMessage$;

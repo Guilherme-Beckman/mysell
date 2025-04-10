@@ -1,5 +1,5 @@
 .text-content{
-    margin: 6rem 5rem 2rem 5rem;
+    margin: 6rem 5rem 0rem 5rem;
 }
 
 h1{
@@ -17,6 +17,13 @@ h3{
 }
 a{
     color: var(--mysell-red);
+}
+.email{
+    
+    font-weight: 400;
+    text-align: center;
+    margin-bottom: 3rem;
+    
 }
 span{
     color: var(--mysell-red);
