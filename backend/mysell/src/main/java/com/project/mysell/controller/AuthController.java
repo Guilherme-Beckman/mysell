@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.mysell.dto.auth.LoginDTO;
 import com.project.mysell.dto.auth.ResponseDTO;
 import com.project.mysell.dto.auth.UserDTO;
+import com.project.mysell.dto.auth.email.SucessSendEmailDTO;
 import com.project.mysell.dto.auth.email.VerificationCodeDTO;
 import com.project.mysell.service.auth.AuthService;
 
@@ -38,9 +39,9 @@ public class AuthController {
 		return "Sucess";
 	}
 	@GetMapping("/sendCode")
-	public ResponseEntity<Mono<String>> sendCode(@Valid @RequestHeader("Authorization") String token){
-		Mono<String> countdownTime = this.authService.sendVerificationCode(token);
-		return ResponseEntity.ok().body(countdownTime);
+	public ResponseEntity<Mono<SucessSendEmailDTO>> sendCode(@Valid @RequestHeader("Authorization") String token){
+		Mono<SucessSendEmailDTO> sucessSendEmailDTO = this.authService.sendVerificationCode(token);
+		return ResponseEntity.ok().body(sucessSendEmailDTO);
 	}
 	@PostMapping("/verify")
 	public ResponseEntity<Mono<String>> verifyEmail(@Valid @RequestHeader("Authorization") String token, @RequestBody VerificationCodeDTO verificationCodeDTO){

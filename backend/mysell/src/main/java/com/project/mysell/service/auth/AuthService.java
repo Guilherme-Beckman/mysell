@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.project.mysell.dto.auth.LoginDTO;
 import com.project.mysell.dto.auth.ResponseDTO;
 import com.project.mysell.dto.auth.UserDTO;
+import com.project.mysell.dto.auth.email.SucessSendEmailDTO;
 import com.project.mysell.dto.auth.email.VerificationCodeDTO;
 import com.project.mysell.exceptions.auth.ValidEmailException;
 import com.project.mysell.exceptions.user.UserAlreadyExistsException;
@@ -83,7 +84,7 @@ public class AuthService {
     private UserDTO encodeUserPassword(UserDTO userDTO) {
         return new UserDTO(userDTO.email(), passwordEncoder.encode(userDTO.password()));
     }
-    public Mono<String> sendVerificationCode(String authorizationHeader) {
+    public Mono<SucessSendEmailDTO> sendVerificationCode(String authorizationHeader) {
         final String jwtToken = jwtTokenProvider.extractJwtToken(authorizationHeader);
         final Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
 
@@ -99,13 +100,12 @@ public class AuthService {
             .flatMap(user -> processEmailVerification(user, authentication.getName(), verificationCode.code()));
     }
 
-    private Mono<String> handleEmailVerificationRequest(UserModel user, String email) {
+    private Mono<SucessSendEmailDTO> handleEmailVerificationRequest(UserModel user, String email) {
         if (user.isEmailValidated()) {
             return Mono.error(new ValidEmailException());
         }
         
-        return emailCodeService.sendVerificationCode(email)
-            .map(duration -> String.valueOf(duration.toSeconds()));
+        return emailCodeService.sendVerificationCode(email);
     }
 
     private Mono<String> processEmailVerification(UserModel user, String email, String verificationCode) {

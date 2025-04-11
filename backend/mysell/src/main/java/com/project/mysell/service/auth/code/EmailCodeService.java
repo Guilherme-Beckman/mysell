@@ -7,10 +7,12 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.project.mysell.dto.auth.email.SucessSendEmailDTO;
 import com.project.mysell.exceptions.code.ExistingCodeException;
 import com.project.mysell.exceptions.code.InvalidCodeException;
 import com.project.mysell.exceptions.code.NoVerificationCodeFoundException;
 import com.project.mysell.service.EmailService;
+import com.project.mysell.service.auth.attempt.EmailSendVericationAttemtpService;
 
 import reactor.core.publisher.Mono;
 
@@ -19,6 +21,8 @@ public class EmailCodeService {
 	private ConcurrentHashMap<String, String> pendingVerificationCodes = new ConcurrentHashMap<>();
 	@Autowired
 	private CodeVerificationAttemptService attemptService;
+	@Autowired
+	private EmailSendVericationAttemtpService emailSendVericationAttemtpService;
 	private Duration codeExpirationDuration = Duration.ofSeconds(60);
 	@Autowired
 	private EmailService emailService;
@@ -27,12 +31,17 @@ public class EmailCodeService {
 		return this.emailService.sendVerificationEmail(to, verificationCode);
 	}
 
-	public Mono<Duration> sendVerificationCode(String email) {
-		return verifyNoExistingCode(email).then(generateVerificationCode()).flatMap(code -> {
+	public Mono<SucessSendEmailDTO> sendVerificationCode(String email) {
+		return verifyNoExistingCode(email)
+				.then(validateEmailStatus(email))
+				.then(handleExcessiveSendEmails(email))
+				.then(validateAccountStatus(email))
+				.then(generateVerificationCode())
+				.flatMap(code -> {
 			storeAndSendCode(email, code).subscribe(null, error -> {
 				System.err.println("Erro ao executar storeAndSendCode: " + error.getMessage());
 			});
-			return Mono.just(codeExpirationDuration);
+			return Mono.just(new SucessSendEmailDTO("Email sended with sucess", codeExpirationDuration));
 		});
 	}
 
@@ -43,6 +52,13 @@ public class EmailCodeService {
 	private Mono<Void> validateAccountStatus(String username) {
 		return Mono.defer(() -> {
 			return attemptService.isBlocked(username).flatMap(isBlocked -> {
+				return Mono.empty();
+			});
+		});
+	}
+	private Mono<Void> validateEmailStatus(String username) {
+		return Mono.defer(() -> {
+			return emailSendVericationAttemtpService.isBlocked(username).flatMap(isBlocked -> {
 				return Mono.empty();
 			});
 		});
@@ -101,6 +117,9 @@ public class EmailCodeService {
 
 	private Mono<Void> handleFailedAttempt(String username) {
 		return attemptService.failed(username).then(Mono.error(new InvalidCodeException()));
+	}
+	private Mono<Void> handleExcessiveSendEmails(String email) {
+		return emailSendVericationAttemtpService.failed(email);
 	}
 
 }
