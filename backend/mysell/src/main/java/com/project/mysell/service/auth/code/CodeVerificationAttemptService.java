@@ -17,6 +17,8 @@ public class CodeVerificationAttemptService extends AttemptService {
     private ConcurrentHashMap<String, Integer> verificationAttemptsCache = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String, Long> accountUnlockTimestampCache = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String, Long> currentLockDurationCache = new ConcurrentHashMap<>();
+    //after the firts attempt
+    private final int MAX_USER_ATTEMPTS = 2;
 
     @Override
     public Mono<Void> succeeded(String key) {
@@ -55,6 +57,7 @@ public class CodeVerificationAttemptService extends AttemptService {
 
     private int incrementVerificationAttempts(String key) {
         int attempts = verificationAttemptsCache.compute(key, (k, v) -> (v == null ? 0 : v) + 1);
+        if(attempts <= MAX_USER_ATTEMPTS ) return 0;
         return attempts;
     }
 
