@@ -7,13 +7,19 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/angular/standalone';
-import { CodeSquaresComponent } from 'src/app/components/code-squares/code-squares.component';
-import { EmailValidationService } from 'src/app/services/email-validation.service';
+import { ActivatedRoute } from '@angular/router';
+
 import { environment } from 'src/environments/environment.prod';
-import { MessageService } from 'src/app/services/message.service';
+
+import { CodeSquaresComponent } from 'src/app/components/code-squares/code-squares.component';
 import { MessagePerRequestComponent } from 'src/app/components/message-per-request/message-per-request.component';
 import { LoadingSppinerComponent } from 'src/app/components/loading-sppiner/loading-sppiner.component';
-import { ActivatedRoute } from '@angular/router';
+
+import {
+  EmailValidationService,
+  EmailCodeResponse,
+} from 'src/app/services/email-validation.service';
+import { MessageService } from 'src/app/services/message.service';
 
 @Component({
   selector: 'app-email-validation',
@@ -29,13 +35,15 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class EmailValidationPage implements OnInit {
   private readonly apiUrl: string = environment.apiUrl;
+  private readonly timeToUserResendCode: number = 60000; // 1 minuto
+
   public email: string = '';
-  public countdown: number = 60;
-  private readonly timeToUserResendCode: number = 5000; // 1 minuto
-  private interval: any;
+  public countdown!: number;
+  public isLoading: boolean = false;
   public errorMessage$;
   public successMessage$;
-  public isLoading: boolean = false;
+
+  private interval: any;
 
   constructor(
     private emailValidationService: EmailValidationService,
@@ -53,19 +61,16 @@ export class EmailValidationPage implements OnInit {
 
     if (!localStorage.getItem('emailToValidate')) {
       this.sendCode();
+    } else {
+      this.loadCodeWithTimer();
     }
-
-    this.loadCodeWithTimer();
   }
 
   public getCode(event: string): void {
     this.isLoading = true;
-    if (!this.userCanResendCode()) {
-      return;
-    }
 
     this.emailValidationService.verifyEmailCode(event).subscribe({
-      next: (response: any) => {
+      next: (response) => {
         this.isLoading = false;
         this.messageService.setSuccessMessage(
           'Código de verificação enviado com sucesso!',
@@ -73,12 +78,9 @@ export class EmailValidationPage implements OnInit {
         );
         this.removeValidationSession();
       },
-      error: (error: any) => {
+      error: (error) => {
         this.isLoading = false;
-        this.messageService.setErrorMessage(
-          'Erro ao enviar o código de verificação.',
-          error
-        );
+        this.messageService.setErrorMessage('', error);
       },
       complete: () => {
         this.isLoading = false;
@@ -86,7 +88,45 @@ export class EmailValidationPage implements OnInit {
     });
   }
 
-  public startCountdown(): void {
+  public resendCode(): void {
+    this.isLoading = true;
+
+    this.emailValidationService.sendEmailCode().subscribe({
+      next: (response: EmailCodeResponse) => {
+        this.messageService.setSuccessMessage(
+          'Código de verificação enviado com sucesso!',
+          ''
+        );
+        this.countdown = response.timeValidCode;
+        this.startCountdown();
+        localStorage.setItem('lastSend', Date.now().toString());
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.messageService.setErrorMessage('', error);
+        this.isLoading = false;
+      },
+      complete: () => {
+        this.isLoading = false;
+      },
+    });
+  }
+
+  private sendCode(): void {
+    this.initValidationSession();
+
+    this.emailValidationService.sendEmailCode().subscribe({
+      next: (response: EmailCodeResponse) => {
+        this.countdown = response.timeValidCode;
+        this.startCountdown();
+      },
+      error: (error) => {
+        this.messageService.setErrorMessage('', error);
+      },
+    });
+  }
+
+  private startCountdown(): void {
     if (this.interval) {
       clearInterval(this.interval);
     }
@@ -98,28 +138,6 @@ export class EmailValidationPage implements OnInit {
         clearInterval(this.interval);
       }
     }, 1000);
-  }
-
-  public resendCode(): void {
-    this.isLoading = true;
-    this.emailValidationService.sendEmailCode().subscribe({
-      next: (duration) => {
-        this.countdown = parseInt(duration, 10);
-        this.startCountdown();
-        localStorage.setItem('lastSend', Date.now().toString());
-        this.isLoading = false;
-      },
-      error: (error) => {
-        this.messageService.setErrorMessage(
-          'Erro ao reenviar o código de verificação.',
-          error
-        );
-        this.isLoading = false;
-      },
-      complete: () => {
-        this.isLoading = false;
-      },
-    });
   }
 
   private loadCodeWithTimer(): void {
@@ -144,30 +162,11 @@ export class EmailValidationPage implements OnInit {
     }
   }
 
-  private sendCode(): void {
-    this.initValidationSession();
-    this.emailValidationService.sendEmailCode().subscribe({
-      next: (duration) => {
-        this.countdown = parseInt(duration, 10);
-        this.startCountdown();
-      },
-      error: (error) => {},
-    });
-  }
-
   private initValidationSession(): void {
     localStorage.setItem('emailToValidate', 'true');
   }
 
   private removeValidationSession(): void {
     localStorage.removeItem('emailToValidate');
-  }
-  private userCanResendCode(): boolean {
-    const now = Date.now();
-    const lastSend = Number(localStorage.getItem('lastSend'));
-    if (lastSend && now - lastSend < this.timeToUserResendCode) {
-      return false;
-    }
-    return true;
   }
 }
