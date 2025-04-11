@@ -59,7 +59,8 @@ export class EmailValidationPage implements OnInit {
 
   public ngOnInit(): void {
     this.route.queryParamMap.subscribe((params) => {
-      this.email = params.get('email') || '';
+      this.email = params.get('email') || localStorage.getItem('email') || '';
+      localStorage.setItem('email', this.email);
     });
 
     if (!localStorage.getItem('emailToValidate')) {

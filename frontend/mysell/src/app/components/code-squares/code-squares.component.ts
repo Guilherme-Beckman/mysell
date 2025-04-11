@@ -65,16 +65,22 @@ export class CodeSquaresComponent implements OnInit {
       event.preventDefault();
     }
   }
-  onInputChange(event: Event, nextInput?: HTMLInputElement) {
+  onInputChange(event: Event, nextInput?: HTMLInputElement): void {
     const input = event.target as HTMLInputElement;
 
+    // Move para o próximo campo se o valor tiver 1 dígito
     if (input.value.length === 1 && nextInput) {
       nextInput.focus();
-    } else if (input.value.length === 1 && !nextInput) {
-      // Se não houver nextInput significa que estamos no último campo
-      if (this.codeForm.valid) {
-        this.onSubmit();
-      }
+    }
+
+    // Verifica se todos os campos estão preenchidos
+    const formValues = Object.values(this.codeForm.value);
+    const allFilled = formValues.every(
+      (val) => val && val.toString().length === 1
+    );
+
+    if (allFilled && this.codeForm.valid) {
+      this.onSubmit();
     }
   }
 
