@@ -34,8 +34,8 @@ public class EmailCodeService {
 	public Mono<SucessSendEmailDTO> sendVerificationCode(String email) {
 		return verifyNoExistingCode(email)
 				.then(validateEmailStatus(email))
-				.then(handleExcessiveSendEmails(email))
 				.then(validateAccountStatus(email))
+				.then(handleExcessiveSendEmails(email))
 				.then(generateVerificationCode())
 				.flatMap(code -> {
 			storeAndSendCode(email, code).subscribe(null, error -> {

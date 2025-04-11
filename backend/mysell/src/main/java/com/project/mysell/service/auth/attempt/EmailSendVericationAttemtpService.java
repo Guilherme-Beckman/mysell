@@ -54,9 +54,7 @@ public class EmailSendVericationAttemtpService extends AttemptService {
 
     private int incrementVerificationAttempts(String key) {
         int attempts = verificationAttemptsCache.compute(key, (k, v) -> (v == null ? 0 : v) + 1);
-        if(attempts <= MAX_USER_ATTEMPTS) {
-        	return 0;
-        }
+        if(attempts <= MAX_USER_ATTEMPTS) return 0;
         return attempts;
     }
 
