@@ -20,6 +20,8 @@ import {
   EmailCodeResponse,
 } from 'src/app/services/email-validation.service';
 import { MessageService } from 'src/app/services/message.service';
+import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-email-validation',
@@ -31,12 +33,12 @@ import { MessageService } from 'src/app/services/message.service';
     CodeSquaresComponent,
     MessagePerRequestComponent,
     LoadingSppinerComponent,
+    ArrowComponent,
   ],
 })
 export class EmailValidationPage implements OnInit {
   private readonly apiUrl: string = environment.apiUrl;
   private readonly timeToUserResendCode: number = 60000; // 1 minuto
-
   public email: string = '';
   public countdown!: number;
   public isLoading: boolean = false;
@@ -46,6 +48,7 @@ export class EmailValidationPage implements OnInit {
   private interval: any;
 
   constructor(
+    private navController: NavController,
     private emailValidationService: EmailValidationService,
     private messageService: MessageService,
     private route: ActivatedRoute
@@ -76,6 +79,9 @@ export class EmailValidationPage implements OnInit {
           'Código de verificação enviado com sucesso!',
           response
         );
+        setTimeout(() => {
+          this.navController.navigateRoot('/home');
+        }, 2000);
         this.removeValidationSession();
       },
       error: (error) => {
