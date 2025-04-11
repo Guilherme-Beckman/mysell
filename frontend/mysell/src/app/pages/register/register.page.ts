@@ -48,8 +48,7 @@ export class RegisterPage implements OnInit {
 
   onRegister(event: { email: string; password: string }): void {
     this.isLoading = true;
-    console.log(event);
-
+    this.clearLocalStorage();
     this.authService.register(event.email, event.password).subscribe({
       next: (next) => {
         this.isLoading = false;
@@ -75,6 +74,9 @@ export class RegisterPage implements OnInit {
         this.isLoading = false;
       },
     });
+  }
+  private clearLocalStorage(): void {
+    localStorage.clear();
   }
 
   async onGoogleRegister(): Promise<void> {
