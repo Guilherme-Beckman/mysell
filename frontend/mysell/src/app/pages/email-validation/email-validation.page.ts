@@ -31,9 +31,8 @@ export class EmailValidationPage implements OnInit {
   private readonly apiUrl: string = environment.apiUrl;
   public email: string = '';
   public countdown: number = 60;
-  private readonly timeToUserResendCode: number = 60000; // 1 minuto
+  private readonly timeToUserResendCode: number = 5000; // 1 minuto
   private interval: any;
-  public sendCodeLink: string = `${this.apiUrl}auth/sendCode`;
   public errorMessage$;
   public successMessage$;
   public isLoading: boolean = false;
@@ -101,7 +100,27 @@ export class EmailValidationPage implements OnInit {
     }, 1000);
   }
 
-  public resendCode(): void {}
+  public resendCode(): void {
+    this.isLoading = true;
+    this.emailValidationService.sendEmailCode().subscribe({
+      next: (duration) => {
+        this.countdown = parseInt(duration, 10);
+        this.startCountdown();
+        localStorage.setItem('lastSend', Date.now().toString());
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.messageService.setErrorMessage(
+          'Erro ao reenviar o código de verificação.',
+          error
+        );
+        this.isLoading = false;
+      },
+      complete: () => {
+        this.isLoading = false;
+      },
+    });
+  }
 
   private loadCodeWithTimer(): void {
     const lastSendFromStorage = localStorage.getItem('lastSend');
