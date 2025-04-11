@@ -16,6 +16,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
 import { Browser } from '@capacitor/browser';
 import { EmailValidationService } from 'src/app/services/email-validation.service';
+import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
@@ -27,12 +28,15 @@ import { EmailValidationService } from 'src/app/services/email-validation.servic
     AuthFormComponent,
     MessagePerRequestComponent,
     LoadingSppinerComponent,
+    ArrowComponent,
   ],
 })
 export class RegisterPage implements OnInit {
   successMessage$;
   errorMessage$;
   isLoading = false;
+  readonly emailToValidate = !!localStorage.getItem('emailToValidate');
+
   constructor(
     private messageService: MessageService,
     private authService: AuthService,
