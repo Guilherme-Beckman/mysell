@@ -51,7 +51,7 @@ public class CodeVerificationAttemptService extends AttemptService {
             }
             
             long remainingTime = unlockTimestamp - System.currentTimeMillis();
-            return Mono.error(new AccountLockedCodeException(remainingTime));
+            return Mono.error(new AccountLockedCodeException(remainingTime/1000));
         });
     }
 

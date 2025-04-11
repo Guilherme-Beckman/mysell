@@ -16,7 +16,7 @@ public class AccountLockedCodeException extends RestException {
     public ProblemDetail toProblemDetail() {
         ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.LOCKED);
         problemDetail.setTitle("Account Locked");
-        problemDetail.setDetail("Your account has been locked due to multiple failed verify code attempts. Please try again in: " + time);
+        problemDetail.setDetail("Your account has been locked due to multiple failed verify code attempts. Please try again in: " + time + " seconds");
         return problemDetail;
     }
 }
