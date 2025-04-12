@@ -17,10 +17,19 @@ export class MessageService {
     this.successMessageSource.next(message + ' ' + nextMessage);
     this.clearMessagesAfterDelay();
   }
-
   setErrorMessage(message: string, error: any): void {
-    const errorMessage = error?.error?.title ? error.error.title : '';
-    this.errorMessageSource.next(message + ' ' + errorMessage);
+    let parsedError = error?.error;
+
+    if (typeof parsedError === 'string') {
+      try {
+        parsedError = JSON.parse(parsedError);
+      } catch (e) {
+        console.error('Erro ao fazer parse do erro:', e);
+      }
+    }
+
+    const detail = parsedError?.detail || '';
+    this.errorMessageSource.next(message + ' ' + detail);
     this.clearMessagesAfterDelay();
   }
 

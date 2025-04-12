@@ -1,0 +1,25 @@
+form{
+    display: flex;
+    gap: 1rem;    
+}
+input{
+    border: none;
+    border-bottom: 2px solid var(--medium-gray);
+    background-color: var(--light-gray);
+    height: 3rem;
+    width: 3rem;
+    outline: none;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+    text-align: center;
+    font-size: 2.5vh;
+    
+}
+input:focus {
+    border-color: var(--mysell-red);
+    background-color: var(--white);
+  }
+form{
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+}

@@ -2,13 +2,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Browser } from '@capacitor/browser';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly apiUrl =
-    'https://cef6-2804-6194-1f74-d900-8862-d27d-aaf6-ef5a.ngrok-free.app/';
+  private readonly apiUrl = environment.apiUrl;
   private readonly expirationTimeValue = 60 * 60 * 1000; // 1 hora
 
   constructor(private httpClient: HttpClient) {}

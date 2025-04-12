@@ -1,25 +1,22 @@
-package com.project.mysell.service.auth.code;
+package com.project.mysell.service.auth.attempt;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.stereotype.Service;
 
-import com.project.mysell.exceptions.auth.locked.AccountLockedCodeException;
-import com.project.mysell.service.auth.attempt.AttemptService;
+import com.project.mysell.exceptions.auth.locked.ExcessiveEmailsExceptions;
 
 import reactor.core.publisher.Mono;
 
 @Service
-public class CodeVerificationAttemptService extends AttemptService {
+public class EmailSendVericationAttemtpService extends AttemptService {
 
 
     private long initialLockDuration = TimeUnit.MINUTES.toMillis(1);
     private ConcurrentHashMap<String, Integer> verificationAttemptsCache = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String, Long> accountUnlockTimestampCache = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String, Long> currentLockDurationCache = new ConcurrentHashMap<>();
-    //after the firts attempt
     private final int MAX_USER_ATTEMPTS = 2;
-
     @Override
     public Mono<Void> succeeded(String key) {
         return Mono.fromRunnable(() -> {
@@ -51,13 +48,13 @@ public class CodeVerificationAttemptService extends AttemptService {
             }
             
             long remainingTime = unlockTimestamp - System.currentTimeMillis();
-            return Mono.error(new AccountLockedCodeException(remainingTime/1000));
+            return Mono.error(new ExcessiveEmailsExceptions(remainingTime/(1000)));
         });
     }
 
     private int incrementVerificationAttempts(String key) {
         int attempts = verificationAttemptsCache.compute(key, (k, v) -> (v == null ? 0 : v) + 1);
-        if(attempts <= MAX_USER_ATTEMPTS ) return 0;
+        if(attempts <= MAX_USER_ATTEMPTS) return 0;
         return attempts;
     }
 

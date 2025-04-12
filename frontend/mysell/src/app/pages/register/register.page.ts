@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { NavController } from '@ionic/angular';
 import {
   IonContent,
   IonHeader,
@@ -14,6 +15,8 @@ import { LoadingSppinerComponent } from 'src/app/components/loading-sppiner/load
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
 import { Browser } from '@capacitor/browser';
+import { EmailValidationService } from 'src/app/services/email-validation.service';
+import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
@@ -25,16 +28,21 @@ import { Browser } from '@capacitor/browser';
     AuthFormComponent,
     MessagePerRequestComponent,
     LoadingSppinerComponent,
+    ArrowComponent,
   ],
 })
 export class RegisterPage implements OnInit {
   successMessage$;
   errorMessage$;
   isLoading = false;
+  readonly emailToValidate = !!localStorage.getItem('emailToValidate');
+
   constructor(
     private messageService: MessageService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private navController: NavController, // injetando o NavController
+    private emailValidationService: EmailValidationService
   ) {
     this.successMessage$ = this.messageService.successMessage$;
     this.errorMessage$ = this.messageService.errorMessage$;
@@ -44,8 +52,7 @@ export class RegisterPage implements OnInit {
 
   onRegister(event: { email: string; password: string }): void {
     this.isLoading = true;
-    console.log(event);
-
+    this.clearLocalStorage();
     this.authService.register(event.email, event.password).subscribe({
       next: (next) => {
         this.isLoading = false;
@@ -55,7 +62,9 @@ export class RegisterPage implements OnInit {
           next
         );
         setTimeout(() => {
-          this.router.navigate(['/home']);
+          this.navController.navigateRoot('/email-validation', {
+            queryParams: { email: event.email },
+          });
         }, 2000);
       },
       error: (error) => {
@@ -69,6 +78,9 @@ export class RegisterPage implements OnInit {
         this.isLoading = false;
       },
     });
+  }
+  private clearLocalStorage(): void {
+    localStorage.clear();
   }
 
   async onGoogleRegister(): Promise<void> {

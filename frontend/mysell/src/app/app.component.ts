@@ -4,6 +4,10 @@ import { Platform } from '@ionic/angular';
 import { AuthService } from './services/auth.service';
 import { Router } from '@angular/router';
 import { App } from '@capacitor/app';
+import {
+  OrientationType,
+  ScreenOrientation,
+} from '@capawesome/capacitor-screen-orientation';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -17,6 +21,7 @@ export class AppComponent {
   ) {
     //if (this.authService.isLoggedIn()) this.router.navigate(['/home']);
     this.initializeApp();
+    this.lockOrientation();
   }
 
   initializeApp() {
@@ -42,6 +47,13 @@ export class AppComponent {
         // Navigate to home
         this.router.navigate(['/home']);
       }
+    }
+  }
+  private async lockOrientation(): Promise<void> {
+    try {
+      await ScreenOrientation.lock({ type: OrientationType.PORTRAIT });
+    } catch (error) {
+      // Opcional: log do erro para depuração
     }
   }
 }
