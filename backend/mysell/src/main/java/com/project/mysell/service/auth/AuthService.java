@@ -11,7 +11,6 @@ import com.project.mysell.dto.auth.ResponseDTO;
 import com.project.mysell.dto.auth.UserDTO;
 import com.project.mysell.dto.auth.email.SucessSendEmailDTO;
 import com.project.mysell.dto.auth.email.VerificationCodeDTO;
-import com.project.mysell.exceptions.auth.ValidEmailException;
 import com.project.mysell.exceptions.user.UserAlreadyExistsException;
 import com.project.mysell.exceptions.user.UserNotFoundException;
 import com.project.mysell.infra.security.CustomAuthenticationProvider;
@@ -81,6 +80,11 @@ public class AuthService {
         return Mono.just(userDTO)
             .map(this::encodeUserPassword)
             .map(UserModel::new)
+            .map(userModel ->{
+            	userModel.setRole(UserRole.EMAIL_VALID_USER);
+            	userModel.setEmailValidated(true);
+            	return userModel;
+            })
             .flatMap(userRepository::save);
     }
 
@@ -91,34 +95,24 @@ public class AuthService {
             return handleEmailVerificationRequest(email);
     }
 
-    public Mono<String> verifyEmailWithCode(String email, VerificationCodeDTO verificationCode) {
-        return findUserByEmail(email)
-            .flatMap(user -> processEmailVerification(user, email, verificationCode.code()));
+    public Mono<ResponseDTO> verifyEmailWithCode(VerificationCodeDTO verificationCode) {
+           return processEmailVerification(verificationCode);
     }
 
     private Mono<SucessSendEmailDTO> handleEmailVerificationRequest(String email) {        
         return emailCodeService.sendVerificationCode(email);
     }
 
-    private Mono<String> processEmailVerification(UserModel user, String email, String verificationCode) {
-        if (user.isEmailValidated()) {
-            return Mono.error(new ValidEmailException());
-        }
-
-        return emailCodeService.validateCode(email, verificationCode)
-            .flatMap(isValid -> handleCodeValidationResult(user, isValid));
+    private Mono<ResponseDTO> processEmailVerification(VerificationCodeDTO verificationCode) {
+        return emailCodeService.validateCode(verificationCode.userDTO().email(), verificationCode.code())
+            .flatMap(isValid -> handleCodeValidationResult(verificationCode.userDTO(), isValid));
     }
 
-    private Mono<String> handleCodeValidationResult(UserModel user, boolean isValid) {        
-        return updateUserEmailValidationStatus(user)
-            .thenReturn("Email verified successfully");
+    private Mono<ResponseDTO> handleCodeValidationResult(UserDTO user, boolean isValid) {        
+        return register(user);
     }
 
-    private Mono<UserModel> updateUserEmailValidationStatus(UserModel user) {
-        user.setEmailValidated(true);
-        user.setRole(UserRole.EMAIL_VALID_USER);
-        return userRepository.save(user);
-    }
+
 
 	public Mono<String> verifyIfUserAlreadyExists(@NotBlank @Email String email) {
 		this.verifyUserDoesNotExist(email);
