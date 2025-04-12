@@ -1,6 +1,5 @@
 package com.project.mysell.controller;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +16,8 @@ import com.project.mysell.dto.auth.email.VerificationCodeDTO;
 import com.project.mysell.service.auth.AuthService;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -35,12 +36,12 @@ public class AuthController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 	@GetMapping("/sendCode")
-	public ResponseEntity<Mono<SucessSendEmailDTO>> sendCode(@Valid @RequestHeader("Authorization") String token){
-		Mono<SucessSendEmailDTO> sucessSendEmailDTO = this.authService.sendVerificationCode(token);
+	public ResponseEntity<Mono<SucessSendEmailDTO>> sendCode(@Email @NotBlank String email){
+		Mono<SucessSendEmailDTO> sucessSendEmailDTO = this.authService.sendVerificationCode(email);
 		return ResponseEntity.ok().body(sucessSendEmailDTO);
 	}
 	@PostMapping("/verify")
-	public ResponseEntity<Mono<String>> verifyEmail(@Valid @RequestHeader("Authorization") String token, @RequestBody VerificationCodeDTO verificationCodeDTO){
+	public ResponseEntity<Mono<String>> verifyEmail(@Email @NotBlank String email, @RequestBody VerificationCodeDTO verificationCodeDTO){
 		Mono<String> sucessMessage = this.authService.verifyEmailWithCode(token, verificationCodeDTO);
 		return ResponseEntity.ok().body(sucessMessage);
 	}

@@ -85,12 +85,9 @@ public class AuthService {
     private UserDTO encodeUserPassword(UserDTO userDTO) {
         return new UserDTO(userDTO.email(), passwordEncoder.encode(userDTO.password()));
     }
-    public Mono<SucessSendEmailDTO> sendVerificationCode(String authorizationHeader) {
-        final String jwtToken = jwtTokenProvider.extractJwtToken(authorizationHeader);
-        final Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
-
-        return findUserByEmail(authentication.getName())
-            .flatMap(user -> handleEmailVerificationRequest(user, authentication.getName()));
+    public Mono<SucessSendEmailDTO> sendVerificationCode(String email) {
+        return findUserByEmail(email)
+            .flatMap(user -> handleEmailVerificationRequest(user, email));
     }
 
     public Mono<String> verifyEmailWithCode(String authorizationHeader, VerificationCodeDTO verificationCode) {
