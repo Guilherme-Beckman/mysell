@@ -17,6 +17,7 @@ import com.project.mysell.exceptions.user.UserNotFoundException;
 import com.project.mysell.infra.security.CustomAuthenticationProvider;
 import com.project.mysell.infra.security.jwt.JwtTokenProvider;
 import com.project.mysell.model.UserModel;
+import com.project.mysell.model.role.UserRole;
 import com.project.mysell.repository.UserRepository;
 import com.project.mysell.service.auth.code.EmailCodeService;
 
@@ -84,20 +85,15 @@ public class AuthService {
     private UserDTO encodeUserPassword(UserDTO userDTO) {
         return new UserDTO(userDTO.email(), passwordEncoder.encode(userDTO.password()));
     }
-    public Mono<SucessSendEmailDTO> sendVerificationCode(String authorizationHeader) {
-        final String jwtToken = jwtTokenProvider.extractJwtToken(authorizationHeader);
-        final Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
-
-        return findUserByEmail(authentication.getName())
-            .flatMap(user -> handleEmailVerificationRequest(user, authentication.getName()));
+    public Mono<SucessSendEmailDTO> sendVerificationCode(String email) {
+        return findUserByEmail(email)
+            .flatMap(user -> handleEmailVerificationRequest(user, email));
     }
 
-    public Mono<String> verifyEmailWithCode(String authorizationHeader, VerificationCodeDTO verificationCode) {
-        final String jwtToken = jwtTokenProvider.extractJwtToken(authorizationHeader);
-        final Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
+    public Mono<String> verifyEmailWithCode(String email, VerificationCodeDTO verificationCode) {
 
-        return findUserByEmail(authentication.getName())
-            .flatMap(user -> processEmailVerification(user, authentication.getName(), verificationCode.code()));
+        return findUserByEmail(email)
+            .flatMap(user -> processEmailVerification(user, email, verificationCode.code()));
     }
 
     private Mono<SucessSendEmailDTO> handleEmailVerificationRequest(UserModel user, String email) {
@@ -124,6 +120,7 @@ public class AuthService {
 
     private Mono<UserModel> updateUserEmailValidationStatus(UserModel user) {
         user.setEmailValidated(true);
+        user.setRole(UserRole.EMAIL_VALID_USER);
         return userRepository.save(user);
     }
 
