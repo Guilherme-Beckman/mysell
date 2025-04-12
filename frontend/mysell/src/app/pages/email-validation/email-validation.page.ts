@@ -32,7 +32,7 @@ import { finalize } from 'rxjs/operators';
 })
 export class EmailValidationPage implements OnInit {
   private readonly apiUrl: string = environment.apiUrl;
-  private readonly timeToUserResendCode: number = 60000; // 1 minuto
+  private readonly timeToUserResendCode: number = 60000;
   public email: string = '';
   public countdown!: number;
   public isLoading = false;
@@ -61,9 +61,8 @@ export class EmailValidationPage implements OnInit {
 
     if (!localStorage.getItem('emailToValidate')) {
       this.sendCode();
-    } else {
-      this.loadCodeWithTimer();
     }
+    this.loadCodeWithTimer();
   }
 
   public validateCode(code: string): void {
@@ -100,8 +99,8 @@ export class EmailValidationPage implements OnInit {
             ''
           );
           this.countdown = response.timeValidCode;
-          this.startCountdown();
           localStorage.setItem('lastSend', Date.now().toString());
+          this.loadCodeWithTimer();
         },
         error: (error) => {
           this.messageService.setErrorMessage('', error);
