@@ -103,6 +103,7 @@ export class EmailValidationPage implements OnInit {
   }
   private registerUser(): void {
     this.authService.register(this.email, this.password).subscribe();
+    localStorage.removeItem('password');
   }
   public resendCode(): void {
     this.isLoading = true;
