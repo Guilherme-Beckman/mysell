@@ -17,6 +17,7 @@ import com.project.mysell.exceptions.user.UserNotFoundException;
 import com.project.mysell.infra.security.CustomAuthenticationProvider;
 import com.project.mysell.infra.security.jwt.JwtTokenProvider;
 import com.project.mysell.model.UserModel;
+import com.project.mysell.model.role.UserRole;
 import com.project.mysell.repository.UserRepository;
 import com.project.mysell.service.auth.code.EmailCodeService;
 
@@ -124,6 +125,7 @@ public class AuthService {
 
     private Mono<UserModel> updateUserEmailValidationStatus(UserModel user) {
         user.setEmailValidated(true);
+        user.setRole(UserRole.EMAIL_VALID_USER);
         return userRepository.save(user);
     }
 
