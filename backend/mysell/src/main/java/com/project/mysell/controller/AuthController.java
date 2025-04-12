@@ -2,6 +2,7 @@ package com.project.mysell.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,13 +35,13 @@ public class AuthController {
 		Mono<ResponseDTO> responseDTO =this.authService.register(userDTO);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	@GetMapping("/sendCode")
-	public ResponseEntity<Mono<SucessSendEmailDTO>> sendCode(@Email @NotBlank String email){
+	@GetMapping("/sendCode/{email}")
+	public ResponseEntity<Mono<SucessSendEmailDTO>> sendCode(@Email @NotBlank @PathVariable String email){
 		Mono<SucessSendEmailDTO> sucessSendEmailDTO = this.authService.sendVerificationCode(email);
 		return ResponseEntity.ok().body(sucessSendEmailDTO);
 	}
-	@PostMapping("/verify")
-	public ResponseEntity<Mono<String>> verifyEmail(@Email @NotBlank String email, @RequestBody VerificationCodeDTO verificationCodeDTO){
+	@PostMapping("/verify/{email}")
+	public ResponseEntity<Mono<String>> verifyEmail(@Email @NotBlank @PathVariable String email, @RequestBody VerificationCodeDTO verificationCodeDTO){
 		Mono<String> sucessMessage = this.authService.verifyEmailWithCode(email, verificationCodeDTO);
 		return ResponseEntity.ok().body(sucessMessage);
 	}
