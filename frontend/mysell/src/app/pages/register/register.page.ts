@@ -54,8 +54,13 @@ export class RegisterPage implements OnInit {
     this.isLoading = true;
     this.clearLocalStorage();
     //verificar se o email já existe
+    if (!(event.email || event.password)) {
+      this.messageService.setErrorMessage('Preencha todos os campos', '');
+      this.isLoading = false;
+      return;
+    }
     this.authService.verifyIfUserAlreadyExists(event.email).subscribe({
-      next: (response) => {
+      next: () => {
         this.messageService.setSuccessMessage(
           'Cadastro realizado com sucesso!',
           ''
@@ -67,7 +72,9 @@ export class RegisterPage implements OnInit {
         }, 2000);
       },
       error: (error) => {
+        console.log(error);
         this.messageService.setErrorMessage('Email já cadastrado', '');
+
         this.isLoading = false;
       },
     });
