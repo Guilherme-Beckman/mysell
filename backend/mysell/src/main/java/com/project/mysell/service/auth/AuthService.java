@@ -90,12 +90,10 @@ public class AuthService {
             .flatMap(user -> handleEmailVerificationRequest(user, email));
     }
 
-    public Mono<String> verifyEmailWithCode(String authorizationHeader, VerificationCodeDTO verificationCode) {
-        final String jwtToken = jwtTokenProvider.extractJwtToken(authorizationHeader);
-        final Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
+    public Mono<String> verifyEmailWithCode(String email, VerificationCodeDTO verificationCode) {
 
-        return findUserByEmail(authentication.getName())
-            .flatMap(user -> processEmailVerification(user, authentication.getName(), verificationCode.code()));
+        return findUserByEmail(email)
+            .flatMap(user -> processEmailVerification(user, email, verificationCode.code()));
     }
 
     private Mono<SucessSendEmailDTO> handleEmailVerificationRequest(UserModel user, String email) {
