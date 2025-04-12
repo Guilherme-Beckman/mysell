@@ -53,28 +53,28 @@ export class RegisterPage implements OnInit {
   onRegister(event: { email: string; password: string }): void {
     this.isLoading = true;
     this.clearLocalStorage();
-    this.authService.register(event.email, event.password).subscribe({
-      next: (next) => {
-        this.isLoading = false;
-        this.authService.saveToken(next.token);
+    //verificar se o email já existe
+    if (!(event.email || event.password)) {
+      this.messageService.setErrorMessage('Preencha todos os campos', '');
+      this.isLoading = false;
+      return;
+    }
+    this.authService.verifyIfUserAlreadyExists(event.email).subscribe({
+      next: () => {
         this.messageService.setSuccessMessage(
           'Cadastro realizado com sucesso!',
-          next
+          ''
         );
         setTimeout(() => {
           this.navController.navigateRoot('/email-validation', {
-            queryParams: { email: event.email },
+            queryParams: { email: event.email, password: event.password },
           });
         }, 2000);
       },
       error: (error) => {
-        this.isLoading = false;
-        this.messageService.setErrorMessage(
-          'Erro ao realizar cadastro!',
-          error
-        );
-      },
-      complete: () => {
+        console.log(error);
+        this.messageService.setErrorMessage('Email já cadastrado', '');
+
         this.isLoading = false;
       },
     });

@@ -2,10 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.prod';
+
 export interface EmailCodeResponse {
   sucessMessage: string;
   timeValidCode: number;
 }
+
 @Injectable({
   providedIn: 'root',
 })
@@ -14,16 +16,19 @@ export class EmailValidationService {
 
   constructor(private httpClient: HttpClient) {}
 
-  sendEmailCode(): Observable<EmailCodeResponse> {
+  sendEmailCode(email: string): Observable<EmailCodeResponse> {
     return this.httpClient.get<EmailCodeResponse>(
-      `${this.apiUrl}auth/sendCode`
+      `${this.apiUrl}auth/sendCode/${email}`
     );
   }
-  verifyEmailCode(code: string): Observable<any> {
+
+  verifyEmailCode(email: string, code: string): Observable<string> {
     return this.httpClient.post(
-      `${this.apiUrl}auth/verify`,
-      { code: code },
-      { responseType: 'text' }
+      `${this.apiUrl}auth/verify/${email}`,
+      { code },
+      {
+        responseType: 'text',
+      }
     );
   }
 }

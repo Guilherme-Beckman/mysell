@@ -21,6 +21,8 @@ import com.project.mysell.model.role.UserRole;
 import com.project.mysell.repository.UserRepository;
 import com.project.mysell.service.auth.code.EmailCodeService;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -86,21 +88,15 @@ public class AuthService {
         return new UserDTO(userDTO.email(), passwordEncoder.encode(userDTO.password()));
     }
     public Mono<SucessSendEmailDTO> sendVerificationCode(String email) {
-        return findUserByEmail(email)
-            .flatMap(user -> handleEmailVerificationRequest(user, email));
+            return handleEmailVerificationRequest(email);
     }
 
     public Mono<String> verifyEmailWithCode(String email, VerificationCodeDTO verificationCode) {
-
         return findUserByEmail(email)
             .flatMap(user -> processEmailVerification(user, email, verificationCode.code()));
     }
 
-    private Mono<SucessSendEmailDTO> handleEmailVerificationRequest(UserModel user, String email) {
-        if (user.isEmailValidated()) {
-            return Mono.error(new ValidEmailException());
-        }
-        
+    private Mono<SucessSendEmailDTO> handleEmailVerificationRequest(String email) {        
         return emailCodeService.sendVerificationCode(email);
     }
 
@@ -123,5 +119,10 @@ public class AuthService {
         user.setRole(UserRole.EMAIL_VALID_USER);
         return userRepository.save(user);
     }
+
+	public Mono<String> verifyIfUserAlreadyExists(@NotBlank @Email String email) {
+		this.verifyUserDoesNotExist(email);
+		return Mono.just("Tá ok! pode continuar a verificação");
+	}
 
 }

@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   apiUrl:
-    'https://6891-2804-6194-1f74-d900-fc25-4839-ab9b-e2a7.ngrok-free.app/',
+    'https://9e1b-2804-6194-1f74-d900-955a-40a2-2ff2-83c1.ngrok-free.app/',
 };
 
 /*
