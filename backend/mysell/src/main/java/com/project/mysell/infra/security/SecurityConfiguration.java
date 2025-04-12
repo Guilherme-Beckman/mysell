@@ -60,6 +60,10 @@ public class SecurityConfiguration {
                 .pathMatchers(HttpMethod.OPTIONS, "/auth/login").permitAll() 
                 .pathMatchers(HttpMethod.POST, "/auth/register").permitAll()
                 .pathMatchers(HttpMethod.OPTIONS, "/auth/register").permitAll() 
+                .pathMatchers(HttpMethod.GET, "/auth/sendCode").permitAll()
+                .pathMatchers(HttpMethod.OPTIONS, "/auth/sendCode").permitAll() 
+                .pathMatchers(HttpMethod.POST, "/auth/verify").permitAll()
+                .pathMatchers(HttpMethod.OPTIONS, "/auth/verify").permitAll() 
                 .pathMatchers(HttpMethod.POST, "/category").hasAuthority("ADMIN")
                 .pathMatchers(HttpMethod.PUT, "/category").hasAuthority("ADMIN")
                 .pathMatchers(HttpMethod.DELETE, "/category").hasAuthority("ADMIN")
@@ -69,7 +73,7 @@ public class SecurityConfiguration {
                 .pathMatchers(HttpMethod.GET, "/product").hasAuthority("ADMIN")
                 .pathMatchers(HttpMethod.GET, "/sell").hasAuthority("ADMIN")
                 .pathMatchers(HttpMethod.GET, "/event").hasAuthority("ADMIN")
-                .anyExchange().authenticated())
+                .anyExchange().hasAuthority("EMAIL_VALID_USER"))
             .addFilterAt(new JwtTokenAuthenticationFilter(tokenProvider), SecurityWebFiltersOrder.HTTP_BASIC)
             .build();
     }
