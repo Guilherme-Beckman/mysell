@@ -15,6 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.project.mysell.dto.auth.UserDTO;
 import com.project.mysell.infra.security.jwt.JwtTokenProvider;
 import com.project.mysell.model.UserModel;
+import com.project.mysell.model.role.UserRole;
 import com.project.mysell.repository.UserRepository;
 
 import reactor.core.publisher.Mono;
@@ -63,7 +64,12 @@ public class CustomAuthenticationSuccessHandler implements ServerAuthenticationS
     }
 
     private UserModel newUser(String email) {
-        return new UserModel(new UserDTO(email, ""));
+        return setUserAuthorities(new UserModel(new UserDTO(email, "")));
+    }
+    private UserModel setUserAuthorities(UserModel userModel) {
+    	userModel.setRole(UserRole.EMAIL_VALID_USER);
+    	userModel.setEmailValidated(true);
+    	return userModel;
     }
 
     private Mono<Void> redirectToLogin(ServerWebExchange exchange, String token) {
