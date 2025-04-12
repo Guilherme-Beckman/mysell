@@ -33,10 +33,6 @@ public class AuthController {
 	public ResponseEntity<Mono<ResponseDTO>> register(@Valid  @RequestBody UserDTO userDTO){
 		Mono<ResponseDTO> responseDTO =this.authService.register(userDTO);
 		return ResponseEntity.ok().body(responseDTO);
-	}	
-	@GetMapping("/login")
-	public String login(){
-		return "Sucess";
 	}
 	@GetMapping("/sendCode")
 	public ResponseEntity<Mono<SucessSendEmailDTO>> sendCode(@Valid @RequestHeader("Authorization") String token){
