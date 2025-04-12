@@ -30,19 +30,15 @@ public class AuthController {
 		Mono<ResponseDTO> responseDTO =this.authService.login(loginDTO);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	@PostMapping("/register")
-	public ResponseEntity<Mono<ResponseDTO>> register(@Valid  @RequestBody UserDTO userDTO){
-		Mono<ResponseDTO> responseDTO =this.authService.register(userDTO);
-		return ResponseEntity.ok().body(responseDTO);
-	}
+
 	@GetMapping("/sendCode/{email}")
 	public ResponseEntity<Mono<SucessSendEmailDTO>> sendCode(@Email @NotBlank @PathVariable String email){
 		Mono<SucessSendEmailDTO> sucessSendEmailDTO = this.authService.sendVerificationCode(email);
 		return ResponseEntity.ok().body(sucessSendEmailDTO);
 	}
-	@PostMapping("/verify/{email}")
-	public ResponseEntity<Mono<String>> verifyEmail(@Email @NotBlank @PathVariable String email, @RequestBody VerificationCodeDTO verificationCodeDTO){
-		Mono<String> sucessMessage = this.authService.verifyEmailWithCode(email, verificationCodeDTO);
+	@PostMapping("/verify")
+	public ResponseEntity<Mono<ResponseDTO>> verifyEmail(@RequestBody VerificationCodeDTO verificationCodeDTO){
+		Mono<ResponseDTO> sucessMessage = this.authService.verifyEmailWithCode(verificationCodeDTO);
 		return ResponseEntity.ok().body(sucessMessage);
 	}
 	@GetMapping("/userExists/{email}")
