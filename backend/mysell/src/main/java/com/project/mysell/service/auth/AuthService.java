@@ -11,7 +11,6 @@ import com.project.mysell.dto.auth.ResponseDTO;
 import com.project.mysell.dto.auth.UserDTO;
 import com.project.mysell.dto.auth.email.SucessSendEmailDTO;
 import com.project.mysell.dto.auth.email.VerificationCodeDTO;
-import com.project.mysell.exceptions.auth.ValidEmailException;
 import com.project.mysell.exceptions.user.UserAlreadyExistsException;
 import com.project.mysell.exceptions.user.UserNotFoundException;
 import com.project.mysell.infra.security.CustomAuthenticationProvider;

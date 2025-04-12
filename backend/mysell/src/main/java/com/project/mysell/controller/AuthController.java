@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.mysell.dto.auth.LoginDTO;
 import com.project.mysell.dto.auth.ResponseDTO;
-import com.project.mysell.dto.auth.UserDTO;
 import com.project.mysell.dto.auth.email.SucessSendEmailDTO;
 import com.project.mysell.dto.auth.email.VerificationCodeDTO;
 import com.project.mysell.service.auth.AuthService;
