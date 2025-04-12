@@ -79,32 +79,32 @@ export class EmailValidationPage implements OnInit {
   public validateCode(code: string): void {
     this.isLoading = true;
 
-    this.emailValidationService.verifyEmailCode(this.email, code).subscribe({
-      next: (response) => {
-        this.registerUser();
-        this.isLoading = false;
-        this.messageService.setSuccessMessage(
-          'Verificação realizada com sucesso!',
-          response
-        );
-        setTimeout(() => {
-          this.navController.navigateRoot('/home');
-        }, 2000);
-        this.removeValidationSession();
-      },
-      error: (error) => {
-        this.isLoading = false;
-        this.messageService.setErrorMessage('', error);
-      },
-      complete: () => {
-        this.isLoading = false;
-      },
-    });
+    this.emailValidationService
+      .verifyEmailCode(this.email, this.password, code)
+      .subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          this.authService.saveToken(response.token);
+          this.messageService.setSuccessMessage(
+            'Verificação realizada com sucesso!',
+            response
+          );
+          setTimeout(() => {
+            this.navController.navigateRoot('/home');
+          }, 2000);
+          this.removeValidationSession();
+          localStorage.removeItem('password');
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.messageService.setErrorMessage('', error);
+        },
+        complete: () => {
+          this.isLoading = false;
+        },
+      });
   }
-  private registerUser(): void {
-    this.authService.register(this.email, this.password).subscribe();
-    localStorage.removeItem('password');
-  }
+
   public resendCode(): void {
     this.isLoading = true;
 

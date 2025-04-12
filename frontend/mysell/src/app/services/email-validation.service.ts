@@ -8,6 +8,16 @@ export interface EmailCodeResponse {
   timeValidCode: number;
 }
 
+export interface UserDTO {
+  email: string;
+  password: string;
+}
+
+export interface UserAndCode {
+  userDTO: UserDTO;
+  code: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -22,13 +32,16 @@ export class EmailValidationService {
     );
   }
 
-  verifyEmailCode(email: string, code: string): Observable<string> {
-    return this.httpClient.post(
-      `${this.apiUrl}auth/verify/${email}`,
-      { code },
-      {
-        responseType: 'text',
-      }
-    );
+  verifyEmailCode(
+    email: string,
+    password: string,
+    code: string
+  ): Observable<any> {
+    const payload: UserAndCode = {
+      userDTO: { email, password },
+      code,
+    };
+
+    return this.httpClient.post(`${this.apiUrl}auth/verify`, payload);
   }
 }
