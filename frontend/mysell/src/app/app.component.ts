@@ -19,7 +19,7 @@ export class AppComponent {
     private authService: AuthService,
     private router: Router
   ) {
-    //if (this.authService.isLoggedIn()) this.router.navigate(['/home']);
+    if (this.authService.isLoggedIn()) this.router.navigate(['/home']);
     this.initializeApp();
     this.lockOrientation();
   }
