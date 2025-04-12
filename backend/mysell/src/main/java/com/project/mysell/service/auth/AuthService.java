@@ -21,6 +21,8 @@ import com.project.mysell.model.role.UserRole;
 import com.project.mysell.repository.UserRepository;
 import com.project.mysell.service.auth.code.EmailCodeService;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -123,5 +125,10 @@ public class AuthService {
         user.setRole(UserRole.EMAIL_VALID_USER);
         return userRepository.save(user);
     }
+
+	public Mono<String> verifyIfUserAlreadyExists(@NotBlank @Email String email) {
+		this.verifyUserDoesNotExist(email);
+		return Mono.just("Tá ok! pode continuar a verificação");
+	}
 
 }

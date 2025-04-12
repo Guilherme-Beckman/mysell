@@ -16,17 +16,15 @@ export class EmailValidationService {
 
   sendEmailCode(email: string): Observable<EmailCodeResponse> {
     return this.httpClient.get<EmailCodeResponse>(
-      `${this.apiUrl}auth/sendCode`,
+      `${this.apiUrl}auth/sendCode/${email}`,
       {
         params: { email },
       }
     );
   }
   verifyEmailCode(email: string, code: string): Observable<any> {
-    return this.httpClient.post(
-      `${this.apiUrl}auth/verify`,
-      { code: code },
-      { params: { email } }
-    );
+    return this.httpClient.post(`${this.apiUrl}auth/verify/${email}`, {
+      code: code,
+    });
   }
 }

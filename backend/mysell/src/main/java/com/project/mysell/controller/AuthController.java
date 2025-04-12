@@ -45,5 +45,9 @@ public class AuthController {
 		Mono<String> sucessMessage = this.authService.verifyEmailWithCode(email, verificationCodeDTO);
 		return ResponseEntity.ok().body(sucessMessage);
 	}
-	
+	@GetMapping("/userExists/{email}")
+	public ResponseEntity<Mono<String>> verifyIfUserAlreadyExists(@NotBlank @Email @PathVariable String email){
+		Mono<String> sucessMessage = this.authService.verifyIfUserAlreadyExists(email);
+		return ResponseEntity.ok().body(sucessMessage);
+	}
 }

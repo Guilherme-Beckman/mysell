@@ -41,6 +41,9 @@ export class AuthService {
       }
     );
   }
+  verifyIfUserAlreadyExists(email: string): Observable<any> {
+    return this.httpClient.get<any>(`${this.apiUrl}auth/userExists/${email}`);
+  }
 
   async onGoogleOAuth2(): Promise<void> {
     Browser.addListener('browserFinished', async () => {

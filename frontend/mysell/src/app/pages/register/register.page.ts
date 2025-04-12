@@ -54,15 +54,23 @@ export class RegisterPage implements OnInit {
     this.isLoading = true;
     this.clearLocalStorage();
     //verificar se o email já existe
-    this.messageService.setSuccessMessage(
-      'Cadastro realizado com sucesso!',
-      ''
-    );
-    setTimeout(() => {
-      this.navController.navigateRoot('/email-validation', {
-        queryParams: { email: event.email, password: event.password },
-      });
-    }, 2000);
+    this.authService.verifyIfUserAlreadyExists(event.email).subscribe({
+      next: (response) => {
+        this.messageService.setSuccessMessage(
+          'Cadastro realizado com sucesso!',
+          ''
+        );
+        setTimeout(() => {
+          this.navController.navigateRoot('/email-validation', {
+            queryParams: { email: event.email, password: event.password },
+          });
+        }, 2000);
+      },
+      error: (error) => {
+        this.messageService.setErrorMessage('Email já cadastrado', '');
+        this.isLoading = false;
+      },
+    });
   }
   private clearLocalStorage(): void {
     localStorage.clear();
