@@ -9,14 +9,15 @@ import {
   IonToolbar,
 } from '@ionic/angular/standalone';
 import { AuthFormComponent } from 'src/app/components/auth-form/auth-form.component';
-import { MessageService } from 'src/app/services/message.service';
 import { MessagePerRequestComponent } from 'src/app/components/message-per-request/message-per-request.component';
 import { LoadingSppinerComponent } from 'src/app/components/loading-sppiner/loading-sppiner.component';
+import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
+
+import { MessageService } from 'src/app/services/message.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
-import { Browser } from '@capacitor/browser';
 import { EmailValidationService } from 'src/app/services/email-validation.service';
-import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
+
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
@@ -32,32 +33,29 @@ import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
   ],
 })
 export class RegisterPage implements OnInit {
-  successMessage$;
-  errorMessage$;
-  isLoading = false;
-  readonly emailToValidate = !!localStorage.getItem('emailToValidate');
+  public successMessage$ = this.messageService.successMessage$;
+  public errorMessage$ = this.messageService.errorMessage$;
+  public isLoading = false;
+  public readonly emailToValidate = !!localStorage.getItem('emailToValidate');
 
   constructor(
     private messageService: MessageService,
     private authService: AuthService,
-    private router: Router,
-    private navController: NavController, // injetando o NavController
-    private emailValidationService: EmailValidationService
-  ) {
-    this.successMessage$ = this.messageService.successMessage$;
-    this.errorMessage$ = this.messageService.errorMessage$;
-  }
+    private navController: NavController
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit(): void {}
 
-  onRegister(event: { email: string; password: string }): void {
+  public onRegister(event: { email: string; password: string }): void {
     this.isLoading = true;
     this.clearLocalStorage();
+
     if (!(event.email || event.password)) {
       this.messageService.setErrorMessage('Preencha todos os campos', '');
       this.isLoading = false;
       return;
     }
+
     this.authService.verifyIfUserAlreadyExists(event.email).subscribe({
       next: () => {
         this.isLoading = false;
@@ -73,21 +71,20 @@ export class RegisterPage implements OnInit {
       },
       error: (error) => {
         this.isLoading = false;
-
-        console.log(error);
         this.messageService.setErrorMessage('Email já cadastrado', '');
       },
     });
   }
+
   private clearLocalStorage(): void {
     localStorage.clear();
   }
 
-  async onGoogleRegister(): Promise<void> {
-    this.authService.onGoogleOAuth2();
+  public async onGoogleRegister(): Promise<void> {
+    await this.authService.onGoogleOAuth2();
   }
 
-  async onFacebookRegister(): Promise<void> {
-    this.authService.onFacebookOAuth2();
+  public async onFacebookRegister(): Promise<void> {
+    await this.authService.onFacebookOAuth2();
   }
 }

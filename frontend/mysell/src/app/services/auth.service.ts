@@ -13,11 +13,9 @@ export class AuthService {
 
   constructor(private httpClient: HttpClient) {}
 
-  // ============
-  // HTTP Methods
-  // ============
+  // ===== HTTP Methods =====
 
-  login(email: string, password: string): Observable<any> {
+  public login(email: string, password: string): Observable<any> {
     return this.httpClient.post<any>(
       `${this.apiUrl}auth/login`,
       { email, password },
@@ -27,11 +25,12 @@ export class AuthService {
       }
     );
   }
-  logout(): void {
+
+  public logout(): void {
     this.clearToken();
   }
 
-  register(email: string, password: string): Observable<any> {
+  public register(email: string, password: string): Observable<any> {
     return this.httpClient.post<any>(
       `${this.apiUrl}auth/register`,
       { email, password },
@@ -41,56 +40,46 @@ export class AuthService {
       }
     );
   }
-  verifyIfUserAlreadyExists(email: string): Observable<any> {
+
+  public verifyIfUserAlreadyExists(email: string): Observable<any> {
     return this.httpClient.get(`${this.apiUrl}auth/userExists/${email}`, {
       responseType: 'text',
     });
   }
 
-  async onGoogleOAuth2(): Promise<void> {
+  public async onGoogleOAuth2(): Promise<void> {
     Browser.addListener('browserFinished', async () => {
       // Navegador fechado
     });
-
-    await Browser.open({
-      url: `${this.apiUrl}oauth2/authorization/google`,
-    });
+    await Browser.open({ url: `${this.apiUrl}oauth2/authorization/google` });
   }
 
-  async onFacebookOAuth2(): Promise<void> {
+  public async onFacebookOAuth2(): Promise<void> {
     Browser.addListener('browserFinished', async () => {
       // Navegador fechado
     });
-
-    await Browser.open({
-      url: `${this.apiUrl}oauth2/authorization/facebook`,
-    });
+    await Browser.open({ url: `${this.apiUrl}oauth2/authorization/facebook` });
   }
 
-  // ============
-  // Token Control
-  // ============
+  // ===== Token Control =====
 
-  saveToken(token: string): void {
+  public saveToken(token: string): void {
     if (!this.isLocalStorageAvailable()) return;
-
     localStorage.setItem('token', token);
     this.setExpirationTime();
   }
 
-  isTokenExpired(): boolean {
+  public isTokenExpired(): boolean {
     const token = this.getToken();
     const expiration = this.getTokenExpirationTime();
-
     if (!token || !expiration || Date.now() > expiration) {
       this.clearToken();
       return true;
     }
-
     return false;
   }
 
-  isLoggedIn(): boolean {
+  public isLoggedIn(): boolean {
     const token = this.getToken();
     const expiration = this.getTokenExpirationTime();
     return !!token && !!expiration && Date.now() < expiration;
@@ -112,9 +101,7 @@ export class AuthService {
     localStorage.removeItem('expiration');
   }
 
-  // ============
-  // Helpers
-  // ============
+  // ===== Helpers =====
 
   private getJsonHeaders(): HttpHeaders {
     return new HttpHeaders({
