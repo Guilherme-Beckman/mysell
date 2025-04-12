@@ -1,28 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-} from '@ionic/angular/standalone';
 import { ActivatedRoute } from '@angular/router';
-
+import { NavController } from '@ionic/angular';
 import { environment } from 'src/environments/environment.prod';
 
 import { CodeSquaresComponent } from 'src/app/components/code-squares/code-squares.component';
 import { MessagePerRequestComponent } from 'src/app/components/message-per-request/message-per-request.component';
 import { LoadingSppinerComponent } from 'src/app/components/loading-sppiner/loading-sppiner.component';
+import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
 
 import {
   EmailValidationService,
   EmailCodeResponse,
 } from 'src/app/services/email-validation.service';
 import { MessageService } from 'src/app/services/message.service';
-import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
-import { NavController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-email-validation',
@@ -42,9 +35,9 @@ export class EmailValidationPage implements OnInit {
   private readonly timeToUserResendCode: number = 60000; // 1 minuto
   public email: string = '';
   public countdown!: number;
-  public isLoading: boolean = false;
-  public errorMessage$;
-  public successMessage$;
+  public isLoading = false;
+  public errorMessage$ = this.messageService.errorMessage$;
+  public successMessage$ = this.messageService.successMessage$;
 
   private interval: any;
   private password: string = '';
@@ -55,10 +48,7 @@ export class EmailValidationPage implements OnInit {
     private messageService: MessageService,
     private route: ActivatedRoute,
     private authService: AuthService
-  ) {
-    this.errorMessage$ = this.messageService.errorMessage$;
-    this.successMessage$ = this.messageService.successMessage$;
-  }
+  ) {}
 
   public ngOnInit(): void {
     this.route.queryParamMap.subscribe((params) => {
@@ -78,68 +68,55 @@ export class EmailValidationPage implements OnInit {
 
   public validateCode(code: string): void {
     this.isLoading = true;
-
     this.emailValidationService
       .verifyEmailCode(this.email, this.password, code)
+      .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
         next: (response) => {
-          this.isLoading = false;
           this.authService.saveToken(response.token);
           this.messageService.setSuccessMessage(
             'Verificação realizada com sucesso!',
             response
           );
-          setTimeout(() => {
-            this.navController.navigateRoot('/home');
-          }, 2000);
+          setTimeout(() => this.navController.navigateRoot('/home'), 2000);
           this.removeValidationSession();
           localStorage.removeItem('password');
         },
         error: (error) => {
-          this.isLoading = false;
           this.messageService.setErrorMessage('', error);
-        },
-        complete: () => {
-          this.isLoading = false;
         },
       });
   }
 
   public resendCode(): void {
     this.isLoading = true;
-
-    this.emailValidationService.sendEmailCode(this.email).subscribe({
-      next: (response: EmailCodeResponse) => {
-        this.messageService.setSuccessMessage(
-          'Código de verificação enviado com sucesso!',
-          ''
-        );
-        this.countdown = response.timeValidCode;
-        this.startCountdown();
-        localStorage.setItem('lastSend', Date.now().toString());
-        this.isLoading = false;
-      },
-      error: (error) => {
-        this.messageService.setErrorMessage('', error);
-        this.isLoading = false;
-      },
-      complete: () => {
-        this.isLoading = false;
-      },
-    });
+    this.emailValidationService
+      .sendEmailCode(this.email)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: (response: EmailCodeResponse) => {
+          this.messageService.setSuccessMessage(
+            'Código de verificação enviado com sucesso!',
+            ''
+          );
+          this.countdown = response.timeValidCode;
+          this.startCountdown();
+          localStorage.setItem('lastSend', Date.now().toString());
+        },
+        error: (error) => {
+          this.messageService.setErrorMessage('', error);
+        },
+      });
   }
 
   private sendCode(): void {
     this.initValidationSession();
-
     this.emailValidationService.sendEmailCode(this.email).subscribe({
       next: (response: EmailCodeResponse) => {
         this.countdown = response.timeValidCode;
         this.startCountdown();
       },
-      error: (error) => {
-        this.messageService.setErrorMessage('', error);
-      },
+      error: (error) => this.messageService.setErrorMessage('', error),
     });
   }
 
@@ -147,7 +124,6 @@ export class EmailValidationPage implements OnInit {
     if (this.interval) {
       clearInterval(this.interval);
     }
-
     this.interval = setInterval(() => {
       if (this.countdown > 0) {
         this.countdown--;
@@ -158,21 +134,13 @@ export class EmailValidationPage implements OnInit {
   }
 
   private loadCodeWithTimer(): void {
-    const lastSendFromStorage = localStorage.getItem('lastSend');
-    if (!lastSendFromStorage) {
-      const currentTimestamp = Date.now().toString();
-      localStorage.setItem('lastSend', currentTimestamp);
+    let lastSend = localStorage.getItem('lastSend');
+    if (!lastSend) {
+      lastSend = Date.now().toString();
+      localStorage.setItem('lastSend', lastSend);
     }
-
-    const lastSend = Number(localStorage.getItem('lastSend'));
-    const now = Date.now();
-    const elapsedTime = now - lastSend;
-    let remaining = this.timeToUserResendCode - elapsedTime;
-
-    if (remaining < 0) {
-      remaining = 0;
-    }
-
+    const elapsedTime = Date.now() - Number(lastSend);
+    const remaining = Math.max(0, this.timeToUserResendCode - elapsedTime);
     this.countdown = remaining < 1500 ? 0 : Math.floor(remaining / 1000);
     if (this.countdown > 0) {
       this.startCountdown();
