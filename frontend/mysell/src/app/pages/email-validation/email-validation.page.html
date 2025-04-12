@@ -12,7 +12,7 @@
 <div class="expired-message" *ngIf="countdown === 0">
     <p>O código expirou. Por favor, solicite um novo código.</p>
 </div>
-<app-code-squares (submitCode)="getCode($event)"></app-code-squares>
+<app-code-squares (submitCode)="validateCode($event)"></app-code-squares>
 <div class="resend-code" >
     <button
     [disabled]=" countdown > 0"

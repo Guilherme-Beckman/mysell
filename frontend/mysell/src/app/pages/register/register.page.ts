@@ -53,31 +53,16 @@ export class RegisterPage implements OnInit {
   onRegister(event: { email: string; password: string }): void {
     this.isLoading = true;
     this.clearLocalStorage();
-    this.authService.register(event.email, event.password).subscribe({
-      next: (next) => {
-        this.isLoading = false;
-        this.authService.saveToken(next.token);
-        this.messageService.setSuccessMessage(
-          'Cadastro realizado com sucesso!',
-          next
-        );
-        setTimeout(() => {
-          this.navController.navigateRoot('/email-validation', {
-            queryParams: { email: event.email },
-          });
-        }, 2000);
-      },
-      error: (error) => {
-        this.isLoading = false;
-        this.messageService.setErrorMessage(
-          'Erro ao realizar cadastro!',
-          error
-        );
-      },
-      complete: () => {
-        this.isLoading = false;
-      },
-    });
+    //verificar se o email já existe
+    this.messageService.setSuccessMessage(
+      'Cadastro realizado com sucesso!',
+      ''
+    );
+    setTimeout(() => {
+      this.navController.navigateRoot('/email-validation', {
+        queryParams: { email: event.email, password: event.password },
+      });
+    }, 2000);
   }
   private clearLocalStorage(): void {
     localStorage.clear();

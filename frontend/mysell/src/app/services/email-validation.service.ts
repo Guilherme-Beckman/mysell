@@ -14,16 +14,19 @@ export class EmailValidationService {
 
   constructor(private httpClient: HttpClient) {}
 
-  sendEmailCode(): Observable<EmailCodeResponse> {
+  sendEmailCode(email: string): Observable<EmailCodeResponse> {
     return this.httpClient.get<EmailCodeResponse>(
-      `${this.apiUrl}auth/sendCode`
+      `${this.apiUrl}auth/sendCode`,
+      {
+        params: { email },
+      }
     );
   }
-  verifyEmailCode(code: string): Observable<any> {
+  verifyEmailCode(email: string, code: string): Observable<any> {
     return this.httpClient.post(
       `${this.apiUrl}auth/verify`,
       { code: code },
-      { responseType: 'text' }
+      { params: { email } }
     );
   }
 }

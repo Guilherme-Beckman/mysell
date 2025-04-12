@@ -22,6 +22,7 @@ import {
 import { MessageService } from 'src/app/services/message.service';
 import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
 import { NavController } from '@ionic/angular';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-email-validation',
@@ -46,12 +47,14 @@ export class EmailValidationPage implements OnInit {
   public successMessage$;
 
   private interval: any;
+  private password: string = '';
 
   constructor(
     private navController: NavController,
     private emailValidationService: EmailValidationService,
     private messageService: MessageService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private authService: AuthService
   ) {
     this.errorMessage$ = this.messageService.errorMessage$;
     this.successMessage$ = this.messageService.successMessage$;
@@ -60,7 +63,10 @@ export class EmailValidationPage implements OnInit {
   public ngOnInit(): void {
     this.route.queryParamMap.subscribe((params) => {
       this.email = params.get('email') || localStorage.getItem('email') || '';
+      this.password =
+        params.get('password') || localStorage.getItem('password') || '';
       localStorage.setItem('email', this.email);
+      localStorage.setItem('password', this.password);
     });
 
     if (!localStorage.getItem('emailToValidate')) {
@@ -70,14 +76,15 @@ export class EmailValidationPage implements OnInit {
     }
   }
 
-  public getCode(event: string): void {
+  public validateCode(code: string): void {
     this.isLoading = true;
 
-    this.emailValidationService.verifyEmailCode(event).subscribe({
+    this.emailValidationService.verifyEmailCode(this.email, code).subscribe({
       next: (response) => {
+        this.registerUser();
         this.isLoading = false;
         this.messageService.setSuccessMessage(
-          'Código de verificação enviado com sucesso!',
+          'Verificação realizada com sucesso!',
           response
         );
         setTimeout(() => {
@@ -94,11 +101,13 @@ export class EmailValidationPage implements OnInit {
       },
     });
   }
-
+  private registerUser(): void {
+    this.authService.register(this.email, this.password).subscribe();
+  }
   public resendCode(): void {
     this.isLoading = true;
 
-    this.emailValidationService.sendEmailCode().subscribe({
+    this.emailValidationService.sendEmailCode(this.email).subscribe({
       next: (response: EmailCodeResponse) => {
         this.messageService.setSuccessMessage(
           'Código de verificação enviado com sucesso!',
@@ -122,7 +131,7 @@ export class EmailValidationPage implements OnInit {
   private sendCode(): void {
     this.initValidationSession();
 
-    this.emailValidationService.sendEmailCode().subscribe({
+    this.emailValidationService.sendEmailCode(this.email).subscribe({
       next: (response: EmailCodeResponse) => {
         this.countdown = response.timeValidCode;
         this.startCountdown();
