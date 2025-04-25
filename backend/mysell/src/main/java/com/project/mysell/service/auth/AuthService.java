@@ -115,8 +115,7 @@ public class AuthService {
 
 
 	public Mono<String> verifyIfUserAlreadyExists(@NotBlank @Email String email) {
-		this.verifyUserDoesNotExist(email);
-		return Mono.just("Tá ok! pode continuar a verificação");
+		return this.verifyUserDoesNotExist(email).thenReturn("Tá ok! pode continuar a verificação");
 	}
 
 }
