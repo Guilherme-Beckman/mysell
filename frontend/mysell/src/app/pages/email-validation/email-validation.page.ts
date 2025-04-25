@@ -32,7 +32,6 @@ import { finalize } from 'rxjs/operators';
 })
 export class EmailValidationPage implements OnInit {
   private readonly apiUrl: string = environment.apiUrl;
-  private readonly timeToUserResendCode: number = 60000;
   public email: string = '';
   public countdown!: number;
   public isLoading = false;
@@ -61,8 +60,9 @@ export class EmailValidationPage implements OnInit {
 
     if (!localStorage.getItem('emailToValidate')) {
       this.sendCode();
+    }else{
+      this.loadCodeWithTimer();
     }
-    this.loadCodeWithTimer();
   }
 
   public validateCode(code: string): void {
@@ -88,6 +88,7 @@ export class EmailValidationPage implements OnInit {
   }
 
   public resendCode(): void {
+    console.log('[resendCode] Reenviando código...');
     this.isLoading = true;
     this.emailValidationService
       .sendEmailCode(this.email)
@@ -99,6 +100,7 @@ export class EmailValidationPage implements OnInit {
             ''
           );
           this.countdown = response.timeValidCode;
+          console.log('[resendCode] Novo countdown recebido:', this.countdown);
           localStorage.setItem('lastSend', Date.now().toString());
           this.loadCodeWithTimer();
         },
@@ -109,11 +111,13 @@ export class EmailValidationPage implements OnInit {
   }
 
   private sendCode(): void {
+    console.log('[sendCode] Enviando código pela primeira vez...');
+    this.loadCodeWithTimer();
     this.initValidationSession();
     this.emailValidationService.sendEmailCode(this.email).subscribe({
       next: (response: EmailCodeResponse) => {
         this.countdown = response.timeValidCode;
-        this.startCountdown();
+        console.log('[sendCode] Countdown inicial:', this.countdown);
       },
       error: (error) => this.messageService.setErrorMessage('', error),
     });
@@ -123,24 +127,30 @@ export class EmailValidationPage implements OnInit {
     if (this.interval) {
       clearInterval(this.interval);
     }
+    console.log('[startCountdown] Iniciando contagem regressiva de:', this.countdown);
     this.interval = setInterval(() => {
       if (this.countdown > 0) {
         this.countdown--;
+        console.log('[startCountdown] Countdown atual:', this.countdown);
       } else {
+        console.log('[startCountdown] Countdown finalizado');
         clearInterval(this.interval);
       }
     }, 1000);
   }
 
   private loadCodeWithTimer(): void {
+    console.log('[loadCodeWithTimer] Carregando timer...');
     let lastSend = localStorage.getItem('lastSend');
     if (!lastSend) {
       lastSend = Date.now().toString();
       localStorage.setItem('lastSend', lastSend);
     }
     const elapsedTime = Date.now() - Number(lastSend);
-    const remaining = Math.max(0, this.timeToUserResendCode - elapsedTime);
+    const remaining = Math.max(0, this.countdown - elapsedTime);
     this.countdown = remaining < 1500 ? 0 : Math.floor(remaining / 1000);
+    console.log('[loadCodeWithTimer] Tempo decorrido:', elapsedTime, 'ms');
+    console.log('[loadCodeWithTimer] Countdown ajustado para:', this.countdown);
     if (this.countdown > 0) {
       this.startCountdown();
     }
