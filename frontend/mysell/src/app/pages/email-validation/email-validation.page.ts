@@ -2,20 +2,23 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { NavController } from '@ionic/angular';
+import { finalize } from 'rxjs/operators';
+
 import { environment } from 'src/environments/environment.prod';
 
+// Components
 import { CodeSquaresComponent } from 'src/app/components/code-squares/code-squares.component';
 import { MessagePerRequestComponent } from 'src/app/components/message-per-request/message-per-request.component';
 import { LoadingSppinerComponent } from 'src/app/components/loading-sppiner/loading-sppiner.component';
 import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
 
+// Services
 import {
   EmailValidationService,
   EmailCodeResponse,
 } from 'src/app/services/email-validation.service';
 import { MessageService } from 'src/app/services/message.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-email-validation',
@@ -31,14 +34,14 @@ import { finalize } from 'rxjs/operators';
   ],
 })
 export class EmailValidationPage implements OnInit {
-  private readonly apiUrl: string = environment.apiUrl;
   public email: string = '';
   public countdown!: number;
   public isLoading = false;
   public errorMessage$ = this.messageService.errorMessage$;
   public successMessage$ = this.messageService.successMessage$;
 
-  private interval: any;
+  private readonly apiUrl: string = environment.apiUrl;
+  private countdownInterval: any;
   private password: string = '';
 
   constructor(
@@ -50,19 +53,8 @@ export class EmailValidationPage implements OnInit {
   ) {}
 
   public ngOnInit(): void {
-    this.route.queryParamMap.subscribe((params) => {
-      this.email = params.get('email') || localStorage.getItem('email') || '';
-      this.password =
-        params.get('password') || localStorage.getItem('password') || '';
-      localStorage.setItem('email', this.email);
-      localStorage.setItem('password', this.password);
-    });
-
-    if (!localStorage.getItem('emailToValidate')) {
-      this.sendCode();
-    }else{
-      this.loadCodeWithTimer();
-    }
+    this.initializeEmailAndPassword();
+    this.handleInitialCodeSending();
   }
 
   public validateCode(code: string): void {
@@ -71,126 +63,152 @@ export class EmailValidationPage implements OnInit {
       .verifyEmailCode(this.email, this.password, code)
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
-        next: (response) => {
-          this.authService.saveToken(response.token);
-          this.messageService.setSuccessMessage(
-            'Verificação realizada com sucesso!',
-            response
-          );
-          setTimeout(() => this.navController.navigateRoot('/home'), 2000);
-          this.removeValidationSession();
-          localStorage.removeItem('password');
-        },
-        error: (error) => {
-          this.messageService.setErrorMessage('', error);
-        },
+        next: (response) => this.handleSuccessfulValidation(response),
+        error: (error) => this.handleValidationError(error),
       });
   }
 
   public resendCode(): void {
-    console.log('[resendCode] Reenviando código...');
+    console.log('[EmailValidation] Resending verification code...');
     this.isLoading = true;
     this.emailValidationService
       .sendEmailCode(this.email)
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
-        next: (response: EmailCodeResponse) => {
-          this.messageService.setSuccessMessage(
-            'Código de verificação enviado com sucesso!',
-            ''
-          );
-          this.countdown = response.timeValidCode;
-          console.log('[resendCode] Novo countdown recebido:', this.countdown);
-          localStorage.setItem('lastSend', Date.now().toString());
-          this.loadCodeWithTimer();
-        },
-        error: (error) => {
-          this.messageService.setErrorMessage('', error);
-        },
+        next: (response) => this.handleResendSuccess(response),
+        error: (error) => this.handleValidationError(error),
       });
   }
 
-  private sendCode(): void {
-    console.log('[sendCode] Enviando código pela primeira vez...');
-    this.initValidationSession();
-    this.emailValidationService.sendEmailCode(this.email).subscribe({
-      next: (response: EmailCodeResponse) => {
-        this.countdown = response.timeValidCode;
-        console.log('[sendCode] Countdown inicial:', this.countdown);
-        this.loadCodeWithTimer();
-
-      },
-      error: (error) => this.messageService.setErrorMessage('', error),
+  private initializeEmailAndPassword(): void {
+    this.route.queryParamMap.subscribe((params) => {
+      this.email = params.get('email') || localStorage.getItem('email') || '';
+      this.password = params.get('password') || localStorage.getItem('password') || '';
+      this.persistCredentials();
     });
   }
 
-  private startCountdown(): void {
-    if (this.interval) {
-      clearInterval(this.interval);
-    }
-    console.log('[startCountdown] Iniciando contagem regressiva de:', this.countdown);
-    this.interval = setInterval(() => {
-      if (this.countdown > 0) {
-        this.countdown--;
-        console.log('[startCountdown] Countdown atual:', this.countdown);
-      } else {
-        console.log('[startCountdown] Countdown finalizado');
-        clearInterval(this.interval);
-      }
-    }, 1000);
+  private handleInitialCodeSending(): void {
+    const hasValidationSession = localStorage.getItem('emailToValidate');
+    hasValidationSession ? this.loadCodeWithTimer() : this.sendInitialCode();
+  }
+
+  private sendInitialCode(): void {
+    console.log('[EmailValidation] Sending initial verification code');
+    this.markValidationSession();
+    this.emailValidationService.sendEmailCode(this.email).subscribe({
+      next: (response) => this.handleInitialCodeSuccess(response),
+      error: (error) => this.handleValidationError(error),
+    });
+  }
+
+  private handleSuccessfulValidation(response: any): void {
+    this.authService.saveToken(response.token);
+    this.messageService.setSuccessMessage('Verificação realizada com sucesso!', response);
+    this.cleanUpAfterValidation();
+    setTimeout(() => this.navigateToHome(), 2000);
+  }
+
+  private handleResendSuccess(response: EmailCodeResponse): void {
+    this.messageService.setSuccessMessage('Código de verificação enviado com sucesso!', '');
+    this.updateCountdown(response.timeValidCode);
+    this.persistResendTimestamp();
+    this.loadCodeWithTimer();
+  }
+
+  private handleInitialCodeSuccess(response: EmailCodeResponse): void {
+    this.updateCountdown(response.timeValidCode);
+    this.loadCodeWithTimer();
+  }
+
+  private handleValidationError(error: any): void {
+    this.messageService.setErrorMessage('', error);
   }
 
   private loadCodeWithTimer(): void {
-    if(!localStorage.getItem('countdown')){
-      localStorage.setItem('countdown', this.countdown.toString());
-    }
-    this.countdown = Number(localStorage.getItem('countdown'));
-    console.log('[loadCodeWithTimer] Inicializando carregamento do timer...');
-  
-    let lastSend = localStorage.getItem('lastSend');
-    console.log('[loadCodeWithTimer] Valor recuperado de localStorage (lastSend):', lastSend);
-  
-    if (!lastSend) {
-      console.log('[loadCodeWithTimer] Nenhum valor encontrado para lastSend. Definindo valor atual...');
-      lastSend = Date.now().toString();
-      localStorage.setItem('lastSend', lastSend);
-      console.log('[loadCodeWithTimer] Novo valor de lastSend salvo no localStorage:', lastSend);
-    }
-  
-    const now = Date.now();
-    console.log('[loadCodeWithTimer] Timestamp atual (now):', now);
-  
-    const elapsedTime = now - Number(lastSend);
-    console.log('[loadCodeWithTimer] Tempo decorrido desde o último envio (elapsedTime):', elapsedTime, 'ms');
-  
-    const remaining = Math.max(0, (this.countdown*1000) - elapsedTime);
+    this.initializeCountdownFromStorage();
+    const remainingTime = this.calculateRemainingTime();
+    this.adjustCountdown(remainingTime);
+    this.startCountdownIfNeeded();
+  }
 
-    console.log('[loadCodeWithTimer] Tempo restante após considerar elapsedTime (remaining):', remaining, 'ms');
-  
-    if (remaining < 1500) {
-      console.log('[loadCodeWithTimer] Tempo restante é muito pequeno (< 1500 ms). Ajustando countdown para 0.');
+  private initializeCountdownFromStorage(): void {
+    const storedCountdown = localStorage.getItem('countdown');
+    if (storedCountdown) {
+      this.countdown = Number(storedCountdown);
+    }
+  }
+
+  private calculateRemainingTime(): number {
+    const lastSendTimestamp = this.getLastSendTimestamp();
+    const elapsedTime = Date.now() - lastSendTimestamp;
+    return Math.max(0, (this.countdown * 1000) - elapsedTime);
+  }
+
+  private getLastSendTimestamp(): number {
+    const lastSend = localStorage.getItem('lastSend');
+    if (!lastSend) {
+      const currentTimestamp = Date.now();
+      localStorage.setItem('lastSend', currentTimestamp.toString());
+      return currentTimestamp;
+    }
+    return Number(lastSend);
+  }
+
+  private adjustCountdown(remainingTime: number): void {
+    if (remainingTime < 1500) {
       this.countdown = 0;
     } else {
-      this.countdown = Math.floor(remaining / 1000);
-      console.log('[loadCodeWithTimer] Countdown ajustado para (em segundos):', this.countdown);
+      this.countdown = Math.floor(remainingTime / 1000);
     }
-  
-    if (this.countdown > 0) {
-      console.log('[loadCodeWithTimer] Countdown > 0. Iniciando contagem regressiva...');
-      this.startCountdown();
-    } else {
-      console.log('[loadCodeWithTimer] Countdown = 0. Nenhuma contagem regressiva necessária.');
-    }
-  
-    console.log('[loadCodeWithTimer] Finalização da função loadCodeWithTimer.');
   }
-  
 
-  private initValidationSession(): void {
+  private startCountdownIfNeeded(): void {
+    if (this.countdown > 0) {
+      this.startCountdown();
+    }
+  }
+
+  private startCountdown(): void {
+    this.clearExistingCountdown();
+    console.log(`[EmailValidation] Starting countdown: ${this.countdown} seconds`);
+
+    this.countdownInterval = setInterval(() => {
+      this.countdown > 0 ? this.countdown-- : this.clearExistingCountdown();
+    }, 1000);
+  }
+
+  private clearExistingCountdown(): void {
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval);
+      this.countdownInterval = null;
+    }
+  }
+
+  private persistCredentials(): void {
+    localStorage.setItem('email', this.email);
+    localStorage.setItem('password', this.password);
+  }
+
+  private persistResendTimestamp(): void {
+    localStorage.setItem('lastSend', Date.now().toString());
+  }
+
+  private markValidationSession(): void {
     localStorage.setItem('emailToValidate', 'true');
   }
 
-  private removeValidationSession(): void {
+  private cleanUpAfterValidation(): void {
     localStorage.removeItem('emailToValidate');
+    localStorage.removeItem('password');
+  }
+
+  private navigateToHome(): void {
+    this.navController.navigateRoot('/home');
+  }
+
+  private updateCountdown(timeInSeconds: number): void {
+    this.countdown = timeInSeconds;
+    localStorage.setItem('countdown', timeInSeconds.toString());
   }
 }
