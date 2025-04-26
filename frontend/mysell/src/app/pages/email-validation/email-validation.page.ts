@@ -69,7 +69,6 @@ export class EmailValidationPage implements OnInit {
   }
 
   public resendCode(): void {
-    console.log('[EmailValidation] Resending verification code...');
     this.isLoading = true;
     this.emailValidationService
       .sendEmailCode(this.email)
@@ -94,7 +93,6 @@ export class EmailValidationPage implements OnInit {
   }
 
   private sendInitialCode(): void {
-    console.log('[EmailValidation] Sending initial verification code');
     this.markValidationSession();
     this.emailValidationService.sendEmailCode(this.email).subscribe({
       next: (response) => this.handleInitialCodeSuccess(response),
@@ -171,7 +169,6 @@ export class EmailValidationPage implements OnInit {
 
   private startCountdown(): void {
     this.clearExistingCountdown();
-    console.log(`[EmailValidation] Starting countdown: ${this.countdown} seconds`);
 
     this.countdownInterval = setInterval(() => {
       this.countdown > 0 ? this.countdown-- : this.clearExistingCountdown();
