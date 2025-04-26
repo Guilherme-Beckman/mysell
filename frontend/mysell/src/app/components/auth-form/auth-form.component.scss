@@ -34,6 +34,7 @@
     height: fit-content;
     max-height: 80%;
     min-height: 70%;
+    overflow-y: scroll;
   }
   
   .content-padding {
@@ -167,4 +168,17 @@
   position: relative;
   width: 100%;
 }
+/* Estilo das mensagens de erro */
+.errors-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem; /* Espaçamento entre mensagens */
+  margin-top: 0.5rem;
+}
 
+.error-text {
+  color: var(--mysell-red);
+  font-size: 1.5vh;
+  font-weight: 600;
+  margin: 0;
+}
