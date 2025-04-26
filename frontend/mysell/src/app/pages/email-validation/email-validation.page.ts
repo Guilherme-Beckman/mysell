@@ -112,12 +112,13 @@ export class EmailValidationPage implements OnInit {
 
   private sendCode(): void {
     console.log('[sendCode] Enviando código pela primeira vez...');
-    this.loadCodeWithTimer();
     this.initValidationSession();
     this.emailValidationService.sendEmailCode(this.email).subscribe({
       next: (response: EmailCodeResponse) => {
         this.countdown = response.timeValidCode;
         console.log('[sendCode] Countdown inicial:', this.countdown);
+        this.loadCodeWithTimer();
+
       },
       error: (error) => this.messageService.setErrorMessage('', error),
     });
@@ -140,21 +141,50 @@ export class EmailValidationPage implements OnInit {
   }
 
   private loadCodeWithTimer(): void {
-    console.log('[loadCodeWithTimer] Carregando timer...');
+    if(!localStorage.getItem('countdown')){
+      localStorage.setItem('countdown', this.countdown.toString());
+    }
+    this.countdown = Number(localStorage.getItem('countdown'));
+    console.log('[loadCodeWithTimer] Inicializando carregamento do timer...');
+  
     let lastSend = localStorage.getItem('lastSend');
+    console.log('[loadCodeWithTimer] Valor recuperado de localStorage (lastSend):', lastSend);
+  
     if (!lastSend) {
+      console.log('[loadCodeWithTimer] Nenhum valor encontrado para lastSend. Definindo valor atual...');
       lastSend = Date.now().toString();
       localStorage.setItem('lastSend', lastSend);
+      console.log('[loadCodeWithTimer] Novo valor de lastSend salvo no localStorage:', lastSend);
     }
-    const elapsedTime = Date.now() - Number(lastSend);
-    const remaining = Math.max(0, this.countdown - elapsedTime);
-    this.countdown = remaining < 1500 ? 0 : Math.floor(remaining / 1000);
-    console.log('[loadCodeWithTimer] Tempo decorrido:', elapsedTime, 'ms');
-    console.log('[loadCodeWithTimer] Countdown ajustado para:', this.countdown);
+  
+    const now = Date.now();
+    console.log('[loadCodeWithTimer] Timestamp atual (now):', now);
+  
+    const elapsedTime = now - Number(lastSend);
+    console.log('[loadCodeWithTimer] Tempo decorrido desde o último envio (elapsedTime):', elapsedTime, 'ms');
+  
+    const remaining = Math.max(0, (this.countdown*1000) - elapsedTime);
+
+    console.log('[loadCodeWithTimer] Tempo restante após considerar elapsedTime (remaining):', remaining, 'ms');
+  
+    if (remaining < 1500) {
+      console.log('[loadCodeWithTimer] Tempo restante é muito pequeno (< 1500 ms). Ajustando countdown para 0.');
+      this.countdown = 0;
+    } else {
+      this.countdown = Math.floor(remaining / 1000);
+      console.log('[loadCodeWithTimer] Countdown ajustado para (em segundos):', this.countdown);
+    }
+  
     if (this.countdown > 0) {
+      console.log('[loadCodeWithTimer] Countdown > 0. Iniciando contagem regressiva...');
       this.startCountdown();
+    } else {
+      console.log('[loadCodeWithTimer] Countdown = 0. Nenhuma contagem regressiva necessária.');
     }
+  
+    console.log('[loadCodeWithTimer] Finalização da função loadCodeWithTimer.');
   }
+  
 
   private initValidationSession(): void {
     localStorage.setItem('emailToValidate', 'true');
