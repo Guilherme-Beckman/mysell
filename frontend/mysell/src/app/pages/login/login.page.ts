@@ -44,6 +44,12 @@ export class LoginPage implements OnInit {
 
   public onLogin(event: { email: string; password: string }): void {
     this.isLoading = true;
+    if (!(event.email || event.password)) {
+      this.messageService.setErrorMessage('Preencha todos os campos', '');
+      this.isLoading = false;
+      return;
+    }
+    
     this.authService
       .login(event.email, event.password)
       .pipe(finalize(() => (this.isLoading = false)))
