@@ -127,6 +127,7 @@
     color: var(--mysell-red);
     position: relative;
     text-decoration: none;
+    -webkit-tap-highlight-color: transparent; /* Remove o flash azul no mobile */
   }
   
   a::after {
@@ -140,6 +141,7 @@
     transform: scaleX(0);
     transition: transform 0.3s ease;
   }
+ 
   
   a:active::after {
     transform: scaleX(1);
