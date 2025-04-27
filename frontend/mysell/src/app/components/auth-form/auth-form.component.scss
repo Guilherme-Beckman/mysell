@@ -98,11 +98,17 @@
     transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
   }
   
-  button:active {
+  button:active:not(:disabled) {
     background-color: var(--mysell-dark-red);
     transform: translateY(-3px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
   }
+  
+  button[disabled] {
+    background-color: var(--medium-gray);
+    cursor: not-allowed;
+  }
+  
   
   
   
