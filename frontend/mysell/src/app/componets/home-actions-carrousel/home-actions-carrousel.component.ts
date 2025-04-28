@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { IonIcon } from '@ionic/angular/standalone';
 
 export interface ActionButton {
-  icon: string; // Exemplo: 'arrow-up-circle-outline'
+  svgPath: string; // Exemplo: 'arrow-up-circle-outline'
   label: string; // Exemplo: 'Vender'
   route: string; // Exemplo: '/vendas'
   cssClass?: string; // Classe CSS opcional para customização

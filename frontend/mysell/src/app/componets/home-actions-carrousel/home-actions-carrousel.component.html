@@ -7,7 +7,7 @@
     [ngClass]="act.cssClass"
     (click)="onAction(act)"
   >
-    <ion-icon [name]="act.icon"></ion-icon>
+    <img [src]="act.svgPath" alt="{{ act.label }}" class="action-icon" />
     <span>{{ act.label }}</span>
   </button>
 </div>
