@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
   IonContent,
@@ -30,6 +30,28 @@ import { finalize } from 'rxjs/operators';
   ],
 })
 export class LoginPage implements OnInit {
+  public formFields = [
+    { 
+      name: 'email', 
+      label: 'Email', 
+      placeholder: '', 
+      type: 'email', 
+      validators: [
+        Validators.required,
+        Validators.email
+      ] 
+    },
+    { 
+      name: 'password', 
+      label: 'Senha', 
+      placeholder: '', 
+      type: 'password', 
+      validators: [
+        Validators.required,
+      ] 
+    },
+
+  ];
   public successMessage$ = this.messageService.successMessage$;
   public errorMessage$ = this.messageService.errorMessage$;
   public isLoading = false;
@@ -44,6 +66,12 @@ export class LoginPage implements OnInit {
 
   public onLogin(event: { email: string; password: string }): void {
     this.isLoading = true;
+    if (!(event.email || event.password)) {
+      this.messageService.setErrorMessage('Preencha todos os campos', '');
+      this.isLoading = false;
+      return;
+    }
+    
     this.authService
       .login(event.email, event.password)
       .pipe(finalize(() => (this.isLoading = false)))

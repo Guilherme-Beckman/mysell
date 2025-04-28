@@ -34,6 +34,7 @@
     height: fit-content;
     max-height: 80%;
     min-height: 70%;
+    overflow-y: scroll;
   }
   
   .content-padding {
@@ -97,11 +98,17 @@
     transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
   }
   
-  button:active {
+  button:active:not(:disabled) {
     background-color: var(--mysell-dark-red);
     transform: translateY(-3px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
   }
+  
+  button[disabled] {
+    background-color: var(--medium-gray);
+    cursor: not-allowed;
+  }
+  
   
   
   
@@ -120,6 +127,7 @@
     color: var(--mysell-red);
     position: relative;
     text-decoration: none;
+    -webkit-tap-highlight-color: transparent; /* Remove o flash azul no mobile */
   }
   
   a::after {
@@ -133,6 +141,7 @@
     transform: scaleX(0);
     transition: transform 0.3s ease;
   }
+ 
   
   a:active::after {
     transform: scaleX(1);
@@ -167,4 +176,17 @@
   position: relative;
   width: 100%;
 }
+/* Estilo das mensagens de erro */
+.errors-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem; /* Espaçamento entre mensagens */
+  margin-top: 0.5rem;
+}
 
+.error-text {
+  color: var(--mysell-red);
+  font-size: 1.5vh;
+  font-weight: 600;
+  margin: 0;
+}

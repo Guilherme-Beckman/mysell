@@ -2,10 +2,7 @@
 <app-auth-form
   [title]="'Login'"
   [buttonText]="'Continuar'"
-  [fields]="[
-    { name: 'email', label: 'Email', placeholder: '', type: 'email', validators: [] },
-    { name: 'password', label: 'Senha', placeholder: '', type: 'password', validators: [] }
-  ]"
+  [fields]="formFields"
   (formSubmitted)="onLogin($event)"
   [textGoogleButton]="'Fazer login com Google'"
   (googleButtonClicked)="onGoogleLogin()"

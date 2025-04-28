@@ -24,6 +24,15 @@
   }
 }
 
+/* Icon shake animation */
+@keyframes shake {
+  0%, 100% { transform: rotate(0deg); }
+  20% { transform: rotate(-10deg); }
+  40% { transform: rotate(10deg); }
+  60% { transform: rotate(-5deg); }
+  80% { transform: rotate(5deg); }
+}
+
 /* Common styles for both message types */
 .successMessage, .errorMessage {
   display: flex;
@@ -60,20 +69,22 @@
   font-weight: 500;
 }
 
-/* Success icon styling */
+/* Success icon styling with animation */
 .successMessage svg {
   stroke: #22c55e;
   flex-shrink: 0;
   width: 20px;
   height: 20px;
+  animation: shake 0.5s ease-in-out;
 }
 
-/* Error icon styling */
+/* Error icon styling with animation */
 .errorMessage svg {
   fill: #ef4444;
   flex-shrink: 0;
   width: 20px;
   height: 20px;
+  animation: shake 0.5s ease-in-out;
 }
 
 /* Hover effect for messages */
@@ -88,7 +99,6 @@
     max-width: 90%;
     top: 5%;
   }
-  
   .successMessage, .errorMessage {
     padding: 0.75rem 1rem;
     font-size: 0.9rem;
