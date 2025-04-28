@@ -1,3 +1,13 @@
-<p>
-  home-actions-carrousel works!
-</p>
+<h1>Ações</h1>
+
+<div class="action-carousel">
+  <button
+    *ngFor="let act of actions"
+    class="action-button"
+    [ngClass]="act.cssClass"
+    (click)="onAction(act)"
+  >
+    <ion-icon [name]="act.icon"></ion-icon>
+    <span>{{ act.label }}</span>
+  </button>
+</div>

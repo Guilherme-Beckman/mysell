@@ -1,3 +1,12 @@
 <app-home-nav></app-home-nav>
 <app-sells-profit-info></app-sells-profit-info>
-<app-home-actions-carrousel></app-home-actions-carrousel>
+<app-home-actions-carrousel
+  [actions]="[
+{ icon: 'arrow-up-circle-outline', label: 'Vender', route: '/vender', cssClass: 'primary' },
+{ icon: 'time-outline', label: 'Histórico', route: '/historico' },
+{ icon: 'add-circle-outline', label: 'Add. produto', route: '/add-produto' },
+{ icon: 'bar-chart-outline', label: 'Análise', route: '/analise' }
+]"
+>
+  ></app-home-actions-carrousel
+>
