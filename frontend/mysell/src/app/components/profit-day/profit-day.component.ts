@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ReportService } from 'src/app/services/report.service';
 
 @Component({
@@ -9,27 +9,10 @@ import { ReportService } from 'src/app/services/report.service';
   imports: [CommonModule],
 })
 export class ProfitDayComponent implements OnInit {
-  public profit: number = 0;
+  @Input() profit = 0;
+  @Input() formattedProfit = '0';
 
   constructor(private reportService: ReportService) {}
 
-  ngOnInit() {
-    this.loadProfit();
-  }
-
-  private loadProfit(): void {
-    this.reportService.getDailyReport().subscribe({
-      next: (report: any) => {
-        if (report && report.profit != null) {
-          this.profit = report.profit;
-        } else {
-          this.profit = 0;
-        }
-      },
-      error: (error) => {
-        console.error('Erro ao buscar lucro diário:', error);
-        this.profit = 0;
-      },
-    });
-  }
+  ngOnInit() {}
 }

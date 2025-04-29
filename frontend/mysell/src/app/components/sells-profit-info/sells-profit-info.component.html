@@ -1,4 +1,10 @@
 <main>
-  <app-total-sells></app-total-sells>
-  <app-profit-day></app-profit-day>
+  <app-total-sells
+    [totalSells]="totalSells"
+    [formattedTotalSells]="formattedTotalSells"
+  >
+  </app-total-sells>
+
+  <app-profit-day [profit]="profit" [formattedProfit]="formattedProfit">
+  </app-profit-day>
 </main>
