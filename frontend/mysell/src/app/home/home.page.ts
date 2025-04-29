@@ -6,8 +6,8 @@ import {
   IonContent,
 } from '@ionic/angular/standalone';
 import { HomeNavComponent } from '../components/home-nav/home-nav.component';
-import { SellsProfitInfoComponent } from '../componets/sells-profit-info/sells-profit-info.component';
-import { HomeActionsCarrouselComponent } from '../componets/home-actions-carrousel/home-actions-carrousel.component';
+import { SellsProfitInfoComponent } from '../components/sells-profit-info/sells-profit-info.component';
+import { HomeActionsCarrouselComponent } from '../components/home-actions-carrousel/home-actions-carrousel.component';
 
 @Component({
   selector: 'app-home',
