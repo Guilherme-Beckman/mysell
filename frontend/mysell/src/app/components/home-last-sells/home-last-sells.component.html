@@ -1,16 +1,18 @@
 <main>
   <h1>Histórico de vendas</h1>
 
-  <div class="last-sales-info">
+  <div class="last-sells-info">
     <div class="title">
       <h2>Últimas Vendas</h2>
-      <h2>Total: R$ {{ totalValue().toFixed(2) }}</h2>
+      <!-- usa totalValueFormatted() -->
+      <h2>R$ {{ totalValueFormatted() }}</h2>
     </div>
 
-    <div class="sales-list">
-      <div class="sale-item" *ngFor="let item of sales.slice(0, visibleCount)">
+    <div class="sells-container">
+      <div class="sells" *ngFor="let item of sales.slice(0, visibleCount)">
         <p>{{ item.quantity }}× {{ item.product }}</p>
-        <p>R$ {{ item.value.toFixed(2) }}</p>
+        <!-- formata cada item -->
+        <p>R$ {{ formatBigNumber(item.value) }}</p>
       </div>
 
       <div class="see-more" *ngIf="visibleCount < sales.length">
