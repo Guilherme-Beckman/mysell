@@ -1,0 +1,29 @@
+main {
+  margin: 1rem;
+}
+.title {
+  display: flex;
+  justify-content: space-between;
+}
+.last-sells-info {
+  justify-content: space-between;
+  color: var(--text-gray);
+  background-color: var(--light-gray);
+  padding: 1rem;
+  border-radius: 10px;
+}
+
+.sells {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.see-more {
+  margin-top: 10px;
+  width: 100%;
+  background-color: #ddd;
+  border: none;
+  padding: 8px;
+  border-radius: 5px;
+}

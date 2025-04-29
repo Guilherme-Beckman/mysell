@@ -8,6 +8,7 @@ import {
 import { HomeNavComponent } from '../components/home-nav/home-nav.component';
 import { SellsProfitInfoComponent } from '../components/sells-profit-info/sells-profit-info.component';
 import { HomeActionsCarrouselComponent } from '../components/home-actions-carrousel/home-actions-carrousel.component';
+import { HomeLastSellsComponent } from '../components/home-last-sells/home-last-sells.component';
 
 @Component({
   selector: 'app-home',
@@ -17,6 +18,7 @@ import { HomeActionsCarrouselComponent } from '../components/home-actions-carrou
     HomeNavComponent,
     SellsProfitInfoComponent,
     HomeActionsCarrouselComponent,
+    HomeLastSellsComponent,
   ],
 })
 export class HomePage {
