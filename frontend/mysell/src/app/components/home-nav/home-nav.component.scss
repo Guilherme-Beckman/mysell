@@ -1,0 +1,17 @@
+ion-searchbar {
+  --background: rgb(255, 255, 255);
+  --color: var(--ion-color-dark);
+  --border-radius: 50px;
+  
+  
+}
+nav{
+    padding: 1rem;
+    padding-top: 2rem;
+    background-color: var(--mysell-red);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+}

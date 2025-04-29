@@ -1,21 +1,21 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content refreshingSpinner="circles"> </ion-refresher-content>
+  </ion-refresher>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
-  <p>{{ token }}</p>
+  <main>
+    <app-home-nav></app-home-nav>
+    <app-sells-profit-info></app-sells-profit-info>
+    <app-home-actions-carrousel
+      [actions]="[
+        { svgPath: 'assets/svg/sell.svg', label: 'Vender', route: '/vender', cssClass: 'primary' },
+        { svgPath: 'assets/svg/history.svg', label: 'Histórico', route: '/historico' },
+        { svgPath: 'assets/svg/add-product.svg', label: 'Add. produto', route: '/add-produto' },
+        { svgPath: 'assets/svg/analytics.svg', label: 'Análise', route: '/analise' }
+      ]"
+    >
+      ></app-home-actions-carrousel
+    >
+    <app-home-last-sells></app-home-last-sells>
+  </main>
 </ion-content>

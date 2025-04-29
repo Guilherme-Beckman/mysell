@@ -1,18 +1,39 @@
 import { Component } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/standalone';
+import { IonRefresher, IonRefresherContent } from '@ionic/angular/standalone';
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+} from '@ionic/angular/standalone';
+import { HomeNavComponent } from '../components/home-nav/home-nav.component';
+import { SellsProfitInfoComponent } from '../components/sells-profit-info/sells-profit-info.component';
+import { HomeActionsCarrouselComponent } from '../components/home-actions-carrousel/home-actions-carrousel.component';
+import { HomeLastSellsComponent } from '../components/home-last-sells/home-last-sells.component';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent],
+  imports: [
+    IonRefresherContent,
+    HomeNavComponent,
+    SellsProfitInfoComponent,
+    HomeActionsCarrouselComponent,
+    HomeLastSellsComponent,
+    IonRefresher,
+    IonContent,
+  ],
 })
 export class HomePage {
   constructor() {}
 
-  token: string | null = null;
-  ngOnInit() {  
-    this.token = localStorage.getItem('token');
-    console.log(this.token);
+  ngOnInit() {}
+
+  doRefresh(event: any) {
+    setTimeout(() => {
+      event.target.complete();
+      window.location.reload();
+    }, 500);
   }
 }

@@ -1,177 +1,172 @@
-
 /* Background Image */
 .background-image {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 35vh;
-    background-image: url('../../../assets/images/background-auth-form.png');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: top center;
-    z-index: -1;
-  }
-  
-  .background-image::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--overlay-red-opacity);
-    z-index: 1;
-  }
-  
-  /* Layout de Conteúdo */
-  .content-space {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background-color: var(--white);
-    border-top-left-radius: 100px;
-    height: fit-content;
-    max-height: 80%;
-    min-height: 70%;
-    overflow-y: scroll;
-  }
-  
-  .content-padding {
-    padding: 5rem;
-  }
-  
-  /* Cabeçalho e Títulos */
-  h2 {
-    text-align: center;
-    font-size: 5vh;
-    font-weight: 300;
-  }
-  
-  /* Formulário */
-  label {
-    font-size: 2.5vh;
-    font-weight: 200;
-    text-align: left;
-    padding: 1rem;
-  }
-  
-  .inputs-container {
-    padding: 2rem 0 0rem 0;
-  }
-  
-  .form-item {
-    padding-bottom: 2rem;
-  }
-  
-  input {
-    font-size: 2.5vh;
-    text-align: left;
-    background-color: var(--light-gray);
-    width: 100%;
-    height: 6%;
-    border: none;
-    border-bottom: 2px solid var(--medium-gray);
-    transition: border-color 0.3s ease, background-color 0.3s ease;
-  }
-  input:focus {
-    outline: none;
-    border-color: var(--mysell-red);
-    background-color: var(--white);
-    outline: none;
-  }
-  
-  /* Botão Principal */
-  .button-container {
-    border-bottom: 1px solid var(--medium-gray);
-    padding-bottom: 2rem;
-  }
-  
-  button {
-    background-color: var(--mysell-red);
-    border-radius: 10px;
-    width: 100%;
-    height: 8vh;
-    font-size: 3.125vh;
-    border: none;
-    color: var(--white);
-    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  button:active:not(:disabled) {
-    background-color: var(--mysell-dark-red);
-    transform: translateY(-3px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
-  }
-  
-  button[disabled] {
-    background-color: var(--medium-gray);
-    cursor: not-allowed;
-  }
-  
-  
-  
-  
-  
-  /* Rodapé */
-  footer {
-    text-align: center;
-    font-size: 4vmin;
-    padding-bottom: 5rem;
-  }
-  
-  a {
-    color: var(--mysell-red);
-  }
-  a {
-    color: var(--mysell-red);
-    position: relative;
-    text-decoration: none;
-    -webkit-tap-highlight-color: transparent; /* Remove o flash azul no mobile */
-  }
-  
-  a::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 2px;
-    background-color: var(--mysell-red);
-    left: 0;
-    bottom: -2px;
-    transform: scaleX(0);
-    transition: transform 0.3s ease;
-  }
- 
-  
-  a:active::after {
-    transform: scaleX(1);
-  }
-  
-  /* Para dispositivos médios (361px a 768px de largura) */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 35vh;
+  background-image: url("../../../assets/images/background-auth-form.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: top center;
+  z-index: -1;
+}
+
+.background-image::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--overlay-red-opacity);
+  z-index: 1;
+}
+
+/* Layout de Conteúdo */
+.content-space {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: var(--white);
+  border-top-left-radius: 100px;
+  height: fit-content;
+  max-height: 80%;
+  min-height: 70%;
+  overflow-y: auto;
+}
+
+.content-padding {
+  padding: 5rem;
+}
+
+/* Cabeçalho e Títulos */
+h2 {
+  text-align: center;
+  font-size: 5vh;
+  font-weight: 300;
+}
+
+/* Formulário */
+label {
+  font-size: 2.5vh;
+  font-weight: 200;
+  text-align: left;
+  padding: 1rem;
+}
+
+.inputs-container {
+  padding: 2rem 0 0rem 0;
+}
+
+.form-item {
+  padding-bottom: 2rem;
+}
+
+input {
+  font-size: 2.5vh;
+  text-align: left;
+  background-color: var(--light-gray);
+  width: 100%;
+  height: 6%;
+  border: none;
+  border-bottom: 2px solid var(--medium-gray);
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+input:focus {
+  outline: none;
+  border-color: var(--mysell-red);
+  background-color: var(--white);
+  outline: none;
+}
+
+/* Botão Principal */
+.button-container {
+  border-bottom: 1px solid var(--medium-gray);
+  padding-bottom: 2rem;
+}
+
+button {
+  background-color: var(--mysell-red);
+  border-radius: 10px;
+  width: 100%;
+  height: 8vh;
+  font-size: 3.125vh;
+  border: none;
+  color: var(--white);
+  transition: background-color 0.3s ease, transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+button:active:not(:disabled) {
+  background-color: var(--mysell-dark-red);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+}
+
+button[disabled] {
+  background-color: var(--medium-gray);
+  cursor: not-allowed;
+}
+
+/* Rodapé */
+footer {
+  text-align: center;
+  font-size: 4vmin;
+  padding-bottom: 5rem;
+}
+
+a {
+  color: var(--mysell-red);
+}
+a {
+  color: var(--mysell-red);
+  position: relative;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent; /* Remove o flash azul no mobile */
+}
+
+a::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background-color: var(--mysell-red);
+  left: 0;
+  bottom: -2px;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+a:active::after {
+  transform: scaleX(1);
+}
+
+/* Para dispositivos médios (361px a 768px de largura) */
 @media (min-width: 361px) and (max-width: 768px) {
-    .content-padding {
-      padding: 3rem;
-    }
-    h2 {
-      font-size: 4.5vh;
-    }
-    label,
-    input {
-      font-size: 2.2vh;
-    }
-    button {
-      height: 7.5vh;
-      font-size: 2.8vh;
-    }
-    .social-button {
-      height: 4.8vh;
-      font-size: 3.75vmin;
-    }
-    footer {
-      font-size: 3.75vmin;
-    }
+  .content-padding {
+    padding: 3rem;
   }
- /* Password Field Styles */
+  h2 {
+    font-size: 4.5vh;
+  }
+  label,
+  input {
+    font-size: 2.2vh;
+  }
+  button {
+    height: 7.5vh;
+    font-size: 2.8vh;
+  }
+  .social-button {
+    height: 4.8vh;
+    font-size: 3.75vmin;
+  }
+  footer {
+    font-size: 3.75vmin;
+  }
+}
+/* Password Field Styles */
 .input-wrapper {
   position: relative;
   width: 100%;
