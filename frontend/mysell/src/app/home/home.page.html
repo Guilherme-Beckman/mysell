@@ -1,15 +1,21 @@
-<main>
-  <app-home-nav></app-home-nav>
-  <app-sells-profit-info></app-sells-profit-info>
-  <app-home-actions-carrousel
-    [actions]="[
-      { svgPath: 'assets/svg/sell.svg', label: 'Vender', route: '/vender', cssClass: 'primary' },
-      { svgPath: 'assets/svg/history.svg', label: 'Histórico', route: '/historico' },
-      { svgPath: 'assets/svg/add-product.svg', label: 'Add. produto', route: '/add-produto' },
-      { svgPath: 'assets/svg/analytics.svg', label: 'Análise', route: '/analise' }
-    ]"
-  >
-    ></app-home-actions-carrousel
-  >
-  <app-home-last-sells></app-home-last-sells>
-</main>
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content refreshingSpinner="circles"> </ion-refresher-content>
+  </ion-refresher>
+
+  <main>
+    <app-home-nav></app-home-nav>
+    <app-sells-profit-info></app-sells-profit-info>
+    <app-home-actions-carrousel
+      [actions]="[
+        { svgPath: 'assets/svg/sell.svg', label: 'Vender', route: '/vender', cssClass: 'primary' },
+        { svgPath: 'assets/svg/history.svg', label: 'Histórico', route: '/historico' },
+        { svgPath: 'assets/svg/add-product.svg', label: 'Add. produto', route: '/add-produto' },
+        { svgPath: 'assets/svg/analytics.svg', label: 'Análise', route: '/analise' }
+      ]"
+    >
+      ></app-home-actions-carrousel
+    >
+    <app-home-last-sells></app-home-last-sells>
+  </main>
+</ion-content>

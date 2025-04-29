@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { IonRefresher, IonRefresherContent } from '@ionic/angular/standalone';
 import {
   IonHeader,
   IonToolbar,
@@ -15,14 +16,24 @@ import { HomeLastSellsComponent } from '../components/home-last-sells/home-last-
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   imports: [
+    IonRefresherContent,
     HomeNavComponent,
     SellsProfitInfoComponent,
     HomeActionsCarrouselComponent,
     HomeLastSellsComponent,
+    IonRefresher,
+    IonContent,
   ],
 })
 export class HomePage {
   constructor() {}
 
   ngOnInit() {}
+
+  doRefresh(event: any) {
+    setTimeout(() => {
+      event.target.complete();
+      window.location.reload();
+    }, 500);
+  }
 }

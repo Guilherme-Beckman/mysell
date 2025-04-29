@@ -46,6 +46,9 @@ h1 {
 .action-button:active {
   transform: scale(0.97);
 }
+button {
+  -webkit-tap-highlight-color: transparent; /* Remove o flash azul no mobile */
+}
 
 .action-icon {
   width: 32px;
