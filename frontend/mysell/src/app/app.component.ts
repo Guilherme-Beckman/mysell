@@ -56,4 +56,14 @@ export class AppComponent {
       // Opcional: log do erro para depuração
     }
   }
+  public formatBigNumber(value: number): string {
+    if (value >= 1_000_000) {
+      return (value / 1_000_000).toFixed(1) + 'M';
+    } else if (value >= 1_000) {
+      return (value / 1_000).toFixed(1) + 'K';
+    } else if (value > 9999) {
+      return '...';
+    }
+    return value.toString();
+  }
 }
