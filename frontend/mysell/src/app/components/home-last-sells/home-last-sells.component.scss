@@ -10,6 +10,11 @@ h1 {
   display: flex;
   justify-content: space-between;
 }
+.sells-container {
+  overflow-y: auto;
+  padding-right: 0.5rem; /* espaço pro scrollbar não colar no conteúdo */
+}
+
 .last-sells-info {
   justify-content: space-between;
   color: var(--text-gray);
@@ -26,6 +31,7 @@ h1 {
 
 .see-more {
   margin-top: 2rem;
+  margin-bottom: 2rem;
   justify-content: center;
   text-align: center;
 }

@@ -1,4 +1,9 @@
 main {
-  margin: 1rem;
-  background-color: aqua;
+  margin: 0;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
 }
