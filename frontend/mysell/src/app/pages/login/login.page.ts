@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
+
 import {
   IonContent,
   IonHeader,
@@ -31,26 +33,20 @@ import { finalize } from 'rxjs/operators';
 })
 export class LoginPage implements OnInit {
   public formFields = [
-    { 
-      name: 'email', 
-      label: 'Email', 
-      placeholder: '', 
-      type: 'email', 
-      validators: [
-        Validators.required,
-        Validators.email
-      ] 
+    {
+      name: 'email',
+      label: 'Email',
+      placeholder: '',
+      type: 'email',
+      validators: [Validators.required, Validators.email],
     },
-    { 
-      name: 'password', 
-      label: 'Senha', 
-      placeholder: '', 
-      type: 'password', 
-      validators: [
-        Validators.required,
-      ] 
+    {
+      name: 'password',
+      label: 'Senha',
+      placeholder: '',
+      type: 'password',
+      validators: [Validators.required],
     },
-
   ];
   public successMessage$ = this.messageService.successMessage$;
   public errorMessage$ = this.messageService.errorMessage$;
@@ -59,7 +55,7 @@ export class LoginPage implements OnInit {
   constructor(
     private messageService: MessageService,
     private authService: AuthService,
-    private router: Router
+    private navController: NavController
   ) {}
 
   ngOnInit(): void {}
@@ -71,7 +67,7 @@ export class LoginPage implements OnInit {
       this.isLoading = false;
       return;
     }
-    
+
     this.authService
       .login(event.email, event.password)
       .pipe(finalize(() => (this.isLoading = false)))
@@ -83,7 +79,7 @@ export class LoginPage implements OnInit {
             response
           );
           setTimeout(() => {
-            this.router.navigate(['/home']);
+            this.navController.navigateRoot(['/home']);
           }, 2000);
         },
         error: (error) => {
