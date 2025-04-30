@@ -1,0 +1,19 @@
+nav {
+  background-color: var(--mysell-red);
+}
+.user-icon {
+  margin: 3rem;
+  width: 60px;
+  height: 60px;
+  background-color: var(--mysell-red);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: solid 2px white;
+}
+
+.user-icon i {
+  color: white;
+  font-size: 24px;
+}

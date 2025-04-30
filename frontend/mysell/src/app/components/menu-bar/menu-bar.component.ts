@@ -9,7 +9,10 @@ import { IonMenu } from '@ionic/angular/standalone';
   imports: [IonMenu],
 })
 export class MenuBarComponent implements OnInit {
-  ngOnInit() {}
+  public email: string = '';
+  ngOnInit() {
+    this.email = localStorage.getItem('email') || '';
+  }
   constructor(private menu: MenuController, private router: Router) {}
 
   async open(route: string) {
