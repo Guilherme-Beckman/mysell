@@ -7,6 +7,8 @@ import { HomeActionsCarrouselComponent } from '../components/home-actions-carrou
 import { HomeLastSellsComponent } from '../components/home-last-sells/home-last-sells.component';
 import { MenuBarComponent } from '../components/menu-bar/menu-bar.component';
 import { MenuController } from '@ionic/angular';
+
+import { IonRefresher, IonRefresherContent } from '@ionic/angular/standalone';
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -19,6 +21,8 @@ import { MenuController } from '@ionic/angular';
     HomeLastSellsComponent,
     IonContent,
     MenuBarComponent,
+    IonRefresher,
+    IonRefresherContent,
   ],
 })
 export class HomePage {

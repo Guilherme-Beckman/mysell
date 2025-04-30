@@ -2,16 +2,34 @@ ion-searchbar {
   --background: rgb(255, 255, 255);
   --color: var(--ion-color-dark);
   --border-radius: 50px;
-  
-  
 }
-nav{
-    padding: 1rem;
-    padding-top: 2rem;
-    background-color: var(--mysell-red);
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    align-items: center;
-    justify-content: center;
+nav {
+  padding: 1rem;
+  padding-top: 2rem;
+  background-color: var(--mysell-red);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+ion-menu-button {
+  --color: white; /* muda a cor do ícone */
+  font-size: 24px; /* afeta o tamanho do botão em geral */
+  width: 50px;
+  height: 50px;
+}
+
+/* Se quiser estilizar diretamente o ícone dentro do botão */
+ion-menu-button::part(icon) {
+  font-size: 50px; /* aumenta o ícone do menu */
+  color: rgb(255, 255, 255); /* muda a cor do ícone */
+}
+.custom-menu-button {
+  /* cor da "onda" ao clicar */
+  --ripple-color: transparent;
+  /* fundo padrão do botão */
+  --background: transparent;
+  /* fundo quando ativado/pressionado */
+  --background-activated: transparent;
 }

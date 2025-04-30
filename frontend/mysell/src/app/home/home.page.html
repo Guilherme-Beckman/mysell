@@ -3,6 +3,10 @@
 
   <div class="ion-page" id="main-content">
     <ion-content>
+      <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+        <ion-refresher-content refreshingSpinner="circles">
+        </ion-refresher-content>
+      </ion-refresher>
       <app-home-nav></app-home-nav>
       <app-sells-profit-info></app-sells-profit-info>
       <app-home-actions-carrousel
