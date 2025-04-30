@@ -28,7 +28,7 @@ export class MenuBarComponent implements OnInit {
     },
 
     {
-      icon: 'assets/svg/add-products.svg',
+      icon: 'assets/svg/add-product.svg',
       label: 'Adicionar Produto',
       handler: () => console.log('Add produto'),
     },
