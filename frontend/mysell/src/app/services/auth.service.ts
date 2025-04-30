@@ -68,6 +68,10 @@ export class AuthService {
     localStorage.setItem('token', token);
     this.setExpirationTime();
   }
+  public saveEmail(email: string): void {
+    if (!this.isLocalStorageAvailable()) return;
+    localStorage.setItem('email', email);
+  }
 
   public isTokenExpired(): boolean {
     const token = this.getToken();

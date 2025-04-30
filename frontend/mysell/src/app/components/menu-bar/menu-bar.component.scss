@@ -1,0 +1,30 @@
+nav {
+  background-color: var(--mysell-red);
+  padding: 1rem;
+}
+.user-icon {
+  margin-top: 3rem;
+  margin-left: 1rem;
+  width: 60px;
+  height: 60px;
+  background-color: var(--mysell-red);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: solid 2px white;
+}
+
+.user-icon i {
+  color: white;
+  font-size: 24px;
+}
+h1 {
+  padding: 1rem;
+  width: 80%;
+  color: white;
+  font-size: 20px;
+  word-wrap: break-word;
+  white-space: normal;
+  display: block;
+}
