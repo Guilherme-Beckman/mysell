@@ -22,37 +22,33 @@ export class MenuBarComponent implements OnInit {
   public email: string = '';
   menuActions: MenuAction[] = [
     {
-      icon: 'bar-chart-outline',
+      icon: 'assets/svg/analytics.svg',
       label: 'Análise de vendas',
       handler: () => console.log('Análise'),
     },
+
     {
-      icon: 'contrast-outline',
-      label: 'Alterar tema',
-      handler: () => console.log('Tema'),
-    },
-    {
-      icon: 'add-circle-outline',
+      icon: 'assets/svg/add-products.svg',
       label: 'Adicionar Produto',
       handler: () => console.log('Add produto'),
     },
     {
-      icon: 'time-outline',
+      icon: 'assets/svg/history.svg',
       label: 'Histórico de vendas',
       handler: () => console.log('Histórico'),
     },
     {
-      icon: 'document-text-outline',
+      icon: 'assets/svg/report.svg',
       label: 'Relatório',
       handler: () => console.log('Relatório'),
     },
     {
-      icon: 'help-circle-outline',
+      icon: 'assets/svg/help.svg',
       label: 'Ajuda',
       handler: () => console.log('Ajuda'),
     },
     {
-      icon: 'log-out-outline',
+      icon: 'assets/svg/logout.svg',
       label: 'Sair',
       handler: () => console.log('Sair'),
     },

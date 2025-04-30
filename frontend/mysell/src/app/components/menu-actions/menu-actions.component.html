@@ -4,9 +4,7 @@
     *ngFor="let action of actions"
     (click)="onClick(action)"
   >
-    <span class="menu-icon">
-      <i [class]="action.icon"></i>
-    </span>
+    <span class="menu-icon"> <img src="{{ action.icon }}" alt="" /> </span>
     <span class="menu-label">{{ action.label }}</span>
   </li>
 </ul>
