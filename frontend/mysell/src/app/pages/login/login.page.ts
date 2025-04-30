@@ -74,6 +74,8 @@ export class LoginPage implements OnInit {
       .subscribe({
         next: (response) => {
           this.authService.saveToken(response.token);
+          this.authService.saveEmail(response.email);
+
           this.messageService.setSuccessMessage(
             'Login realizado com sucesso!',
             response
