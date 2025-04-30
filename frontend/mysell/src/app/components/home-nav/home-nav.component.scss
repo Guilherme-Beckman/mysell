@@ -14,13 +14,12 @@ nav {
   justify-content: center;
 }
 ion-menu-button {
-  --color: white; /* muda a cor do ícone */
-  font-size: 24px; /* afeta o tamanho do botão em geral */
+  --color: white;
+  font-size: 24px;
   width: 50px;
   height: 50px;
 }
 
-/* Se quiser estilizar diretamente o ícone dentro do botão */
 ion-menu-button::part(icon) {
   font-size: 50px; /* aumenta o ícone do menu */
   color: rgb(255, 255, 255); /* muda a cor do ícone */
