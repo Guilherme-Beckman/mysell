@@ -40,26 +40,25 @@ export class HomeLastSellsComponent implements OnInit {
   }
 
   private handleSalesResponse(response: any[]): void {
-    const now = new Date();
-    const cutoff = this.getYesterday(now);
+    const today = new Date();
 
     this.sales = response
-      .filter((item) => this.isWithinLast24Hours(item.createdAt, cutoff, now))
+      .filter((item) => this.isToday(item.createdAt, today))
       .map((item) => this.transformToSaleItem(item));
+  }
+
+  private isToday(dateStr: string, today: Date): boolean {
+    const date = new Date(dateStr);
+    return (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    );
   }
 
   private handleSalesError(error: any): void {
     console.error('Erro ao buscar vendas:', error);
     this.sales = [];
-  }
-
-  private getYesterday(referenceDate: Date): Date {
-    return new Date(referenceDate.getTime() - 24 * 60 * 60 * 1000);
-  }
-
-  private isWithinLast24Hours(dateStr: string, from: Date, to: Date): boolean {
-    const date = new Date(dateStr);
-    return date >= from && date <= to;
   }
 
   private transformToSaleItem(item: any): SaleItem {
