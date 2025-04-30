@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { SellService } from 'src/app/services/sell.service';
+import { IonSkeletonText } from '@ionic/angular/standalone';
 
 export interface SaleItem {
   sellId: number;
@@ -14,11 +15,12 @@ export interface SaleItem {
   selector: 'app-home-last-sells',
   templateUrl: './home-last-sells.component.html',
   styleUrls: ['./home-last-sells.component.scss'],
-  imports: [CommonModule],
+  imports: [IonSkeletonText, CommonModule],
 })
 export class HomeLastSellsComponent implements OnInit {
   sales: SaleItem[] = [];
   visibleCount = 6;
+  isLoading = false;
 
   constructor(private sellService: SellService) {}
 
@@ -27,9 +29,13 @@ export class HomeLastSellsComponent implements OnInit {
   }
 
   private loadRecentSales(): void {
+    this.isLoading = true;
     this.sellService.getMySell().subscribe({
       next: (response: any[]) => this.handleSalesResponse(response),
       error: (error) => this.handleSalesError(error),
+      complete: () => {
+        this.isLoading = false;
+      },
     });
   }
 

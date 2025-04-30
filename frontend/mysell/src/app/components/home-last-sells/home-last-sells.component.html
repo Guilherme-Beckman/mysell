@@ -1,23 +1,61 @@
 <main>
   <h1>Histórico de vendas</h1>
-
   <div class="last-sells-info">
     <div class="title">
       <h2>Últimas Vendas</h2>
-      <!-- usa totalValueFormatted() -->
-      <h2>R$ {{ totalValueFormatted() }}</h2>
+      <!-- Se não estiver carregando, mostra o valor; senão, mostra o skeleton -->
+      <ng-container *ngIf="!isLoading; else skeletonTotalValue">
+        <h2>R$ {{ totalValueFormatted() }}</h2>
+      </ng-container>
+      <!-- Define o placeholder animado para o valor total -->
+      <ng-template #skeletonTotalValue>
+        <ion-skeleton-text
+          animated="true"
+          style="width: 8rem; height: 1.5rem; border-radius: 100px"
+        ></ion-skeleton-text>
+      </ng-template>
     </div>
 
+    <!-- Se não estiver carregando, mostra os itens; senão, mostra o skeleton -->
     <div class="sells-container">
-      <div class="sells" *ngFor="let item of sales.slice(0, visibleCount)">
-        <p>{{ item.quantity }}× {{ item.product }}</p>
-        <!-- formata cada item -->
-        <p>R$ {{ formatBigNumber(item.value) }}</p>
-      </div>
+      <ng-container *ngIf="!isLoading; else skeletonItems">
+        <div class="sells" *ngFor="let item of sales.slice(0, visibleCount)">
+          <p>{{ item.quantity }}× {{ item.product }}</p>
+          <p>R$ {{ formatBigNumber(item.value) }}</p>
+        </div>
+        <div class="see-more" *ngIf="visibleCount < sales.length">
+          <button (click)="loadMore()">Ver mais</button>
+        </div>
+      </ng-container>
 
-      <div class="see-more" *ngIf="visibleCount < sales.length">
-        <button (click)="loadMore()">Ver mais</button>
-      </div>
+      <!-- Define o placeholder animado para os itens de venda -->
+      <ng-template #skeletonItems>
+        <div class="sells" *ngFor="let i of [1, 2, 3, 4, 5]">
+          <p>
+            <ion-skeleton-text
+              animated="true"
+              style="width: 10rem; height: 1rem; border-radius: 100px"
+            ></ion-skeleton-text>
+          </p>
+          <p>
+            <ion-skeleton-text
+              animated="true"
+              style="width: 5rem; height: 1rem; border-radius: 100px"
+            ></ion-skeleton-text>
+          </p>
+        </div>
+        <div class="see-more">
+          <ion-skeleton-text
+            animated="true"
+            style="
+              width: 8rem;
+              height: 2rem;
+              margin: 0 auto;
+              border-radius: 100px;
+            "
+          ></ion-skeleton-text>
+        </div>
+      </ng-template>
     </div>
   </div>
 </main>
