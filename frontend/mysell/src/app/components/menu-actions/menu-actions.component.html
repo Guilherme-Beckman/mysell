@@ -1,3 +1,12 @@
-<p>
-  menu-actions works!
-</p>
+<ul class="menu-list">
+  <li
+    class="menu-item"
+    *ngFor="let action of actions"
+    (click)="onClick(action)"
+  >
+    <span class="menu-icon">
+      <i [class]="action.icon"></i>
+    </span>
+    <span class="menu-label">{{ action.label }}</span>
+  </li>
+</ul>

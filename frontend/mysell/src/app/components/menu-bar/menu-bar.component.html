@@ -5,4 +5,9 @@
     </div>
     <h1>{{ email }}</h1>
   </nav>
+
+  <app-menu-actions
+    [actions]="menuActions"
+    (actionSelected)="onMenuAction($event)"
+  ></app-menu-actions>
 </ion-menu>
