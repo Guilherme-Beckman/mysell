@@ -1,3 +1,15 @@
-<p>
-  menu-bar works!
-</p>
+<ion-menu side="start" menuId="main-menu" contentId="main-content">
+  <ion-header>
+    <ion-toolbar color="primary">
+      <ion-title>Menu</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <ion-list>
+      <ion-item (click)="open('/vendas')">
+        <ion-icon slot="start" name="analytics-outline"></ion-icon>
+        <ion-label>Análise de vendas</ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>

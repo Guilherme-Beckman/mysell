@@ -1,19 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IonIcon } from '@ionic/angular/standalone';
 
 export interface ActionButton {
-  svgPath: string; // Exemplo: 'arrow-up-circle-outline'
-  label: string; // Exemplo: 'Vender'
-  route: string; // Exemplo: '/vendas'
-  cssClass?: string; // Classe CSS opcional para customização
+  svgPath: string;
+  label: string;
+  route: string;
+  cssClass?: string;
 }
 @Component({
   selector: 'app-home-actions-carrousel',
   templateUrl: './home-actions-carrousel.component.html',
   styleUrls: ['./home-actions-carrousel.component.scss'],
-  imports: [IonIcon, CommonModule],
+  imports: [CommonModule],
 })
 export class HomeActionsCarrouselComponent implements OnInit {
   @Input() actions: ActionButton[] = [];
