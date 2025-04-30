@@ -14,18 +14,22 @@ export class SellsProfitInfoComponent implements OnInit {
   public profit = 0;
   public formattedTotalSells = '0';
   public formattedProfit = '0';
+  public isLoading = false;
 
   constructor(private reportService: ReportService) {}
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.reportService.getDailyReport().subscribe({
       next: (report) => {
+        this.isLoading = false;
         this.totalSells = report.numberOfSales ?? 0;
         this.profit = report.profit ?? 0;
         this.formattedTotalSells = this.formatBigNumber(this.totalSells);
         this.formattedProfit = this.formatBigNumber(this.profit);
       },
       error: (err) => {
+        this.isLoading = false;
         console.error('Erro ao buscar relatório diário:', err);
         this.formattedTotalSells = '0';
         this.formattedProfit = '0';
