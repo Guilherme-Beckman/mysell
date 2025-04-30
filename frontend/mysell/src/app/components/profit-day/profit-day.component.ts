@@ -11,7 +11,7 @@ import { IonSkeletonText } from '@ionic/angular/standalone';
 export class ProfitDayComponent implements OnInit {
   @Input() profit = 0;
   @Input() formattedProfit = '0';
-  isLoading = true;
+  @Input() isLoading = false;
 
   constructor(private reportService: ReportService) {}
 
