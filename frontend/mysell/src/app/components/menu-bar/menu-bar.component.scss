@@ -1,8 +1,10 @@
 nav {
   background-color: var(--mysell-red);
+  padding: 1rem;
 }
 .user-icon {
-  margin: 3rem;
+  margin-top: 3rem;
+  margin-left: 1rem;
   width: 60px;
   height: 60px;
   background-color: var(--mysell-red);
@@ -16,4 +18,13 @@ nav {
 .user-icon i {
   color: white;
   font-size: 24px;
+}
+h1 {
+  padding: 1rem;
+  width: 80%;
+  color: white;
+  font-size: 20px;
+  word-wrap: break-word;
+  white-space: normal;
+  display: block;
 }
