@@ -4,7 +4,10 @@ import { redirectGuard } from './guards/redirect.guard';
 export const routes: Routes = [
   {
     path: 'home',
-    loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
+    loadComponent: () =>
+      import('./pages/create-products/create-products.page').then(
+        (m) => m.CreateProductsPage
+      ),
   },
   {
     path: '',
@@ -31,6 +34,9 @@ export const routes: Routes = [
   },
   {
     path: 'create-products',
-    loadComponent: () => import('./pages/create-products/create-products.page').then( m => m.CreateProductsPage)
+    loadComponent: () =>
+      import('./pages/create-products/create-products.page').then(
+        (m) => m.CreateProductsPage
+      ),
   },
 ];
