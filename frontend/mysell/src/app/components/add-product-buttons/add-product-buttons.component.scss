@@ -1,0 +1,15 @@
+.add-buttons {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+button {
+  display: flex;
+  border: 2px solid var(--mysell-red);
+  background-color: transparent;
+  border-radius: 10px;
+}
+img {
+  height: 2.5rem;
+  width: 9rem;
+}

@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 export interface AddProductButton {
   svgPath: string;
-  text: string;
   action: () => void;
 }
 @Component({

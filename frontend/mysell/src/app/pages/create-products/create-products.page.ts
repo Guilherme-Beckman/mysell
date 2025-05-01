@@ -38,12 +38,10 @@ export class CreateProductsPage implements OnInit {
   buttons: AddProductButton[] = [
     {
       svgPath: '/assets/svg/add-product.svg',
-      text: 'Adicionar Produto',
       action: () => null,
     },
     {
       svgPath: '/assets/svg/barcode.svg',
-      text: '',
       action: () => null,
     },
   ];
