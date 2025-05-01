@@ -17,6 +17,7 @@ import {
   AddProductButtonsComponent,
 } from 'src/app/components/add-product-buttons/add-product-buttons.component';
 import { AvailableProductsComponent } from 'src/app/components/available-products/available-products.component';
+import { BottomArrowComponent } from 'src/app/components/bottom-arrow/bottom-arrow.component';
 
 @Component({
   selector: 'app-create-products',
@@ -33,6 +34,7 @@ import { AvailableProductsComponent } from 'src/app/components/available-product
     SearchBarComponent,
     AddProductButtonsComponent,
     AvailableProductsComponent,
+    BottomArrowComponent,
   ],
 })
 export class CreateProductsPage implements OnInit {
