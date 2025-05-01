@@ -29,4 +29,8 @@ export const routes: Routes = [
         (m) => m.EmailValidationPage
       ),
   },
+  {
+    path: 'create-products',
+    loadComponent: () => import('./pages/create-products/create-products.page').then( m => m.CreateProductsPage)
+  },
 ];
