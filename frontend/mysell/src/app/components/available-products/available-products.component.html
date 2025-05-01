@@ -5,12 +5,15 @@
 
   <div class="product-list">
     <div *ngFor="let product of products" class="product-item">
-      <input
-        type="checkbox"
-        [checked]="product.selected"
-        (change)="toggleSelection(product)"
-        class="product-checkbox"
-      />
+      <label class="product-checkbox">
+        <input
+          type="checkbox"
+          [checked]="product.selected"
+          (change)="toggleSelection(product)"
+        />
+        <span class="custom-checkbox"></span>
+      </label>
+
       <div class="product-details">
         <div class="product-info">
           <p class="product-name">Nome: {{ product.name }} |</p>
