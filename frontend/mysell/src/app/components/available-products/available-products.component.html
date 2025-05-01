@@ -13,13 +13,15 @@
       />
       <div class="product-details">
         <div class="product-info">
-          <p class="product-name">Nome: {{ product.name }}</p>
-          <p class="product-price">Custo: R$ {{ formatCost(product.price) }}</p>
+          <p class="product-name">Nome: {{ product.name }} |</p>
+          <p class="product-price">
+            Custo: <span>R$ {{ formatCost(product.price) }}</span>
+          </p>
         </div>
         <div class="product-icon">
           <img
             *ngIf="product.type === 'food'"
-            src="assets/svg/meal-icon.svg"
+            src="assets/svg/categories/food-drink.svg"
             alt="Food icon"
           />
           <img

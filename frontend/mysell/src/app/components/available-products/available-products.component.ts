@@ -26,11 +26,11 @@ export class AvailableProductsComponent implements OnInit {
       // Default products if none provided
       this.products = [
         { id: 1, name: 'Arroz', price: 50.0, selected: true, type: 'food' },
-        { id: 2, name: 'Skai', price: 50.0, selected: false, type: 'drink' },
-        { id: 3, name: 'Skai', price: 50.0, selected: false, type: 'drink' },
-        { id: 4, name: 'Skai', price: 50.0, selected: false, type: 'drink' },
-        { id: 5, name: 'Skai', price: 50.0, selected: false, type: 'drink' },
-        { id: 6, name: 'Skai', price: 50.0, selected: false, type: 'drink' },
+        { id: 2, name: 'Skai', price: 50.0, selected: false, type: 'food' },
+        { id: 3, name: 'Skai', price: 50.0, selected: false, type: 'food' },
+        { id: 4, name: 'Skai', price: 50.0, selected: false, type: 'food' },
+        { id: 5, name: 'Skai', price: 50.0, selected: false, type: 'food' },
+        { id: 6, name: 'Skai', price: 50.0, selected: false, type: 'food' },
       ];
     }
   }
