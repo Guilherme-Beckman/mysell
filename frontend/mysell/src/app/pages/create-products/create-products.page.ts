@@ -10,6 +10,7 @@ import {
 } from '@ionic/angular/standalone';
 import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
 import { HomeRedirectComponent } from 'src/app/components/home-redirect/home-redirect.component';
+import { ProguessBarComponent } from 'src/app/components/proguess-bar/proguess-bar.component';
 
 @Component({
   selector: 'app-create-products',
@@ -22,10 +23,14 @@ import { HomeRedirectComponent } from 'src/app/components/home-redirect/home-red
     FormsModule,
     ArrowComponent,
     HomeRedirectComponent,
+    ProguessBarComponent,
   ],
 })
 export class CreateProductsPage implements OnInit {
   constructor() {}
 
   ngOnInit() {}
+  proguess() {
+    return 50;
+  }
 }
