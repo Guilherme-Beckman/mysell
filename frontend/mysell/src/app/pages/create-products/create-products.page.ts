@@ -12,7 +12,10 @@ import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
 import { HomeRedirectComponent } from 'src/app/components/home-redirect/home-redirect.component';
 import { ProguessBarComponent } from 'src/app/components/proguess-bar/proguess-bar.component';
 import { SearchBarComponent } from 'src/app/components/search-bar/search-bar.component';
-import { AddProductButtonsComponent } from 'src/app/components/add-product-buttons/add-product-buttons.component';
+import {
+  AddProductButton,
+  AddProductButtonsComponent,
+} from 'src/app/components/add-product-buttons/add-product-buttons.component';
 
 @Component({
   selector: 'app-create-products',
@@ -32,6 +35,18 @@ import { AddProductButtonsComponent } from 'src/app/components/add-product-butto
 })
 export class CreateProductsPage implements OnInit {
   constructor() {}
+  buttons: AddProductButton[] = [
+    {
+      svgPath: '/assets/svg/add-product.svg',
+      text: 'Adicionar Produto',
+      action: () => null,
+    },
+    {
+      svgPath: '/assets/svg/barcode.svg',
+      text: '',
+      action: () => null,
+    },
+  ];
 
   ngOnInit() {}
   proguess() {
