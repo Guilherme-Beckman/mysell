@@ -16,6 +16,7 @@ import {
   AddProductButton,
   AddProductButtonsComponent,
 } from 'src/app/components/add-product-buttons/add-product-buttons.component';
+import { AvailableProductsComponent } from 'src/app/components/available-products/available-products.component';
 
 @Component({
   selector: 'app-create-products',
@@ -31,6 +32,7 @@ import {
     ProguessBarComponent,
     SearchBarComponent,
     AddProductButtonsComponent,
+    AvailableProductsComponent,
   ],
 })
 export class CreateProductsPage implements OnInit {

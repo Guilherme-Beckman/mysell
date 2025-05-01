@@ -1,3 +1,34 @@
-<p>
-  available-products works!
-</p>
+<div class="product-list-container">
+  <div class="product-list-header">
+    <h2 class="product-list-title">Produtos disponíveis</h2>
+  </div>
+
+  <div class="product-list">
+    <div *ngFor="let product of products" class="product-item">
+      <input
+        type="checkbox"
+        [checked]="product.selected"
+        (change)="toggleSelection(product)"
+        class="product-checkbox"
+      />
+      <div class="product-details">
+        <div class="product-info">
+          <p class="product-name">Nome: {{ product.name }}</p>
+          <p class="product-price">Custo: R$ {{ formatCost(product.price) }}</p>
+        </div>
+        <div class="product-icon">
+          <img
+            *ngIf="product.type === 'food'"
+            src="assets/svg/meal-icon.svg"
+            alt="Food icon"
+          />
+          <img
+            *ngIf="product.type === 'drink'"
+            src="assets/svg/drink-icon.svg"
+            alt="Drink icon"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
