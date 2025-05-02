@@ -18,6 +18,7 @@ import {
 } from 'src/app/components/add-product-buttons/add-product-buttons.component';
 import { AvailableProductsComponent } from 'src/app/components/available-products/available-products.component';
 import { BottomArrowComponent } from 'src/app/components/bottom-arrow/bottom-arrow.component';
+import { CreateProductFormComponent } from 'src/app/components/create-product-form/create-product-form.component';
 
 @Component({
   selector: 'app-create-products',
@@ -35,6 +36,7 @@ import { BottomArrowComponent } from 'src/app/components/bottom-arrow/bottom-arr
     AddProductButtonsComponent,
     AvailableProductsComponent,
     BottomArrowComponent,
+    CreateProductFormComponent,
   ],
 })
 export class CreateProductsPage implements OnInit {

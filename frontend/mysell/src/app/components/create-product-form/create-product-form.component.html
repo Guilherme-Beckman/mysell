@@ -1,3 +1,74 @@
-<p>
-  create-product-form works!
-</p>
+<!-- Modal backdrop -->
+<div class="modal-backdrop" *ngIf="showModal">
+  <!-- Modal dialog -->
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h2>Adicionar novo produto</h2>
+      <button class="close-button" (click)="closeModal()">×</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-row">
+        <input
+          type="text"
+          placeholder="Nome"
+          [(ngModel)]="product.name"
+          class="input-full"
+        />
+        <div class="category-select">
+          <div class="select-wrapper">
+            <input
+              type="text"
+              placeholder="Categoria"
+              [(ngModel)]="product.category"
+              class="input-with-icon"
+            />
+            <span class="dropdown-icon">▼</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <input
+          type="text"
+          placeholder="Preço comprado"
+          [(ngModel)]="product.purchasePrice"
+          class="input-full"
+        />
+      </div>
+
+      <div class="form-row">
+        <input
+          type="text"
+          placeholder="Preço a vender"
+          [(ngModel)]="product.sellingPrice"
+          class="input-full"
+        />
+      </div>
+
+      <div class="form-row">
+        <input
+          type="text"
+          placeholder="Marca"
+          [(ngModel)]="product.brand"
+          class="input-half"
+        />
+        <div class="measure-section">
+          <input
+            type="text"
+            placeholder="Medida"
+            [(ngModel)]="product.measure"
+            class="input-half-right"
+          />
+          <button class="measure-button">R</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="confirm-button" (click)="confirmProduct()">
+        Confirmar
+      </button>
+    </div>
+  </div>
+</div>
