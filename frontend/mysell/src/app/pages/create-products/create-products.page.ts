@@ -38,6 +38,7 @@ import { BottomArrowComponent } from 'src/app/components/bottom-arrow/bottom-arr
   ],
 })
 export class CreateProductsPage implements OnInit {
+  public hasAnyItemSelected = false;
   constructor() {}
   buttons: AddProductButton[] = [
     {

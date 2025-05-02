@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 interface Product {
   id: number;
@@ -18,6 +18,7 @@ interface Product {
 })
 export class AvailableProductsComponent implements OnInit {
   @Input() products: Product[] = [];
+  @Output() hasAnyItemSelected = new EventEmitter<boolean>();
 
   constructor() {}
 
@@ -37,8 +38,12 @@ export class AvailableProductsComponent implements OnInit {
 
   toggleSelection(product: Product): void {
     product.selected = !product.selected;
+    this.emmitCurrentSelectionState();
   }
-
+  private emmitCurrentSelectionState() {
+    const hasAny = this.products.some((product) => product.selected);
+    this.hasAnyItemSelected.emit(hasAny);
+  }
   formatCost(price: number): string {
     return price.toFixed(2).replace('.', ',');
   }

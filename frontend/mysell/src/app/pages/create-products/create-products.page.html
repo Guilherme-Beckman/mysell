@@ -9,6 +9,11 @@
   <app-proguess-bar [progress]="proguess()"></app-proguess-bar>
   <app-search-bar [placeholder]="'Buscar produtos'"></app-search-bar>
   <app-add-product-buttons [buttons]="buttons"></app-add-product-buttons>
-  <app-available-products></app-available-products>
-  <app-bottom-arrow [direction]="'right'"></app-bottom-arrow>
+  <app-available-products
+    (hasAnyItemSelected)="hasAnyItemSelected = $event"
+  ></app-available-products>
+  <app-bottom-arrow
+    [direction]="'right'"
+    *ngIf="hasAnyItemSelected"
+  ></app-bottom-arrow>
 </main>
