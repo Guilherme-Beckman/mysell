@@ -210,4 +210,40 @@ export class CreateProductFormComponent {
     console.log('Product added:', this.product);
     this.closeModal();
   }
+  measureSearch: string = '';
+  filteredMeasures: string[] = [];
+  showMeasureDropdown: boolean = false;
+
+  measures: string[] = [
+    'NONE',
+    'ml',
+    'l',
+    'mg',
+    'g',
+    'kg',
+    'lb',
+    'oz',
+    'un',
+    'mm',
+    'cm',
+    'm',
+    'km',
+  ];
+
+  filterMeasures() {
+    const search = this.measureSearch.toLowerCase();
+    this.filteredMeasures = this.measures.filter((m) =>
+      m.toLowerCase().includes(search)
+    );
+  }
+
+  selectMeasure(measure: string) {
+    this.measureSearch = measure;
+    this.product.measure = measure;
+    this.showMeasureDropdown = false;
+  }
+
+  hideMeasureDropdown() {
+    setTimeout(() => (this.showMeasureDropdown = false), 200);
+  }
 }

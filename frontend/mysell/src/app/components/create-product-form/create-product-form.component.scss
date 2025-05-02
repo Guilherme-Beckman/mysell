@@ -95,6 +95,7 @@ input {
   gap: 5px;
   display: flex;
   width: 50%;
+  position: relative;
 }
 
 .measure-button {
@@ -110,6 +111,7 @@ input {
   font-size: 15px;
 }
 
+/* CATEGORY SELECT */
 .category-select {
   display: flex;
   width: 50%;
@@ -136,6 +138,66 @@ input {
   }
 }
 
+/* MEASURE SELECT */
+.measure-select {
+  display: flex;
+  width: 50%;
+  position: relative;
+  img {
+    height: 18px;
+    width: 18px;
+    background-color: #f8f8f8;
+    border-radius: 5px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    border-right: none;
+    padding: 12px;
+  }
+}
+
+.measure-input {
+  width: 100%;
+  position: relative;
+
+  input {
+    border-left: none;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+.dropdown-measure {
+  margin: 0;
+  padding: 0;
+  justify-content: center;
+  position: absolute;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-top: none;
+  z-index: 1001;
+  max-height: 50px;
+  border-radius: 0 0 5px 5px;
+  overflow-y: auto;
+  overflow-x: scroll;
+}
+.dropdown-measure li {
+  gap: 5px;
+  display: flex;
+  padding: 5px;
+  font-size: 12px;
+  cursor: pointer;
+  list-style: none;
+  align-items: center;
+  text-align: left;
+  white-space: normal;
+  word-break: break-word;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+}
 .input-with-icon {
   padding-right: 30px;
 }
@@ -182,6 +244,7 @@ input {
   &:hover {
     background-color: #f0f0f0;
   }
+
   img {
     padding: 5px;
     border-radius: 5px;

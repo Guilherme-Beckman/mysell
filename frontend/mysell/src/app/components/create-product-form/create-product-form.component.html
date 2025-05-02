@@ -72,14 +72,32 @@
           [(ngModel)]="product.brand"
           class="input-half"
         />
-        <div class="measure-section">
-          <input
-            type="text"
-            placeholder="Medida"
-            [(ngModel)]="product.measure"
-            class="input-half-right"
-          />
-          <button class="measure-button">g</button>
+        <div class="measure-select">
+          <img src="assets/svg/ruler-icon.svg" alt="ícone medida" />
+          <div class="measure-input">
+            <input
+              type="text"
+              placeholder="Medida"
+              [(ngModel)]="measureSearch"
+              (input)="filterMeasures()"
+              (focus)="showMeasureDropdown = true"
+              (blur)="hideMeasureDropdown()"
+              class="input-with-icon"
+            />
+            <span class="dropdown-icon">▼</span>
+
+            <ul
+              class="dropdown-measure"
+              *ngIf="showMeasureDropdown && filteredMeasures.length > 0"
+            >
+              <li
+                *ngFor="let measure of filteredMeasures"
+                (mousedown)="selectMeasure(measure)"
+              >
+                {{ measure }}
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
