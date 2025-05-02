@@ -13,7 +13,6 @@ export class CreateProductFormComponent {
   categorySearch: string = '';
   filteredCategories: { name: string; pathSvg: string }[] = [];
   showDropdown: boolean = false;
-
   categories: { name: string; pathSvg: string }[] = [
     { name: 'Outros', pathSvg: 'assets/svg/categories/others.svg' },
     {
@@ -23,132 +22,156 @@ export class CreateProductFormComponent {
     { name: 'Tabaco/Cânabis', pathSvg: 'assets/svg/categories/tobacco.svg' },
     {
       name: 'Beleza / Cuidados Pessoais / Higiene',
-      pathSvg: 'assets/icons/beleza-cuidados-pessoais-higiene.svg',
+      pathSvg: 'assets/svg/categories/beauty-cream-icon.svg',
     },
     {
       name: 'Produtos de Limpeza / Higiene',
-      pathSvg: 'assets/icons/produtos-limpeza-higiene.svg',
+      pathSvg: 'assets/svg/categories/cleaning-spray-icon.svg',
     },
-    { name: 'Calçados', pathSvg: 'assets/icons/calcados.svg' },
-    { name: 'Setor da Saúde', pathSvg: 'assets/icons/setor-saude.svg' },
+    { name: 'Calçados', pathSvg: 'assets/svg/categories/boot-icon.svg' },
+    {
+      name: 'Setor da Saúde',
+      pathSvg: 'assets/svg/categories/stethoscope-icon.svg',
+    },
     {
       name: 'Utensílios de cozinha e utensílios de mesa',
-      pathSvg: 'assets/icons/utensilios-cozinha-mesa.svg',
+      pathSvg: 'assets/svg/categories/kitchen-cooking-pot-non-stick-icon.svg',
     },
     {
       name: 'Mobiliário doméstico/para escritório',
-      pathSvg: 'assets/icons/mobiliario-domestico-escritorio.svg',
+      pathSvg: 'assets/svg/categories/office-chair-icon.svg',
     },
     {
       name: 'Equipamentos Esportivos',
-      pathSvg: 'assets/icons/equipamentos-esportivos.svg',
+      pathSvg: 'assets/svg/categories/table-tennis-icon.svg',
     },
     {
       name: 'Segurança / Vigilância',
-      pathSvg: 'assets/icons/seguranca-vigilancia.svg',
+      pathSvg: 'assets/svg/categories/lock-icon.svg',
     },
     {
       name: 'Cuidados/alimentação para animais de estimação',
-      pathSvg: 'assets/icons/cuidados-animais-estimacao.svg',
+      pathSvg: 'assets/svg/categories/paw-icon.svg',
     },
     {
       name: 'Fluidos/Combustíveis/Gases',
-      pathSvg: 'assets/icons/fluidos-combustiveis-gases.svg',
+      pathSvg: 'assets/svg/categories/gas-pump-icon.svg',
     },
     {
       name: 'Ligações elétricas',
-      pathSvg: 'assets/icons/ligacoes-eletricas.svg',
+      pathSvg: 'assets/svg/categories/electric-plugin-icon.svg',
     },
     {
       name: 'Segmento Transversal',
-      pathSvg: 'assets/icons/segmento-transversal.svg',
+      pathSvg: 'assets/svg/categories/minus-square-line-icon.svg',
     },
-    { name: 'Vestuário', pathSvg: 'assets/icons/vestuario.svg' },
-    { name: 'Veículo', pathSvg: 'assets/icons/veiculo.svg' },
-    { name: 'Eletrodomésticos', pathSvg: 'assets/icons/eletrodomesticos.svg' },
+    {
+      name: 'Vestuário',
+      pathSvg: 'assets/svg/categories/men-t-shirts-icon.svg',
+    },
+    {
+      name: 'Veículo',
+      pathSvg: 'assets/svg/categories/steering-wheel-icon.svg',
+    },
+    {
+      name: 'Eletrodomésticos',
+      pathSvg: 'assets/svg/categories/fridge-icon.svg',
+    },
     {
       name: 'Materiais de Referência/Impressos/Textuais',
-      pathSvg: 'assets/icons/materiais-referencia-impressos-textuais.svg',
+      pathSvg: 'assets/svg/categories/print-icon.svg',
     },
-    { name: 'Música', pathSvg: 'assets/icons/musica.svg' },
+    { name: 'Música', pathSvg: 'assets/svg/categories/music-icon.svg' },
     {
       name: 'Acessórios Pessoais',
-      pathSvg: 'assets/icons/acessorios-pessoais.svg',
+      pathSvg: 'assets/svg/categories/eye-blind-icon.svg',
     },
-    { name: 'Informática', pathSvg: 'assets/icons/informatica.svg' },
-    { name: 'Comunicações', pathSvg: 'assets/icons/comunicacoes.svg' },
+    { name: 'Informática', pathSvg: 'assets/svg/categories/laptop-icon.svg' },
+    {
+      name: 'Comunicações',
+      pathSvg: 'assets/svg/categories/talk-icon.svg',
+    }, // ajustar se achar outro melhor
     {
       name: 'Artigos de Papelaria/ Equipamentos para Escritório',
-      pathSvg: 'assets/icons/papelaria-equipamentos-escritorio.svg',
+      pathSvg: 'assets/svg/categories/edit-list-icon.svg',
     },
     {
       name: 'Audiovisual / Fotografia',
-      pathSvg: 'assets/icons/audiovisual-fotografia.svg',
+      pathSvg: 'assets/svg/categories/camera-icon.svg',
     },
     {
       name: 'Trabalho Artístico/Artesanato/Bordado',
-      pathSvg: 'assets/icons/artes-artesanato-bordado.svg',
+      pathSvg: 'assets/svg/categories/edit-list-icon.svg',
     },
-    { name: 'Acampamento', pathSvg: 'assets/icons/acampamento.svg' },
+    { name: 'Acampamento', pathSvg: 'assets/svg/categories/tent-icon.svg' },
     {
       name: 'Produtos para Construção',
-      pathSvg: 'assets/icons/produtos-construcao.svg',
+      pathSvg: 'assets/svg/categories/building-icon.svg',
     },
     {
       name: 'Ferramentas/Equipamentos-Manuais',
-      pathSvg: 'assets/icons/ferramentas-equipamentos-manuais.svg',
+      pathSvg: 'assets/svg/categories/screwdriver-icon.svg',
     },
     {
       name: 'Encanamento/Aquecimento/Ventilação/Ar Condicionado',
-      pathSvg: 'assets/icons/encanamento-aquecimento-ventilacao-ar.svg',
+      pathSvg: 'assets/svg/categories/air-conditioner-icon.svg',
     },
     {
       name: 'Artigos de gramado/jardinagem',
-      pathSvg: 'assets/icons/gramado-jardinagem.svg',
+      pathSvg: 'assets/svg/categories/gardening-farming-icon.svg',
     },
     {
       name: 'Plantas de Horticultura',
-      pathSvg: 'assets/icons/plantas-horticultura.svg',
+      pathSvg: 'assets/svg/categories/plant-root-icon.svg',
     },
     {
       name: 'Equipamentos para Oficina/Armazenagem de Ferramentas',
-      pathSvg: 'assets/icons/oficina-armazenagem-ferramentas.svg',
+      pathSvg: 'assets/svg/categories/tools-icon.svg',
     },
     {
       name: 'Ferramentas/Equipamentos-Elétricos',
-      pathSvg: 'assets/icons/ferramentas-equipamentos-eletricos.svg',
+      pathSvg: 'assets/svg/categories/spark-icon.svg',
     },
-    { name: 'Brinquedos/Jogos', pathSvg: 'assets/icons/brinquedos-jogos.svg' },
-    { name: 'Lubrificantes', pathSvg: 'assets/icons/lubrificantes.svg' },
-    { name: 'Animais Vivos', pathSvg: 'assets/icons/animais-vivos.svg' },
+    {
+      name: 'Brinquedos/Jogos',
+      pathSvg: 'assets/svg/categories/gamepad-icon.svg',
+    },
+    {
+      name: 'Lubrificantes',
+      pathSvg: 'assets/svg/categories/engine-motor-icon.svg',
+    },
+    {
+      name: 'Animais Vivos',
+      pathSvg: 'assets/svg/categories/horse-head-icon.svg',
+    },
     {
       name: 'Segurança / Proteção - Bricolagem',
-      pathSvg: 'assets/icons/seguranca-protecao-bricolagem.svg',
+      pathSvg: 'assets/svg/categories/screwdriver-icon.svg',
     },
     {
       name: 'Recipientes para armazenamento/transporte',
-      pathSvg: 'assets/icons/recipientes-armazenamento-transporte.svg',
+      pathSvg: 'assets/svg/categories/gas-cylinder-black-icon.svg',
     },
-    { name: 'Culturas', pathSvg: 'assets/icons/culturas.svg' },
+    { name: 'Culturas', pathSvg: 'assets/svg/categories/plant-root-icon.svg' },
     {
       name: 'Serviços / Máquinas de Venda',
-      pathSvg: 'assets/icons/servicos-maquinas-venda.svg',
+      pathSvg: 'assets/svg/categories/solution-strategy-icon.svg',
     },
     {
       name: 'Moeda / Certificados',
-      pathSvg: 'assets/icons/moeda-certificados.svg',
+      pathSvg: 'assets/svg/categories/dollar-coin-solid-icon.svg',
     },
     {
       name: 'Matérias-primas (Não Alimentos)',
-      pathSvg: 'assets/icons/materias-primas-nao-alimentos.svg',
+      pathSvg: 'assets/svg/categories/textile-icon.svg',
     },
     {
       name: 'Produtos Post mortem',
-      pathSvg: 'assets/icons/produtos-post-mortem.svg',
+      pathSvg: 'assets/svg/categories/danger-icon.svg',
     },
     {
       name: 'Bombas/Sistemas de Fluidos Industriais',
-      pathSvg: 'assets/icons/bombas-fluidos-industriais.svg',
+      pathSvg: 'assets/svg/categories/engine-motor-icon.svg',
     },
   ];
 
