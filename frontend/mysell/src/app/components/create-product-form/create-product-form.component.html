@@ -1,10 +1,9 @@
-<!-- Modal backdrop -->
 <div class="modal-backdrop" *ngIf="showModal">
-  <!-- Modal dialog -->
   <div class="modal-dialog">
+    <button class="close-button" (click)="closeModal()">x</button>
+
     <div class="modal-header">
       <h2>Adicionar novo produto</h2>
-      <button class="close-button" (click)="closeModal()">×</button>
     </div>
 
     <div class="modal-body">
@@ -16,7 +15,8 @@
           class="input-full"
         />
         <div class="category-select">
-          <div class="select-wrapper">
+          <img src="assets/svg/categories-icon.svg" alt="" />
+          <div class="category-input">
             <input
               type="text"
               placeholder="Categoria"
