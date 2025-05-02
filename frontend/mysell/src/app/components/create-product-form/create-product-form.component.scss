@@ -83,13 +83,13 @@ input {
   font-size: 14px;
   width: 100%;
   box-sizing: border-box;
-
+  transition: border-color 0.3s ease, background-color 0.3s ease;
   &::placeholder {
     color: var(--text-gray);
   }
-
   &:focus {
-    outline: none;
+    outline: 2px solid var(--mysell-red);
+    background-color: white;
   }
 }
 
