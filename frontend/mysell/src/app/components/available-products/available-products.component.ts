@@ -26,7 +26,7 @@ export class AvailableProductsComponent implements OnInit {
     if (!this.products.length) {
       // Default products if none provided
       this.products = [
-        { id: 1, name: 'Arroz', price: 50.0, selected: true, type: 'food' },
+        { id: 1, name: 'Arroz', price: 50.0, selected: false, type: 'food' },
         { id: 2, name: 'Skai', price: 50.0, selected: false, type: 'food' },
         { id: 3, name: 'Skai', price: 50.0, selected: false, type: 'food' },
         { id: 4, name: 'Skai', price: 50.0, selected: false, type: 'food' },
@@ -42,6 +42,11 @@ export class AvailableProductsComponent implements OnInit {
   }
   private emmitCurrentSelectionState() {
     const hasAny = this.products.some((product) => product.selected);
+    if (hasAny) {
+      localStorage.setItem('selectedProducts', 'true');
+    } else {
+      localStorage.removeItem('selectedProducts');
+    }
     this.hasAnyItemSelected.emit(hasAny);
   }
   formatCost(price: number): string {
