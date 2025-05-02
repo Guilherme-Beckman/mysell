@@ -14,16 +14,35 @@
           [(ngModel)]="product.name"
           class="input-half"
         />
+
         <div class="category-select">
           <img src="assets/svg/categories-icon.svg" alt="" />
           <div class="category-input">
             <input
               type="text"
               placeholder="Categoria"
-              [(ngModel)]="product.category"
+              [(ngModel)]="categorySearch"
+              (input)="filterCategories()"
+              (focus)="showDropdown = true"
+              (blur)="hideDropdown()"
               class="input-with-icon"
             />
             <span class="dropdown-icon">▼</span>
+
+            <ul
+              class="dropdown"
+              *ngIf="showDropdown && filteredCategories.length > 0"
+            >
+              <li
+                *ngFor="let category of filteredCategories"
+                (mousedown)="selectCategory(category)"
+              >
+                <div class="categories-icons">
+                  <img src="{{ category.pathSvg }}" alt="" />
+                </div>
+                {{ category.name }}
+              </li>
+            </ul>
           </div>
         </div>
       </div>
