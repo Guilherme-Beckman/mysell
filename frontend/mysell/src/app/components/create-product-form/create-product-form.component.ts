@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Product } from 'src/app/interfaces/product';
@@ -17,7 +17,11 @@ type Measure = string;
   standalone: true,
   imports: [CommonModule, FormsModule],
 })
-export class CreateProductFormComponent {
+export class CreateProductFormComponent implements OnInit {
+  ngOnInit(): void {
+    console.log('CreateProductFormComponent initialized');
+    console.log('Selected products:', this.selectedProducts);
+  }
   // Inputs
   @Input() showModal: boolean = false;
   @Output() closeModalEvent = new EventEmitter<void>();
@@ -256,6 +260,8 @@ export class CreateProductFormComponent {
 
   // Modal methods
   closeModal(): void {
+    console.log('Modal closed');
+    console.log('Selected products:', this.selectedProducts);
     this.closeModalEvent.emit();
   }
 

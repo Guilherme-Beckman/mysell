@@ -16,22 +16,14 @@
 
       <div class="product-details">
         <div class="product-info">
-          <p class="product-name">Nome: {{ product.name }} |</p>
+          <p class="product-name">Nome: {{ product.product.name }} |</p>
           <p class="product-price">
-            Custo: <span>R$ {{ formatCost(product.price) }}</span>
+            Custo:
+            <span>R$ {{ formatCost(product.product.sellingPrice) }}</span>
           </p>
         </div>
         <div class="product-icon">
-          <img
-            *ngIf="product.type === 'food'"
-            src="assets/svg/categories/food-drink.svg"
-            alt="Food icon"
-          />
-          <img
-            *ngIf="product.type === 'drink'"
-            src="assets/svg/drink-icon.svg"
-            alt="Drink icon"
-          />
+          <img src="assets/svg/categories/food-drink.svg" alt="Food icon" />
         </div>
       </div>
     </div>

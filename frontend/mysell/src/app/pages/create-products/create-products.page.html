@@ -17,6 +17,7 @@
   <app-add-product-buttons [buttons]="buttons"></app-add-product-buttons>
   <app-available-products
     (hasAnyItemSelected)="hasAnyItemSelected = $event"
+    (selectedProducts)="getSelectedProducts($event)"
   ></app-available-products>
   <app-bottom-arrow
     [direction]="'right'"

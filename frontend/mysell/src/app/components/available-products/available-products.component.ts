@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
+import { C } from '@angular/common/common_module.d-Qx8B6pmN';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AVAIABLE_PRODUCTS } from 'src/app/datas/availlable-products';
+import { Product } from 'src/app/interfaces/product';
 
-interface Product {
-  id: number;
-  name: string;
-  price: number;
+export interface ProductSelect {
+  product: Product;
   selected: boolean;
-  type: 'food' | 'drink';
 }
 
 @Component({
@@ -17,28 +17,21 @@ interface Product {
   imports: [CommonModule],
 })
 export class AvailableProductsComponent implements OnInit {
-  @Input() products: Product[] = [];
+  @Input() products: ProductSelect[] = [];
   @Output() hasAnyItemSelected = new EventEmitter<boolean>();
-
+  @Output() selectedProducts = new EventEmitter<ProductSelect[]>();
   constructor() {}
 
   ngOnInit(): void {
     if (!this.products.length) {
-      // Default products if none provided
-      this.products = [
-        { id: 1, name: 'Arroz', price: 50.0, selected: false, type: 'food' },
-        { id: 2, name: 'Skai', price: 50.0, selected: false, type: 'food' },
-        { id: 3, name: 'Skai', price: 50.0, selected: false, type: 'food' },
-        { id: 4, name: 'Skai', price: 50.0, selected: false, type: 'food' },
-        { id: 5, name: 'Skai', price: 50.0, selected: false, type: 'food' },
-        { id: 6, name: 'Skai', price: 50.0, selected: false, type: 'food' },
-      ];
+      this.products = AVAIABLE_PRODUCTS;
     }
   }
 
-  toggleSelection(product: Product): void {
+  toggleSelection(product: ProductSelect): void {
     product.selected = !product.selected;
     this.emmitCurrentSelectionState();
+    this.sendAllSelectedProducts();
   }
   private emmitCurrentSelectionState() {
     const hasAny = this.products.some((product) => product.selected);
@@ -48,6 +41,13 @@ export class AvailableProductsComponent implements OnInit {
       localStorage.removeItem('selectedProducts');
     }
     this.hasAnyItemSelected.emit(hasAny);
+  }
+  sendAllSelectedProducts() {
+    const selectedProducts = this.getSelectedProducts();
+    this.selectedProducts.emit(selectedProducts);
+  }
+  private getSelectedProducts(): ProductSelect[] {
+    return this.products.filter((product) => product.selected);
   }
   formatCost(price: number): string {
     return price.toFixed(2).replace('.', ',');

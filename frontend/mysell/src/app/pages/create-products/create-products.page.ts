@@ -16,7 +16,10 @@ import {
   AddProductButton,
   AddProductButtonsComponent,
 } from 'src/app/components/add-product-buttons/add-product-buttons.component';
-import { AvailableProductsComponent } from 'src/app/components/available-products/available-products.component';
+import {
+  AvailableProductsComponent,
+  ProductSelect,
+} from 'src/app/components/available-products/available-products.component';
 import { BottomArrowComponent } from 'src/app/components/bottom-arrow/bottom-arrow.component';
 import { CreateProductFormComponent } from 'src/app/components/create-product-form/create-product-form.component';
 import { Product } from 'src/app/interfaces/product';
@@ -68,5 +71,10 @@ export class CreateProductsPage implements OnInit {
   closeCreateFrom() {
     console.log('closeCreateFrom');
     this.showCreateForm = false;
+  }
+  getSelectedProducts($event: ProductSelect[]) {
+    const products = $event.map((item) => item.product);
+    console.log('getSelectedProducts', products);
+    this.selectedProducts.push(...products);
   }
 }
