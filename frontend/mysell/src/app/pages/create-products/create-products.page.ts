@@ -19,6 +19,7 @@ import {
 import { AvailableProductsComponent } from 'src/app/components/available-products/available-products.component';
 import { BottomArrowComponent } from 'src/app/components/bottom-arrow/bottom-arrow.component';
 import { CreateProductFormComponent } from 'src/app/components/create-product-form/create-product-form.component';
+import { Product } from 'src/app/interfaces/product';
 
 @Component({
   selector: 'app-create-products',
@@ -43,6 +44,7 @@ export class CreateProductsPage implements OnInit {
   public hasAnyItemSelected =
     localStorage.getItem('selectedProducts') === 'true';
   public showCreateForm: boolean = false;
+  public selectedProducts: Product[] = [];
   constructor() {}
   buttons: AddProductButton[] = [
     {

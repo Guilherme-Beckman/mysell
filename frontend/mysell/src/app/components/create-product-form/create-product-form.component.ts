@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Product } from 'src/app/interfaces/product';
 
 interface Category {
   name: string;
@@ -20,7 +21,7 @@ export class CreateProductFormComponent {
   // Inputs
   @Input() showModal: boolean = false;
   @Output() closeModalEvent = new EventEmitter<void>();
-
+  @Input() selectedProducts: Product[] = [];
   // Product model
   product = {
     name: '',
