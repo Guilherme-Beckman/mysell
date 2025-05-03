@@ -1,0 +1,15 @@
+export const MEASURES: Measure[] = [
+  'NONE',
+  'ml',
+  'l',
+  'mg',
+  'g',
+  'kg',
+  'lb',
+  'oz',
+  'un',
+  'mm',
+  'cm',
+  'm',
+  'km',
+];

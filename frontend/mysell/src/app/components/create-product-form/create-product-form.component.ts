@@ -4,8 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Product } from 'src/app/interfaces/product';
 import { Category } from 'src/app/interfaces/category';
 import { CATEGORIES } from 'src/app/datas/categories';
-
-type Measure = string;
+import { MEASURES } from 'src/app/datas/measures';
 
 @Component({
   selector: 'app-create-product-form',
@@ -46,21 +45,7 @@ export class CreateProductFormComponent implements OnInit {
   // Static data
   categories = CATEGORIES;
 
-  measures: Measure[] = [
-    'NONE',
-    'ml',
-    'l',
-    'mg',
-    'g',
-    'kg',
-    'lb',
-    'oz',
-    'un',
-    'mm',
-    'cm',
-    'm',
-    'km',
-  ];
+  measures = MEASURES;
 
   // Category methods
   filterCategories(): void {
