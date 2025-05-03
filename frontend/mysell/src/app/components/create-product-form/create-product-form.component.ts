@@ -1,6 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
+interface Category {
+  name: string;
+  pathSvg: string;
+}
+
+type Measure = string;
 
 @Component({
   selector: 'app-create-product-form',
@@ -10,10 +17,32 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule],
 })
 export class CreateProductFormComponent {
-  categorySearch: string = '';
-  filteredCategories: { name: string; pathSvg: string }[] = [];
-  showDropdown: boolean = false;
-  categories: { name: string; pathSvg: string }[] = [
+  // Inputs
+  @Input() showModal: boolean = false;
+  @Output() closeModalEvent = new EventEmitter<void>();
+
+  // Product model
+  product = {
+    name: '',
+    category: '',
+    purchasePrice: '',
+    sellingPrice: '',
+    brand: '',
+    measure: '',
+  };
+
+  // Category dropdown state
+  categorySearch = '';
+  filteredCategories: Category[] = [];
+  showDropdown = false;
+
+  // Measure dropdown state
+  measureSearch = '';
+  filteredMeasures: Measure[] = [];
+  showMeasureDropdown = false;
+
+  // Static data
+  categories: Category[] = [
     { name: 'Outros', pathSvg: 'assets/svg/categories/others.svg' },
     {
       name: 'Alimentos/Bebidas',
@@ -87,10 +116,7 @@ export class CreateProductFormComponent {
       pathSvg: 'assets/svg/categories/eye-blind-icon.svg',
     },
     { name: 'Informática', pathSvg: 'assets/svg/categories/laptop-icon.svg' },
-    {
-      name: 'Comunicações',
-      pathSvg: 'assets/svg/categories/talk-icon.svg',
-    }, // ajustar se achar outro melhor
+    { name: 'Comunicações', pathSvg: 'assets/svg/categories/talk-icon.svg' },
     {
       name: 'Artigos de Papelaria/ Equipamentos para Escritório',
       pathSvg: 'assets/svg/categories/edit-list-icon.svg',
@@ -175,46 +201,7 @@ export class CreateProductFormComponent {
     },
   ];
 
-  filterCategories() {
-    const search = this.categorySearch.toLowerCase();
-    this.filteredCategories = this.categories.filter((cat) =>
-      cat.name.toLowerCase().includes(search)
-    );
-  }
-
-  selectCategory(category: { name: string; pathSvg: string }) {
-    this.categorySearch = category.name;
-    this.product.category = category.name;
-    this.showDropdown = false;
-  }
-
-  hideDropdown() {
-    setTimeout(() => (this.showDropdown = false), 200);
-  }
-
-  showModal = true;
-  product = {
-    name: '',
-    category: '',
-    purchasePrice: '',
-    sellingPrice: '',
-    brand: '',
-    measure: '',
-  };
-
-  closeModal() {
-    this.showModal = false;
-  }
-
-  confirmProduct() {
-    console.log('Product added:', this.product);
-    this.closeModal();
-  }
-  measureSearch: string = '';
-  filteredMeasures: string[] = [];
-  showMeasureDropdown: boolean = false;
-
-  measures: string[] = [
+  measures: Measure[] = [
     'NONE',
     'ml',
     'l',
@@ -230,20 +217,49 @@ export class CreateProductFormComponent {
     'km',
   ];
 
-  filterMeasures() {
-    const search = this.measureSearch.toLowerCase();
-    this.filteredMeasures = this.measures.filter((m) =>
-      m.toLowerCase().includes(search)
+  // Category methods
+  filterCategories(): void {
+    const term = this.categorySearch.toLowerCase();
+    this.filteredCategories = this.categories.filter((cat) =>
+      cat.name.toLowerCase().includes(term)
     );
   }
 
-  selectMeasure(measure: string) {
+  selectCategory(category: Category): void {
+    this.categorySearch = category.name;
+    this.product.category = category.name;
+    this.showDropdown = false;
+  }
+
+  hideDropdown(): void {
+    setTimeout(() => (this.showDropdown = false), 200);
+  }
+
+  // Measure methods
+  filterMeasures(): void {
+    const term = this.measureSearch.toLowerCase();
+    this.filteredMeasures = this.measures.filter((m) =>
+      m.toLowerCase().includes(term)
+    );
+  }
+
+  selectMeasure(measure: Measure): void {
     this.measureSearch = measure;
     this.product.measure = measure;
     this.showMeasureDropdown = false;
   }
 
-  hideMeasureDropdown() {
+  hideMeasureDropdown(): void {
     setTimeout(() => (this.showMeasureDropdown = false), 200);
+  }
+
+  // Modal methods
+  closeModal(): void {
+    this.closeModalEvent.emit();
+  }
+
+  confirmProduct(): void {
+    console.log('Product added:', this.product);
+    this.closeModal();
   }
 }

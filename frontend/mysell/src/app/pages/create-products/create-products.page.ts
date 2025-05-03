@@ -42,6 +42,7 @@ import { CreateProductFormComponent } from 'src/app/components/create-product-fo
 export class CreateProductsPage implements OnInit {
   public hasAnyItemSelected =
     localStorage.getItem('selectedProducts') === 'true';
+  public showCreateForm: boolean = false;
   constructor() {}
   buttons: AddProductButton[] = [
     {
@@ -57,5 +58,13 @@ export class CreateProductsPage implements OnInit {
   ngOnInit() {}
   proguess() {
     return 50;
+  }
+  openCreateForm() {
+    console.log('openCreateForm');
+    this.showCreateForm = true;
+  }
+  closeCreateFrom() {
+    console.log('closeCreateFrom');
+    this.showCreateForm = false;
   }
 }

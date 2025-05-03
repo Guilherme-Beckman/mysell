@@ -1,4 +1,7 @@
-<app-create-product-form></app-create-product-form>
+<app-create-product-form
+  [showModal]="showCreateForm"
+  (closeModalEvent)="closeCreateFrom()"
+></app-create-product-form>
 
 <nav>
   <div class="itens">
@@ -17,5 +20,6 @@
   <app-bottom-arrow
     [direction]="'right'"
     *ngIf="hasAnyItemSelected"
+    (arrowClick)="openCreateForm()"
   ></app-bottom-arrow>
 </main>
