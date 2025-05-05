@@ -1,1 +1,1 @@
-type Measure = string;
+export type Measure = string;

@@ -1,3 +1,5 @@
+import { Measure } from '../interfaces/measure';
+
 export const MEASURES: Measure[] = [
   'NONE',
   'ml',

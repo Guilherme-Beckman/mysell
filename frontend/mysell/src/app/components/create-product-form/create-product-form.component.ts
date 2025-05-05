@@ -5,6 +5,7 @@ import { Product } from 'src/app/interfaces/product';
 import { Category } from 'src/app/interfaces/category';
 import { CATEGORIES } from 'src/app/datas/categories';
 import { MEASURES } from 'src/app/datas/measures';
+import { Measure } from 'src/app/interfaces/measure';
 
 @Component({
   selector: 'app-create-product-form',
