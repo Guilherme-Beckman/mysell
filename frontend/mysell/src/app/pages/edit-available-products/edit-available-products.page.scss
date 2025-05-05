@@ -20,3 +20,15 @@ nav {
   padding: 1rem;
   border-bottom: 2px solid var(--text-gray);
 }
+.trash-item-title {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  .trashcan {
+    position: absolute;
+    left: 0;
+  }
+}
