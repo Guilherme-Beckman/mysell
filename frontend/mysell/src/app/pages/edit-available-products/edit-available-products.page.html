@@ -1,10 +1,12 @@
+<nav>
+  <app-arrow [direction]="'left'"></app-arrow>
+  <app-home-redirect></app-home-redirect>
+</nav>
 <main>
-  <nav>
-    <app-arrow [direction]="'left'"></app-arrow>
-    <app-home-redirect></app-home-redirect>
-  </nav>
+  <h1>Adicionar Produtos</h1>
+  <app-proguess-bar [progress]="proguess()"></app-proguess-bar>
   <div class="title">
-    <h1>Editar Produtos</h1>
+    <h1>Editar Informações</h1>
   </div>
   <app-edit-product-form></app-edit-product-form>
   <app-bottom-arrow [direction]="'left'"></app-bottom-arrow>

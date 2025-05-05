@@ -11,6 +11,7 @@ import { EditProductFormComponent } from 'src/app/components/edit-product-form/e
 import { HomeRedirectComponent } from 'src/app/components/home-redirect/home-redirect.component';
 import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
 import { BottomArrowComponent } from 'src/app/components/bottom-arrow/bottom-arrow.component';
+import { ProguessBarComponent } from 'src/app/components/proguess-bar/proguess-bar.component';
 
 @Component({
   selector: 'app-edit-available-products',
@@ -22,10 +23,14 @@ import { BottomArrowComponent } from 'src/app/components/bottom-arrow/bottom-arr
     HomeRedirectComponent,
     ArrowComponent,
     BottomArrowComponent,
+    ProguessBarComponent,
   ],
 })
 export class EditAvailableProductsPage implements OnInit {
   constructor() {}
 
   ngOnInit() {}
+  proguess() {
+    return 50;
+  }
 }
