@@ -5,9 +5,9 @@ export const routes: Routes = [
   {
     path: 'home',
     loadComponent: () =>
-      import('./pages/create-products/create-products.page').then(
-        (m) => m.CreateProductsPage
-      ),
+      import(
+        './pages/edit-available-products/edit-available-products.page'
+      ).then((m) => m.EditAvailableProductsPage),
   },
   {
     path: '',
@@ -41,6 +41,9 @@ export const routes: Routes = [
   },
   {
     path: 'edit-available-products',
-    loadComponent: () => import('./pages/edit-available-products/edit-available-products.page').then( m => m.EditAvailableProductsPage)
+    loadComponent: () =>
+      import(
+        './pages/edit-available-products/edit-available-products.page'
+      ).then((m) => m.EditAvailableProductsPage),
   },
 ];

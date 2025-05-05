@@ -1,0 +1,18 @@
+main {
+  margin: 2rem;
+}
+nav {
+  height: 10vh;
+}
+.title {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 1rem;
+  border-bottom: 2px solid var(--text-gray);
+  h1 {
+    color: var(--text-gray);
+    font-size: 1.5rem;
+    font-weight: 400;
+  }
+}
