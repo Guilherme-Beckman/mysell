@@ -39,4 +39,8 @@ export const routes: Routes = [
         (m) => m.CreateProductsPage
       ),
   },
+  {
+    path: 'edit-available-products',
+    loadComponent: () => import('./pages/edit-available-products/edit-available-products.page').then( m => m.EditAvailableProductsPage)
+  },
 ];
