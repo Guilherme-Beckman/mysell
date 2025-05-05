@@ -12,6 +12,7 @@ import { HomeRedirectComponent } from 'src/app/components/home-redirect/home-red
 import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
 import { BottomArrowComponent } from 'src/app/components/bottom-arrow/bottom-arrow.component';
 import { ProguessBarComponent } from 'src/app/components/proguess-bar/proguess-bar.component';
+import { ConfirmPopUpComponent } from 'src/app/components/confirm-pop-up/confirm-pop-up.component';
 
 @Component({
   selector: 'app-edit-available-products',
@@ -24,6 +25,7 @@ import { ProguessBarComponent } from 'src/app/components/proguess-bar/proguess-b
     ArrowComponent,
     BottomArrowComponent,
     ProguessBarComponent,
+    ConfirmPopUpComponent,
   ],
 })
 export class EditAvailableProductsPage implements OnInit {

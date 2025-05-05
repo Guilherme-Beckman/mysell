@@ -1,3 +1,10 @@
-<p>
-  confirm-pop-up works!
-</p>
+<div *ngIf="isAtive" class="confirm-pop-up-overlay">
+  <div class="confirm-pop-up">
+    <button class="close-button">&times;</button>
+    <p class="confirm-message">
+      Deseja excluir esse item.<br />
+      A exclusão é permanente.
+    </p>
+    <button class="confirm-button">Continuar</button>
+  </div>
+</div>
