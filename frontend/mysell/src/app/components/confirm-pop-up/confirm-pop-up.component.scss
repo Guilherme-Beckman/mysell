@@ -12,6 +12,7 @@
 }
 
 .confirm-pop-up {
+  margin: 4rem;
   position: relative;
   background-color: white;
   padding: 2rem;
@@ -27,7 +28,8 @@
 }
 
 .confirm-button {
-  background-color: #e57373;
+  background-color: var(--mysell-red);
+  width: 100%;
   color: white;
   border: none;
   padding: 0.75rem 2rem;
@@ -38,7 +40,7 @@
 }
 
 .confirm-button:hover {
-  background-color: #ef5350;
+  background-color: var(--mysell-red);
 }
 
 .close-button {
@@ -48,6 +50,6 @@
   background: none;
   border: none;
   font-size: 1.5rem;
-  color: #888;
+  color: var(--text-gray);
   cursor: pointer;
 }

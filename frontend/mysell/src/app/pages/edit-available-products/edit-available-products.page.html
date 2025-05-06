@@ -10,7 +10,7 @@
   </div>
   <div class="trash-item-title">
     <div class="trashcan">
-      <button>
+      <button (click)="openConfirmPopUp()">
         <img src="assets/svg/trash.svg" alt="" />
       </button>
     </div>
@@ -24,4 +24,9 @@
   <app-bottom-arrow [direction]="'left'"></app-bottom-arrow>
   <app-bottom-arrow [direction]="'right'"></app-bottom-arrow>
 </main>
-<app-confirm-pop-up></app-confirm-pop-up>
+<app-confirm-pop-up
+  [firstMessage]="'Deseja excluir esse item?'"
+  [secondMessage]="'A exclusão removerá o produto da lista de adição.'"
+  [isActive]="isConfirmPopUpAtive"
+  (closeButtonEvent)="closeConfirmPopUp()"
+></app-confirm-pop-up>

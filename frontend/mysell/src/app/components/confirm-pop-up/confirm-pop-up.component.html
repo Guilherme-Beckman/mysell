@@ -1,10 +1,10 @@
-<div *ngIf="isAtive" class="confirm-pop-up-overlay">
+<div *ngIf="isActive" class="confirm-pop-up-overlay">
   <div class="confirm-pop-up">
-    <button class="close-button">&times;</button>
+    <button class="close-button" (click)="closePopUpButton()">&times;</button>
     <p class="confirm-message">
-      Deseja excluir esse item.<br />
-      A exclusão é permanente.
+      {{ firstMessage }}.<br />
+      {{ secondMessage }}
     </p>
-    <button class="confirm-button">Continuar</button>
+    <button class="confirm-button" (click)="confirmButton()">Continuar</button>
   </div>
 </div>

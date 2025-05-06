@@ -29,10 +29,18 @@ import { ConfirmPopUpComponent } from 'src/app/components/confirm-pop-up/confirm
   ],
 })
 export class EditAvailableProductsPage implements OnInit {
+  public isConfirmPopUpAtive: boolean = false;
   constructor() {}
 
   ngOnInit() {}
   proguess() {
     return 50;
+  }
+  public openConfirmPopUp() {
+    this.isConfirmPopUpAtive = true;
+  }
+  public closeConfirmPopUp() {
+    console.log('closeConfirmPopUp');
+    this.isConfirmPopUpAtive = false;
   }
 }
