@@ -159,3 +159,6 @@ export const CATEGORIES: Category[] = [
     pathSvg: 'assets/svg/categories/engine-motor-icon.svg',
   },
 ];
+export function getCategoryIconPath(categoryName: string): string | undefined {
+  return CATEGORIES.find((cat) => cat.name === categoryName)?.pathSvg;
+}

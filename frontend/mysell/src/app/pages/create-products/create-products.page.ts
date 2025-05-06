@@ -44,8 +44,7 @@ import { Product } from 'src/app/interfaces/product';
   ],
 })
 export class CreateProductsPage implements OnInit {
-  public hasAnyItemSelected =
-    localStorage.getItem('selectedProducts') === 'true';
+  public hasAnyItemSelected = false;
   public showCreateForm: boolean = false;
   public selectedProducts: Product[] = [];
   constructor() {}

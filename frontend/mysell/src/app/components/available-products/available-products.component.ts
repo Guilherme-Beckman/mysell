@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { C } from '@angular/common/common_module.d-Qx8B6pmN';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AVAIABLE_PRODUCTS } from 'src/app/datas/availlable-products';
+import { getCategoryIconPath } from 'src/app/datas/categories';
 import { Product } from 'src/app/interfaces/product';
 
 export interface ProductSelect {
@@ -27,7 +28,9 @@ export class AvailableProductsComponent implements OnInit {
       this.products = AVAIABLE_PRODUCTS;
     }
   }
-
+  public getIconPath(categoryName: string) {
+    return getCategoryIconPath(categoryName);
+  }
   toggleSelection(product: ProductSelect): void {
     product.selected = !product.selected;
     this.emmitCurrentSelectionState();

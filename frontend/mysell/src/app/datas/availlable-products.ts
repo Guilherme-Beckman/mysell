@@ -4,7 +4,7 @@ export const AVAIABLE_PRODUCTS: ProductSelect[] = [
   {
     product: {
       name: 'Arroz',
-      category: 'grãos',
+      category: 'Alimentos/Bebidas',
       purchasePrice: 5.5,
       sellingPrice: 7.0,
       brand: 'Tio João',
@@ -12,10 +12,11 @@ export const AVAIABLE_PRODUCTS: ProductSelect[] = [
     },
     selected: false,
   },
+
   {
     product: {
       name: 'Feijão',
-      category: 'grãos',
+      category: 'Alimentos/Bebidas',
       purchasePrice: 6.0,
       sellingPrice: 8.5,
       brand: 'Camil',
@@ -26,7 +27,7 @@ export const AVAIABLE_PRODUCTS: ProductSelect[] = [
   {
     product: {
       name: 'Maca',
-      category: 'massas',
+      category: 'Alimentos/Bebidas',
       purchasePrice: 3.2,
       sellingPrice: 4,
       brand: 'Renata',
@@ -37,7 +38,7 @@ export const AVAIABLE_PRODUCTS: ProductSelect[] = [
   {
     product: {
       name: 'Açúcar',
-      category: 'doces',
+      category: 'Alimentos/Bebidas',
       purchasePrice: 4.0,
       sellingPrice: 5.5,
       brand: 'União',
@@ -48,7 +49,7 @@ export const AVAIABLE_PRODUCTS: ProductSelect[] = [
   {
     product: {
       name: 'Café',
-      category: 'bebidas',
+      category: 'Alimentos/Bebidas',
       purchasePrice: 8.0,
       sellingPrice: 10.0,
       brand: 'Pilão',
@@ -59,7 +60,7 @@ export const AVAIABLE_PRODUCTS: ProductSelect[] = [
   {
     product: {
       name: 'Óleo',
-      category: 'cozinha',
+      category: 'Utensílios de cozinha e utensílios de mesa',
       purchasePrice: 4.5,
       sellingPrice: 6.0,
       brand: 'Liza',
