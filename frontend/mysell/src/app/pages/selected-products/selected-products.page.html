@@ -1,13 +1,24 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>selected-products</ion-title>
-  </ion-toolbar>
-</ion-header>
+<nav>
+  <div class="itens">
+    <app-arrow [direction]="'left'" [pageToGo]="''"></app-arrow>
+    <app-home-redirect></app-home-redirect>
+  </div>
+</nav>
+<main>
+  <h1>Adicionar Produtos</h1>
+  <app-proguess-bar [progress]="proguess()"></app-proguess-bar>
+  <div class="selected-products">
+    <h3>Produtos selecionados</h3>
+    <hr />
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">selected-products</ion-title>
-    </ion-toolbar>
-  </ion-header>
-</ion-content>
+    <div class="list-container">
+      <div class="item" *ngFor="let product of products; trackBy: trackById">
+        <img [src]="product.iconUrl" alt="{{ product.name }}" class="icon" />
+        <span class="name">{{ product.name }}</span>
+        <button class="remove-btn" (click)="onRemove(product)">✕</button>
+      </div>
+    </div>
+  </div>
+  <app-bottom-arrow [direction]="'left'"></app-bottom-arrow>
+  <app-bottom-arrow [direction]="'right'"></app-bottom-arrow>
+</main>
