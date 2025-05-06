@@ -23,6 +23,7 @@ import {
 import { BottomArrowComponent } from 'src/app/components/bottom-arrow/bottom-arrow.component';
 import { CreateProductFormComponent } from 'src/app/components/create-product-form/create-product-form.component';
 import { Product } from 'src/app/interfaces/product';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-create-products',
@@ -47,7 +48,7 @@ export class CreateProductsPage implements OnInit {
   public hasAnyItemSelected = false;
   public showCreateForm: boolean = false;
   public selectedProducts: Product[] = [];
-  constructor() {}
+  constructor(private navController: NavController) {}
   buttons: AddProductButton[] = [
     {
       svgPath: '/assets/svg/add-product.svg',
@@ -64,8 +65,7 @@ export class CreateProductsPage implements OnInit {
     return 50;
   }
   openCreateForm() {
-    console.log('openCreateForm');
-    this.showCreateForm = true;
+    this.navController.navigateRoot('/edit-available-products');
   }
   closeCreateFrom() {
     console.log('closeCreateFrom');
