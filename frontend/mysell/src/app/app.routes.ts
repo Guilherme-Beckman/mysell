@@ -46,4 +46,8 @@ export const routes: Routes = [
         './pages/edit-available-products/edit-available-products.page'
       ).then((m) => m.EditAvailableProductsPage),
   },
+  {
+    path: 'selected-products',
+    loadComponent: () => import('./pages/selected-products/selected-products.page').then( m => m.SelectedProductsPage)
+  },
 ];
