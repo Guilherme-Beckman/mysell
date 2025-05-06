@@ -11,6 +11,7 @@ import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
 import { HomeRedirectComponent } from 'src/app/components/home-redirect/home-redirect.component';
 import { ProguessBarComponent } from 'src/app/components/proguess-bar/proguess-bar.component';
 import { BottomArrowComponent } from 'src/app/components/bottom-arrow/bottom-arrow.component';
+import { ConfirmButtonComponent } from 'src/app/components/confirm-button/confirm-button.component';
 export interface Product {
   id: number;
   name: string;
@@ -29,6 +30,7 @@ export interface Product {
     HomeRedirectComponent,
     ProguessBarComponent,
     BottomArrowComponent,
+    ConfirmButtonComponent,
   ],
 })
 export class SelectedProductsPage implements OnInit {
