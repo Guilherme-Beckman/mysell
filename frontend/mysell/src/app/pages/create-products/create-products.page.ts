@@ -1,13 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonNav,
-} from '@ionic/angular/standalone';
 import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
 import { HomeRedirectComponent } from 'src/app/components/home-redirect/home-redirect.component';
 import { ProguessBarComponent } from 'src/app/components/proguess-bar/proguess-bar.component';
@@ -31,7 +24,6 @@ import { NavController } from '@ionic/angular';
   styleUrls: ['./create-products.page.scss'],
   standalone: true,
   imports: [
-    IonNav,
     CommonModule,
     FormsModule,
     ArrowComponent,
