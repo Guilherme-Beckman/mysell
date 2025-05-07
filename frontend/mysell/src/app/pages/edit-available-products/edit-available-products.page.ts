@@ -6,6 +6,7 @@ import {
   IonHeader,
   IonTitle,
   IonToolbar,
+  NavController,
 } from '@ionic/angular/standalone';
 import { EditProductFormComponent } from 'src/app/components/edit-product-form/edit-product-form.component';
 import { HomeRedirectComponent } from 'src/app/components/home-redirect/home-redirect.component';
@@ -30,7 +31,7 @@ import { ConfirmPopUpComponent } from 'src/app/components/confirm-pop-up/confirm
 })
 export class EditAvailableProductsPage implements OnInit {
   public isConfirmPopUpAtive: boolean = false;
-  constructor() {}
+  constructor(private navController: NavController) {}
 
   ngOnInit() {}
   proguess() {
@@ -42,5 +43,11 @@ export class EditAvailableProductsPage implements OnInit {
   public closeConfirmPopUp() {
     console.log('closeConfirmPopUp');
     this.isConfirmPopUpAtive = false;
+  }
+  public redirectBack() {
+    this.navController.navigateRoot('/create-products');
+  }
+  public redirectFront() {
+    this.navController.navigateRoot('/selected-products');
   }
 }

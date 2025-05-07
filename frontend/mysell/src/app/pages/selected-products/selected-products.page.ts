@@ -1,12 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-} from '@ionic/angular/standalone';
+import { NavController } from '@ionic/angular/standalone';
 import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
 import { HomeRedirectComponent } from 'src/app/components/home-redirect/home-redirect.component';
 import { ProguessBarComponent } from 'src/app/components/proguess-bar/proguess-bar.component';
@@ -130,10 +125,13 @@ export class SelectedProductsPage implements OnInit {
   proguess() {
     return 50;
   }
-  constructor() {}
+  constructor(private navController: NavController) {}
 
   ngOnInit() {}
   trackById(index: number, item: Product) {
     return item.id;
+  }
+  public redirectBack() {
+    this.navController.navigateRoot('/edit-available-products');
   }
 }

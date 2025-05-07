@@ -1,5 +1,5 @@
 <nav>
-  <app-arrow [direction]="'left'"></app-arrow>
+  <app-arrow [direction]="'left'" [pageToGo]="'/create-products'"></app-arrow>
   <app-home-redirect></app-home-redirect>
 </nav>
 <main>
@@ -21,8 +21,14 @@
   </div>
 
   <app-edit-product-form></app-edit-product-form>
-  <app-bottom-arrow [direction]="'left'"></app-bottom-arrow>
-  <app-bottom-arrow [direction]="'right'"></app-bottom-arrow>
+  <app-bottom-arrow
+    [direction]="'left'"
+    (arrowClick)="redirectBack()"
+  ></app-bottom-arrow>
+  <app-bottom-arrow
+    [direction]="'right'"
+    (arrowClick)="redirectFront()"
+  ></app-bottom-arrow>
 </main>
 <app-confirm-pop-up
   [firstMessage]="'Deseja excluir esse item?'"

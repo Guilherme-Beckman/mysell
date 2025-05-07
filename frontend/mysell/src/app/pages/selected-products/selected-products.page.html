@@ -1,6 +1,9 @@
 <nav>
   <div class="itens">
-    <app-arrow [direction]="'left'" [pageToGo]="''"></app-arrow>
+    <app-arrow
+      [direction]="'left'"
+      [pageToGo]="'/edit-available-products'"
+    ></app-arrow>
     <app-home-redirect></app-home-redirect>
   </div>
 </nav>
@@ -19,6 +22,9 @@
       </div>
     </div>
   </div>
-  <app-bottom-arrow [direction]="'left'"></app-bottom-arrow>
+  <app-bottom-arrow
+    [direction]="'left'"
+    (arrowClick)="redirectBack()"
+  ></app-bottom-arrow>
   <app-confirm-button [position]="'right'"></app-confirm-button>
 </main>
