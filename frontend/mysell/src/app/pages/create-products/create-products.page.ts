@@ -56,14 +56,13 @@ export class CreateProductsPage implements OnInit {
   proguess() {
     return 50;
   }
-  openCreateForm() {
+  public redirectToSelectedProducts() {
     this.navController.navigateRoot('/edit-available-products');
   }
-  closeCreateFrom() {
-    console.log('closeCreateFrom');
+  public closeCreateFrom() {
     this.showCreateForm = false;
   }
-  getSelectedProducts($event: ProductSelect[]) {
+  public getSelectedProducts($event: ProductSelect[]) {
     const products = $event.map((item) => item.product);
     console.log('getSelectedProducts', products);
     this.selectedProducts.push(...products);
