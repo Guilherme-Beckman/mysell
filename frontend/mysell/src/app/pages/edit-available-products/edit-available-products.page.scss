@@ -9,8 +9,16 @@ h1 {
 
 main {
   margin: 2rem;
+  overflow-y: auto;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-direction: column;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
 }
 nav {
+  z-index: 10000000;
   height: 10vh;
 }
 .title {
@@ -28,6 +36,7 @@ nav {
   align-items: center;
   justify-content: center;
   .trashcan {
+    z-index: -10000;
     position: absolute;
     left: 0;
   }

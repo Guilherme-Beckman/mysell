@@ -3,7 +3,7 @@
     <input
       type="text"
       placeholder="Nome"
-      [(ngModel)]="product.name"
+      [(ngModel)]="productInfo.name"
       class="input-half"
     />
 
@@ -43,7 +43,7 @@
     <input
       type="text"
       placeholder="Preço comprado"
-      [(ngModel)]="product.purchasePrice"
+      [(ngModel)]="productInfo.purchasePrice"
       class="input-full"
     />
   </div>
@@ -52,7 +52,7 @@
     <input
       type="text"
       placeholder="Preço a vender"
-      [(ngModel)]="product.sellingPrice"
+      [(ngModel)]="productInfo.sellingPrice"
       class="input-full"
     />
   </div>
@@ -61,9 +61,10 @@
     <input
       type="text"
       placeholder="Marca"
-      [(ngModel)]="product.brand"
+      [(ngModel)]="productInfo.brand"
       class="input-half"
     />
+
     <div class="measure-select">
       <img src="assets/svg/ruler-icon.svg" alt="ícone medida" />
       <div class="measure-input">

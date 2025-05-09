@@ -14,6 +14,8 @@ import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
 import { BottomArrowComponent } from 'src/app/components/bottom-arrow/bottom-arrow.component';
 import { ProguessBarComponent } from 'src/app/components/proguess-bar/proguess-bar.component';
 import { ConfirmPopUpComponent } from 'src/app/components/confirm-pop-up/confirm-pop-up.component';
+import { Product } from 'src/app/interfaces/product';
+import { ProductSelectionService } from 'src/app/services/product-selection.service';
 
 @Component({
   selector: 'app-edit-available-products',
@@ -27,13 +29,21 @@ import { ConfirmPopUpComponent } from 'src/app/components/confirm-pop-up/confirm
     BottomArrowComponent,
     ProguessBarComponent,
     ConfirmPopUpComponent,
+    CommonModule,
   ],
 })
 export class EditAvailableProductsPage implements OnInit {
   public isConfirmPopUpAtive: boolean = false;
-  constructor(private navController: NavController) {}
+  public selectedProducts: Product[] = [];
+  constructor(
+    private navController: NavController,
+    private productSelection: ProductSelectionService
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.selectedProducts = this.productSelection.getSelectedProducts();
+    console.log('ngOnInit: ' + this.selectedProducts);
+  }
   proguess() {
     return 50;
   }

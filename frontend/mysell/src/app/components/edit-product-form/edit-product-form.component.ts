@@ -17,13 +17,14 @@ export class EditProductFormComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    console.log('CreateProductFormComponent initialized');
-    console.log('Selected products:', this.selectedProducts);
+    console.log('edit produtc info:' + this.productInfo);
+    this.measureSearch = this.productInfo.measure;
+    this.categorySearch = this.productInfo.category;
   }
   // Inputs
   @Input() showModal: boolean = false;
+  @Input() productInfo!: Product;
   @Output() closeModalEvent = new EventEmitter<void>();
-  @Input() selectedProducts: Product[] = [];
   // Product model
   product = {
     name: '',
@@ -88,7 +89,6 @@ export class EditProductFormComponent implements OnInit {
   // Modal methods
   closeModal(): void {
     console.log('Modal closed');
-    console.log('Selected products:', this.selectedProducts);
     this.closeModalEvent.emit();
   }
 
