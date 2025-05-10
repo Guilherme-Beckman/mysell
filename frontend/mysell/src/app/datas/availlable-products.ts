@@ -3,6 +3,7 @@ import { ProductSelect } from '../components/available-products/available-produc
 export const AVAIABLE_PRODUCTS: ProductSelect[] = [
   {
     product: {
+      id: '1',
       name: 'Arroz',
       category: 'Alimentos/Bebidas',
       purchasePrice: 5.5,
@@ -15,6 +16,7 @@ export const AVAIABLE_PRODUCTS: ProductSelect[] = [
 
   {
     product: {
+      id: '1',
       name: 'Feijão',
       category: 'Alimentos/Bebidas',
       purchasePrice: 6.0,
@@ -26,6 +28,7 @@ export const AVAIABLE_PRODUCTS: ProductSelect[] = [
   },
   {
     product: {
+      id: '1',
       name: 'Maca',
       category: 'Alimentos/Bebidas',
       purchasePrice: 3.2,
@@ -37,6 +40,7 @@ export const AVAIABLE_PRODUCTS: ProductSelect[] = [
   },
   {
     product: {
+      id: '1',
       name: 'Açúcar',
       category: 'Alimentos/Bebidas',
       purchasePrice: 4.0,
@@ -48,6 +52,7 @@ export const AVAIABLE_PRODUCTS: ProductSelect[] = [
   },
   {
     product: {
+      id: '1',
       name: 'Café',
       category: 'Alimentos/Bebidas',
       purchasePrice: 8.0,
@@ -59,6 +64,7 @@ export const AVAIABLE_PRODUCTS: ProductSelect[] = [
   },
   {
     product: {
+      id: '1',
       name: 'Óleo',
       category: 'Utensílios de cozinha e utensílios de mesa',
       purchasePrice: 4.5,

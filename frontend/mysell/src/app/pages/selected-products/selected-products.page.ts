@@ -7,11 +7,10 @@ import { HomeRedirectComponent } from 'src/app/components/home-redirect/home-red
 import { ProguessBarComponent } from 'src/app/components/proguess-bar/proguess-bar.component';
 import { BottomArrowComponent } from 'src/app/components/bottom-arrow/bottom-arrow.component';
 import { ConfirmButtonComponent } from 'src/app/components/confirm-button/confirm-button.component';
-export interface Product {
-  id: number;
-  name: string;
-  iconUrl: string; // caminho para o SVG ou PNG do ícone
-}
+import { ProductSelect } from 'src/app/components/available-products/available-products.component';
+import { ProductSelectionService } from 'src/app/services/product-selection.service';
+import { Product } from 'src/app/interfaces/product';
+import { getCategoryIconPath } from 'src/app/datas/categories';
 
 @Component({
   selector: 'app-selected-products',
@@ -29,94 +28,7 @@ export interface Product {
   ],
 })
 export class SelectedProductsPage implements OnInit {
-  @Input() products: Product[] = [
-    {
-      id: 1,
-      name: 'Arroz',
-      iconUrl: 'assets/svg/categories/beauty-cream-icon.svg',
-    },
-    {
-      id: 2,
-      name: 'Skol',
-      iconUrl: 'assets/svg/categories/food-icon.svg',
-    },
-    { id: 3, name: 'Câmera', iconUrl: 'assets/svg/categories/camera-icon.svg' },
-    {
-      id: 4,
-      name: 'Edifício',
-      iconUrl: 'assets/svg/categories/building-icon.svg',
-    },
-    {
-      id: 5,
-      name: 'Pincel',
-      iconUrl: 'assets/svg/categories/brush-pencil-icon.svg',
-    },
-    {
-      id: 5,
-      name: 'Pincel',
-      iconUrl: 'assets/svg/categories/brush-pencil-icon.svg',
-    },
-    {
-      id: 5,
-      name: 'Pincel',
-      iconUrl: 'assets/svg/categories/brush-pencil-icon.svg',
-    },
-    {
-      id: 5,
-      name: 'Pincel',
-      iconUrl: 'assets/svg/categories/brush-pencil-icon.svg',
-    },
-    {
-      id: 5,
-      name: 'Pincel',
-      iconUrl: 'assets/svg/categories/brush-pencil-icon.svg',
-    },
-    {
-      id: 5,
-      name: 'Pincel',
-      iconUrl: 'assets/svg/categories/brush-pencil-icon.svg',
-    },
-    {
-      id: 5,
-      name: 'Pincel',
-      iconUrl: 'assets/svg/categories/brush-pencil-icon.svg',
-    },
-    {
-      id: 5,
-      name: 'Pincel',
-      iconUrl: 'assets/svg/categories/brush-pencil-icon.svg',
-    },
-    {
-      id: 5,
-      name: 'Pincel',
-      iconUrl: 'assets/svg/categories/brush-pencil-icon.svg',
-    },
-    {
-      id: 5,
-      name: 'Pincel',
-      iconUrl: 'assets/svg/categories/brush-pencil-icon.svg',
-    },
-    {
-      id: 5,
-      name: 'Pincel',
-      iconUrl: 'assets/svg/categories/brush-pencil-icon.svg',
-    },
-    {
-      id: 5,
-      name: 'Pincel',
-      iconUrl: 'assets/svg/categories/brush-pencil-icon.svg',
-    },
-    {
-      id: 5,
-      name: 'Pincel',
-      iconUrl: 'assets/svg/categories/brush-pencil-icon.svg',
-    },
-    {
-      id: 5,
-      name: 'Pincel',
-      iconUrl: 'assets/svg/categories/brush-pencil-icon.svg',
-    },
-  ];
+  public products: Product[] = [];
   @Output() remove = new EventEmitter<Product>();
 
   onRemove(product: Product) {
@@ -125,13 +37,21 @@ export class SelectedProductsPage implements OnInit {
   proguess() {
     return 50;
   }
-  constructor(private navController: NavController) {}
+  constructor(
+    private navController: NavController,
+    private selectedProducts: ProductSelectionService
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.products = this.selectedProducts.getSelectedProducts();
+  }
   trackById(index: number, item: Product) {
     return item.id;
   }
   public redirectBack() {
     this.navController.navigateRoot('/edit-available-products');
+  }
+  public getIconUrl(categoryName: string) {
+    return getCategoryIconPath(categoryName);
   }
 }

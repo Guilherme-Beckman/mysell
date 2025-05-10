@@ -15,8 +15,12 @@
     <hr />
 
     <div class="list-container">
-      <div class="item" *ngFor="let product of products; trackBy: trackById">
-        <img [src]="product.iconUrl" alt="{{ product.name }}" class="icon" />
+      <div class="item" *ngFor="let product of products">
+        <img
+          [src]="getIconUrl(product.category)"
+          alt="{{ product.name }}"
+          class="icon"
+        />
         <span class="name">{{ product.name }}</span>
         <button class="remove-btn" (click)="onRemove(product)">✕</button>
       </div>
