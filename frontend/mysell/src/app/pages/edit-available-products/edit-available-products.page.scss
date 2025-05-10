@@ -18,7 +18,7 @@ main {
   scroll-behavior: smooth;
 }
 nav {
-  z-index: 10000000;
+  z-index: 100000;
   height: 10vh;
 }
 .title {
@@ -40,4 +40,10 @@ nav {
     position: absolute;
     left: 0;
   }
+}
+.edit-form {
+  border-bottom: 2px solid var(--medium-gray);
+
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
