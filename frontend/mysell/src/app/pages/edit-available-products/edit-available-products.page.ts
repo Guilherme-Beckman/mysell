@@ -16,6 +16,7 @@ import { ProguessBarComponent } from 'src/app/components/proguess-bar/proguess-b
 import { ConfirmPopUpComponent } from 'src/app/components/confirm-pop-up/confirm-pop-up.component';
 import { Product } from 'src/app/interfaces/product';
 import { ProductSelectionService } from 'src/app/services/product-selection.service';
+import { Route, Router } from '@angular/router';
 
 @Component({
   selector: 'app-edit-available-products',
@@ -35,8 +36,10 @@ import { ProductSelectionService } from 'src/app/services/product-selection.serv
 export class EditAvailableProductsPage implements OnInit {
   public isConfirmPopUpAtive: boolean = false;
   public selectedProducts: Product[] = [];
+  public productExclusionId: string = '';
   constructor(
     private navController: NavController,
+    private router: Router,
     private productSelection: ProductSelectionService
   ) {}
 
@@ -47,7 +50,9 @@ export class EditAvailableProductsPage implements OnInit {
   proguess() {
     return 50;
   }
-  public openConfirmPopUp() {
+  public openConfirmPopUp(productId: string) {
+    console.log('openConfirmPopUp');
+    this.productExclusionId = productId;
     this.isConfirmPopUpAtive = true;
   }
   public closeConfirmPopUp() {
@@ -59,5 +64,13 @@ export class EditAvailableProductsPage implements OnInit {
   }
   public redirectFront() {
     this.navController.navigateRoot('/selected-products');
+  }
+  public confirmProductExclusion() {
+    this.productSelection.removeProduct(this.productExclusionId);
+    this.selectedProducts = this.productSelection.getSelectedProducts();
+  }
+
+  public trackByProductId(index: number, item: Product): string {
+    return item.id;
   }
 }

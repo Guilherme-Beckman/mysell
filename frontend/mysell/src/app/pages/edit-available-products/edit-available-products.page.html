@@ -8,10 +8,13 @@
   <div class="title">
     <h1>Editar Informações</h1>
   </div>
-  <div class="edit-form" *ngFor="let product of  selectedProducts">
+  <div
+    class="edit-form"
+    *ngFor="let product of selectedProducts; trackBy: trackByProductId"
+  >
     <div class="trash-item-title">
       <div class="trashcan">
-        <button (click)="openConfirmPopUp()">
+        <button (click)="openConfirmPopUp(product.id)">
           <img src="assets/svg/trash.svg" alt="" />
         </button>
       </div>
@@ -39,4 +42,6 @@
   [secondMessage]="'A exclusão removerá o produto da lista de adição.'"
   [isActive]="isConfirmPopUpAtive"
   (closeButtonEvent)="closeConfirmPopUp()"
+  (confirm)="confirmProductExclusion()"
+  [id]="productExclusionId"
 ></app-confirm-pop-up>

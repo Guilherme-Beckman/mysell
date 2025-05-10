@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Product } from '../interfaces/product';
+import { TmplAstHoverDeferredTrigger } from '@angular/compiler';
 
 @Injectable({
   providedIn: 'root',
@@ -18,5 +19,10 @@ export class ProductSelectionService {
 
   clear() {
     this._selectedProducts = [];
+  }
+  removeProduct(productId: string) {
+    this._selectedProducts = this._selectedProducts.filter(
+      (product) => product.id !== productId
+    );
   }
 }

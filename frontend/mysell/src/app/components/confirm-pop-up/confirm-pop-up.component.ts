@@ -8,10 +8,11 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
   imports: [CommonModule],
 })
 export class ConfirmPopUpComponent implements OnInit {
+  @Input() id: string = '';
   @Input() isActive: boolean = false;
   @Input() firstMessage: string = '';
   @Input() secondMessage: string = '';
-  @Output() confirm = new EventEmitter<void>();
+  @Output() confirm = new EventEmitter<string>();
   @Output() closeButtonEvent = new EventEmitter<void>();
   constructor() {}
 
@@ -23,7 +24,7 @@ export class ConfirmPopUpComponent implements OnInit {
   }
   public confirmButton() {
     console.log('confirmButton');
-    this.confirm.emit();
+    this.confirm.emit(this.id);
     this.closePopUpButton();
   }
 }

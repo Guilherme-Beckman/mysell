@@ -16,7 +16,7 @@ export const AVAIABLE_PRODUCTS: ProductSelect[] = [
 
   {
     product: {
-      id: '1',
+      id: '2',
       name: 'Feijão',
       category: 'Alimentos/Bebidas',
       purchasePrice: 6.0,
@@ -28,7 +28,7 @@ export const AVAIABLE_PRODUCTS: ProductSelect[] = [
   },
   {
     product: {
-      id: '1',
+      id: '3',
       name: 'Maca',
       category: 'Alimentos/Bebidas',
       purchasePrice: 3.2,
@@ -40,7 +40,7 @@ export const AVAIABLE_PRODUCTS: ProductSelect[] = [
   },
   {
     product: {
-      id: '1',
+      id: '4',
       name: 'Açúcar',
       category: 'Alimentos/Bebidas',
       purchasePrice: 4.0,
@@ -52,7 +52,7 @@ export const AVAIABLE_PRODUCTS: ProductSelect[] = [
   },
   {
     product: {
-      id: '1',
+      id: '5',
       name: 'Café',
       category: 'Alimentos/Bebidas',
       purchasePrice: 8.0,
@@ -64,7 +64,7 @@ export const AVAIABLE_PRODUCTS: ProductSelect[] = [
   },
   {
     product: {
-      id: '1',
+      id: '6',
       name: 'Óleo',
       category: 'Utensílios de cozinha e utensílios de mesa',
       purchasePrice: 4.5,
