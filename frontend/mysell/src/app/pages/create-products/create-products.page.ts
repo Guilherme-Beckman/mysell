@@ -56,10 +56,15 @@ export class CreateProductsPage implements OnInit {
     },
   ];
 
-  ngOnInit() {}
+  ngOnInit() {
+    if (this.productSelection.getSelectedProducts().length > 0) {
+      this.hasAnyItemSelected = true;
+    }
+  }
   proguess() {
     return 50;
   }
+
   public redirectToSelectedProducts() {
     this.productSelection.setSelectedProducts(this.selectedProducts);
     console.log('redirectToSelectedProducts: ' + this.selectedProducts);

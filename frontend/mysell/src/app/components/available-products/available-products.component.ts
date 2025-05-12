@@ -4,6 +4,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AVAIABLE_PRODUCTS } from 'src/app/datas/availlable-products';
 import { getCategoryIconPath } from 'src/app/datas/categories';
 import { Product } from 'src/app/interfaces/product';
+import { ProductSelectionService } from 'src/app/services/product-selection.service';
 
 export interface ProductSelect {
   product: Product;
@@ -21,11 +22,14 @@ export class AvailableProductsComponent implements OnInit {
   @Input() products: ProductSelect[] = [];
   @Output() hasAnyItemSelected = new EventEmitter<boolean>();
   @Output() selectedProducts = new EventEmitter<ProductSelect[]>();
-  constructor() {}
+  constructor(private productSelectionService: ProductSelectionService) {}
 
   ngOnInit(): void {
     if (!this.products.length) {
       this.products = AVAIABLE_PRODUCTS;
+    }
+    if (this.productSelectionService.getSelectedProducts().length === 0) {
+      this.products.forEach((product) => (product.selected = false));
     }
   }
   public getIconPath(categoryName: string) {
@@ -38,11 +42,7 @@ export class AvailableProductsComponent implements OnInit {
   }
   private emmitCurrentSelectionState() {
     const hasAny = this.products.some((product) => product.selected);
-    if (hasAny) {
-      localStorage.setItem('selectedProducts', 'true');
-    } else {
-      localStorage.removeItem('selectedProducts');
-    }
+
     this.hasAnyItemSelected.emit(hasAny);
   }
   sendAllSelectedProducts() {

@@ -44,7 +44,12 @@ export class EditAvailableProductsPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.selectedProducts = this.productSelection.getSelectedProducts();
+    this.selectedProducts = this.productSelection
+      .getSelectedProducts()
+      .map((product) => ({
+        ...product,
+        product: { ...product },
+      }));
     console.log('ngOnInit: ' + this.selectedProducts);
   }
   proguess() {
@@ -68,6 +73,9 @@ export class EditAvailableProductsPage implements OnInit {
   public confirmProductExclusion() {
     this.productSelection.removeProduct(this.productExclusionId);
     this.selectedProducts = this.productSelection.getSelectedProducts();
+    if (!this.selectedProducts || this.selectedProducts.length === 0) {
+      this.redirectBack();
+    }
   }
 
   public trackByProductId(index: number, item: Product): string {
