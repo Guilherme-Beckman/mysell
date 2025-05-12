@@ -66,7 +66,14 @@ export class CreateProductsPage implements OnInit {
   }
 
   public redirectToSelectedProducts() {
-    this.productSelection.setSelectedProducts(this.selectedProducts);
+    const existingIds = new Set(
+      this.selectedProducts.map((product) => product.id)
+    );
+    const newUnique = this.productSelection
+      .getSelectedProducts()
+      .filter((p) => !existingIds.has(p.id));
+    const allSelected = [...this.selectedProducts, ...newUnique];
+    this.productSelection.setSelectedProducts(allSelected);
     console.log('redirectToSelectedProducts: ' + this.selectedProducts);
     this.navController.navigateRoot('/edit-available-products');
   }
