@@ -17,6 +17,7 @@ import { ConfirmPopUpComponent } from 'src/app/components/confirm-pop-up/confirm
 import { Product } from 'src/app/interfaces/product';
 import { ProductSelectionService } from 'src/app/services/product-selection.service';
 import { Route, Router } from '@angular/router';
+import { EditedProductSelectionService } from 'src/app/services/edited-product-selection.service';
 
 @Component({
   selector: 'app-edit-available-products',
@@ -40,7 +41,8 @@ export class EditAvailableProductsPage implements OnInit {
   constructor(
     private navController: NavController,
     private router: Router,
-    private productSelection: ProductSelectionService
+    private productSelection: ProductSelectionService,
+    private editedProductSelection: EditedProductSelectionService
   ) {}
 
   ngOnInit() {
@@ -68,10 +70,12 @@ export class EditAvailableProductsPage implements OnInit {
     this.navController.navigateRoot('/create-products');
   }
   public redirectFront() {
+    this.editedProductSelection.setSelectedProducts(this.selectedProducts);
     this.navController.navigateRoot('/selected-products');
   }
   public confirmProductExclusion() {
     this.productSelection.removeProductById(this.productExclusionId);
+    this.editedProductSelection.removeProductById(this.productExclusionId);
     this.selectedProducts = this.productSelection.getSelectedProducts();
     if (!this.selectedProducts || this.selectedProducts.length === 0) {
       this.redirectBack();

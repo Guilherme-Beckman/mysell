@@ -12,6 +12,7 @@ import { ProductSelectionService } from 'src/app/services/product-selection.serv
 import { Product } from 'src/app/interfaces/product';
 import { getCategoryIconPath } from 'src/app/datas/categories';
 import { ConfirmPopUpComponent } from 'src/app/components/confirm-pop-up/confirm-pop-up.component';
+import { EditedProductSelectionService } from 'src/app/services/edited-product-selection.service';
 
 @Component({
   selector: 'app-selected-products',
@@ -44,7 +45,7 @@ export class SelectedProductsPage implements OnInit {
   }
   constructor(
     private navController: NavController,
-    private productSelection: ProductSelectionService
+    private productSelection: EditedProductSelectionService
   ) {}
   public confirmProductExclusion() {
     this.productSelection.removeProductById(this.productExclusionId);
