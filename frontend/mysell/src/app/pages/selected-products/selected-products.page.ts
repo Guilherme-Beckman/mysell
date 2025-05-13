@@ -11,6 +11,7 @@ import { ProductSelect } from 'src/app/components/available-products/available-p
 import { ProductSelectionService } from 'src/app/services/product-selection.service';
 import { Product } from 'src/app/interfaces/product';
 import { getCategoryIconPath } from 'src/app/datas/categories';
+import { ConfirmPopUpComponent } from 'src/app/components/confirm-pop-up/confirm-pop-up.component';
 
 @Component({
   selector: 'app-selected-products',
@@ -25,25 +26,40 @@ import { getCategoryIconPath } from 'src/app/datas/categories';
     ProguessBarComponent,
     BottomArrowComponent,
     ConfirmButtonComponent,
+    ConfirmPopUpComponent,
   ],
 })
 export class SelectedProductsPage implements OnInit {
   public products: Product[] = [];
-  @Output() remove = new EventEmitter<Product>();
+  public isConfirmPopUpAtive: boolean = false;
+  public productExclusionId: string = '';
 
-  onRemove(product: Product) {
-    this.remove.emit(product);
+  openConfirmPopUp(productId: string) {
+    this.productExclusionId = productId;
+    this.isConfirmPopUpAtive = true;
   }
+
   proguess() {
     return 50;
   }
   constructor(
     private navController: NavController,
-    private selectedProducts: ProductSelectionService
+    private productSelection: ProductSelectionService
   ) {}
+  public confirmProductExclusion() {
+    this.productSelection.removeProductById(this.productExclusionId);
+    this.products = this.productSelection.getSelectedProducts();
+    if (!this.products || this.products.length === 0) {
+      this.redirectRoot();
+    }
+  }
+  public closeConfirmPopUp() {
+    console.log('closeConfirmPopUp');
+    this.isConfirmPopUpAtive = false;
+  }
 
   ngOnInit() {
-    this.products = this.selectedProducts.getSelectedProducts();
+    this.products = this.productSelection.getSelectedProducts();
   }
   trackById(index: number, item: Product) {
     return item.id;
@@ -53,5 +69,8 @@ export class SelectedProductsPage implements OnInit {
   }
   public getIconUrl(categoryName: string) {
     return getCategoryIconPath(categoryName);
+  }
+  public redirectRoot() {
+    this.navController.navigateRoot('/create-products');
   }
 }

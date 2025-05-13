@@ -22,7 +22,9 @@
           class="icon"
         />
         <span class="name">{{ product.name }}</span>
-        <button class="remove-btn" (click)="onRemove(product)">✕</button>
+        <button class="remove-btn" (click)="openConfirmPopUp(product.id)">
+          ✕
+        </button>
       </div>
     </div>
   </div>
@@ -32,3 +34,11 @@
   ></app-bottom-arrow>
   <app-confirm-button [position]="'right'"></app-confirm-button>
 </main>
+<app-confirm-pop-up
+  [firstMessage]="'Deseja excluir esse item?'"
+  [secondMessage]="'A exclusão removerá o produto da lista de adição.'"
+  [isActive]="isConfirmPopUpAtive"
+  (closeButtonEvent)="closeConfirmPopUp()"
+  (confirm)="confirmProductExclusion()"
+  [id]="productExclusionId"
+></app-confirm-pop-up>
