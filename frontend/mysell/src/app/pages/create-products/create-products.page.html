@@ -1,6 +1,6 @@
 <app-create-product-form
   [showModal]="showCreateForm"
-  (closeModalEvent)="closeCreateFrom()"
+  (closeModalEvent)="closeCreateForm()"
   [selectedProducts]="selectedProducts"
 ></app-create-product-form>
 
@@ -10,18 +10,24 @@
     <app-home-redirect></app-home-redirect>
   </div>
 </nav>
+
 <main>
   <h1>Adicionar Produtos</h1>
-  <app-proguess-bar [progress]="proguess()"></app-proguess-bar>
+
+  <app-proguess-bar [progress]="getProgressPercentage()"></app-proguess-bar>
+
   <app-search-bar [placeholder]="'Buscar produtos'"></app-search-bar>
-  <app-add-product-buttons [buttons]="buttons"></app-add-product-buttons>
+
+  <app-add-product-buttons [buttons]="actionButtons"></app-add-product-buttons>
+
   <app-available-products
     (hasAnyItemSelected)="hasAnyItemSelected = $event"
-    (selectedProducts)="getSelectedProducts($event)"
+    (selectedProducts)="onProductSelection($event)"
   ></app-available-products>
+
   <app-bottom-arrow
     [direction]="'right'"
     *ngIf="hasAnyItemSelected"
-    (arrowClick)="redirectToSelectedProducts()"
+    (arrowClick)="navigateToProductEditing()"
   ></app-bottom-arrow>
 </main>

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { NavController } from '@ionic/angular';
 import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
 import { HomeRedirectComponent } from 'src/app/components/home-redirect/home-redirect.component';
-import { ProguessBarComponent } from 'src/app/components/proguess-bar/proguess-bar.component';
 import { SearchBarComponent } from 'src/app/components/search-bar/search-bar.component';
 import {
   AddProductButton,
@@ -15,9 +15,9 @@ import {
 } from 'src/app/components/available-products/available-products.component';
 import { BottomArrowComponent } from 'src/app/components/bottom-arrow/bottom-arrow.component';
 import { CreateProductFormComponent } from 'src/app/components/create-product-form/create-product-form.component';
-import { Product } from 'src/app/interfaces/product';
-import { NavController } from '@ionic/angular';
 import { ProductSelectionService } from 'src/app/services/product-selection.service';
+import { Product } from 'src/app/interfaces/product';
+import { ProguessBarComponent } from 'src/app/components/proguess-bar/proguess-bar.component';
 
 @Component({
   selector: 'app-create-products',
@@ -39,13 +39,10 @@ import { ProductSelectionService } from 'src/app/services/product-selection.serv
 })
 export class CreateProductsPage implements OnInit {
   public hasAnyItemSelected = false;
-  public showCreateForm: boolean = false;
+  public showCreateForm = false;
   public selectedProducts: Product[] = [];
-  constructor(
-    private navController: NavController,
-    private productSelection: ProductSelectionService
-  ) {}
-  buttons: AddProductButton[] = [
+
+  public actionButtons: AddProductButton[] = [
     {
       svgPath: '/assets/svg/add-product.svg',
       action: () => null,
@@ -56,33 +53,60 @@ export class CreateProductsPage implements OnInit {
     },
   ];
 
+  constructor(
+    private navController: NavController,
+    private productSelectionService: ProductSelectionService
+  ) {}
+
   ngOnInit() {
-    if (this.productSelection.getSelectedProducts().length > 0) {
-      this.hasAnyItemSelected = true;
-    }
+    this.initializeSelectedProducts();
   }
-  proguess() {
+
+  private initializeSelectedProducts(): void {
+    const hasExistingSelections =
+      this.productSelectionService.getSelectedProducts().length > 0;
+    this.hasAnyItemSelected = hasExistingSelections;
+  }
+
+  public getProgressPercentage(): number {
     return 50;
   }
 
-  public redirectToSelectedProducts() {
-    const existingIds = new Set(
+  public onProductSelection(productSelects: ProductSelect[]): void {
+    const selectedProducts = productSelects.map(
+      (selection) => selection.product
+    );
+    this.selectedProducts.push(...selectedProducts);
+    console.log('Selected products updated:', selectedProducts);
+  }
+
+  public navigateToProductEditing(): void {
+    const existingProductIds = new Set(
       this.selectedProducts.map((product) => product.id)
     );
-    const newUnique = this.productSelection
-      .getSelectedProducts()
-      .filter((p) => !existingIds.has(p.id));
-    const allSelected = [...this.selectedProducts, ...newUnique];
-    this.productSelection.setSelectedProducts(allSelected);
-    console.log('redirectToSelectedProducts: ' + this.selectedProducts);
-    this.navController.navigateRoot('/edit-available-products');
+    const newlySelectedProducts =
+      this.getNewUniqueSelections(existingProductIds);
+    const allSelectedProducts = [
+      ...this.selectedProducts,
+      ...newlySelectedProducts,
+    ];
+
+    this.productSelectionService.setSelectedProducts(allSelectedProducts);
+    this.navigateToEditPage();
   }
-  public closeCreateFrom() {
+
+  public closeCreateForm(): void {
     this.showCreateForm = false;
   }
-  public getSelectedProducts($event: ProductSelect[]) {
-    const products = $event.map((item) => item.product);
-    console.log('getSelectedProducts', products);
-    this.selectedProducts.push(...products);
+
+  private getNewUniqueSelections(existingIds: Set<string>): Product[] {
+    return this.productSelectionService
+      .getSelectedProducts()
+      .filter((product) => !existingIds.has(product.id));
+  }
+
+  private navigateToEditPage(): void {
+    console.log('Redirecting to selected products:', this.selectedProducts);
+    this.navController.navigateRoot('/edit-available-products');
   }
 }
