@@ -71,7 +71,7 @@ export class EditAvailableProductsPage implements OnInit {
     this.navController.navigateRoot('/selected-products');
   }
   public confirmProductExclusion() {
-    this.productSelection.removeProduct(this.productExclusionId);
+    this.productSelection.removeProductById(this.productExclusionId);
     this.selectedProducts = this.productSelection.getSelectedProducts();
     if (!this.selectedProducts || this.selectedProducts.length === 0) {
       this.redirectBack();

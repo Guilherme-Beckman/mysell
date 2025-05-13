@@ -37,9 +37,24 @@ export class AvailableProductsComponent implements OnInit {
   }
   toggleSelection(product: ProductSelect): void {
     product.selected = !product.selected;
+
+    if (product.selected) {
+      const current = this.productSelectionService.getSelectedProducts();
+      const alreadyExists = current.some((p) => p.id === product.product.id);
+      if (!alreadyExists) {
+        this.productSelectionService.setSelectedProducts([
+          ...current,
+          product.product,
+        ]);
+      }
+    } else {
+      this.productSelectionService.removeProductById(product.product.id);
+    }
+
     this.emmitCurrentSelectionState();
     this.sendAllSelectedProducts();
   }
+
   private emmitCurrentSelectionState() {
     const hasAny = this.products.some((product) => product.selected);
 

@@ -20,7 +20,7 @@ export class ProductSelectionService {
   clear() {
     this._selectedProducts = [];
   }
-  removeProduct(productId: string) {
+  removeProductById(productId: string) {
     this._selectedProducts = this._selectedProducts.filter(
       (product) => product.id !== productId
     );

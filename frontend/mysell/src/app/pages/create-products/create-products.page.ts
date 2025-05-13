@@ -81,17 +81,6 @@ export class CreateProductsPage implements OnInit {
   }
 
   public navigateToProductEditing(): void {
-    const existingProductIds = new Set(
-      this.selectedProducts.map((product) => product.id)
-    );
-    const newlySelectedProducts =
-      this.getNewUniqueSelections(existingProductIds);
-    const allSelectedProducts = [
-      ...this.selectedProducts,
-      ...newlySelectedProducts,
-    ];
-
-    this.productSelectionService.setSelectedProducts(allSelectedProducts);
     this.navigateToEditPage();
   }
 
