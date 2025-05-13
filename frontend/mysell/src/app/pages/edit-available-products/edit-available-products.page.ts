@@ -36,6 +36,8 @@ import { EditedProductSelectionService } from 'src/app/services/edited-product-s
 })
 export class EditAvailableProductsPage implements OnInit {
   public isConfirmPopUpAtive: boolean = false;
+  public isConfirmPopUpAtiveNavigateBack: boolean = false;
+
   public selectedProducts: Product[] = [];
   public productExclusionId: string = '';
   constructor(
@@ -62,12 +64,22 @@ export class EditAvailableProductsPage implements OnInit {
     this.productExclusionId = productId;
     this.isConfirmPopUpAtive = true;
   }
+  public openConfirmPopUpNavigateBack() {
+    this.isConfirmPopUpAtiveNavigateBack = true;
+  }
   public closeConfirmPopUp() {
     console.log('closeConfirmPopUp');
     this.isConfirmPopUpAtive = false;
   }
+  public closeConfirmPopUpNavigateBack() {
+    console.log('closeConfirmPopUp');
+    this.isConfirmPopUpAtiveNavigateBack = false;
+  }
   public redirectBack() {
     this.navController.navigateRoot('/create-products');
+  }
+  public confirmNavigateBack() {
+    this.redirectBack();
   }
   public redirectFront() {
     this.editedProductSelection.setSelectedProducts(this.selectedProducts);

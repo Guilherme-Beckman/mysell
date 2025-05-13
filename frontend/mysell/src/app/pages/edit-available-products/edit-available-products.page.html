@@ -28,7 +28,7 @@
 
   <app-bottom-arrow
     [direction]="'left'"
-    (arrowClick)="redirectBack()"
+    (arrowClick)="openConfirmPopUpNavigateBack()"
   ></app-bottom-arrow>
   <app-bottom-arrow
     [direction]="'right'"
@@ -44,4 +44,11 @@
   (closeButtonEvent)="closeConfirmPopUp()"
   (confirm)="confirmProductExclusion()"
   [id]="productExclusionId"
+></app-confirm-pop-up>
+<app-confirm-pop-up
+  [firstMessage]="'Deseja voltar?'"
+  [secondMessage]="'Isso excluira as edições feitas nos produtos.'"
+  [isActive]="isConfirmPopUpAtiveNavigateBack"
+  (closeButtonEvent)="closeConfirmPopUpNavigateBack()"
+  (confirm)="confirmNavigateBack()"
 ></app-confirm-pop-up>
