@@ -41,7 +41,8 @@ export class CreateProductsPage implements OnInit {
   public hasAnyItemSelected = false;
   public showCreateForm = false;
   public selectedProducts: Product[] = [];
-
+  public progress = 2;
+  public currentProgress = 0;
   public actionButtons: AddProductButton[] = [
     {
       svgPath: '/assets/svg/add-product.svg',
@@ -60,16 +61,21 @@ export class CreateProductsPage implements OnInit {
 
   ngOnInit() {
     this.initializeSelectedProducts();
+    this.animateProgress();
   }
-
+  animateProgress() {
+    const interval = setInterval(() => {
+      if (this.currentProgress < this.progress) {
+        this.currentProgress++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 5); // ajuste o tempo para acelerar/desacelerar a animação
+  }
   private initializeSelectedProducts(): void {
     const hasExistingSelections =
       this.productSelectionService.getSelectedProducts().length > 0;
     this.hasAnyItemSelected = hasExistingSelections;
-  }
-
-  public getProgressPercentage(): number {
-    return 50;
   }
 
   public onProductSelection(productSelects: ProductSelect[]): void {

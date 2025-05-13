@@ -34,15 +34,22 @@ export class SelectedProductsPage implements OnInit {
   public products: Product[] = [];
   public isConfirmPopUpAtive: boolean = false;
   public productExclusionId: string = '';
-
+  public progress = 100;
+  public currentProgress = 50;
   openConfirmPopUp(productId: string) {
     this.productExclusionId = productId;
     this.isConfirmPopUpAtive = true;
   }
-
-  proguess() {
-    return 50;
+  animateProgress() {
+    const interval = setInterval(() => {
+      if (this.currentProgress < this.progress) {
+        this.currentProgress++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 5); // ajuste o tempo para acelerar/desacelerar a animação
   }
+
   constructor(
     private navController: NavController,
     private productSelection: EditedProductSelectionService
@@ -61,6 +68,7 @@ export class SelectedProductsPage implements OnInit {
 
   ngOnInit() {
     this.products = this.productSelection.getSelectedProducts();
+    this.animateProgress();
   }
   trackById(index: number, item: Product) {
     return item.id;

@@ -40,6 +40,8 @@ export class EditAvailableProductsPage implements OnInit {
 
   public selectedProducts: Product[] = [];
   public productExclusionId: string = '';
+  public progress = 50;
+  public currentProgress = 2;
   constructor(
     private navController: NavController,
     private router: Router,
@@ -54,10 +56,17 @@ export class EditAvailableProductsPage implements OnInit {
         ...product,
         product: { ...product },
       }));
+    this.animateProgress();
     console.log('ngOnInit: ' + this.selectedProducts);
   }
-  proguess() {
-    return 50;
+  animateProgress() {
+    const interval = setInterval(() => {
+      if (this.currentProgress < this.progress) {
+        this.currentProgress++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 5); // ajuste o tempo para acelerar/desacelerar a animação
   }
   public openConfirmPopUp(productId: string) {
     console.log('openConfirmPopUp');
