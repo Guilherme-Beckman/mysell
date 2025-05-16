@@ -15,14 +15,19 @@
 
   <app-proguess-bar [progress]="currentProgress"></app-proguess-bar>
 
-  <app-search-bar [placeholder]="'Buscar produtos'"></app-search-bar>
+  <app-search-bar
+    [placeholder]="'Buscar produtos'"
+    (searchChange)="onSearchChange($event)"
+  ></app-search-bar>
 
   <app-add-product-buttons [buttons]="actionButtons"></app-add-product-buttons>
 
   <app-available-products
     (hasAnyItemSelected)="hasAnyItemSelected = $event"
     (selectedProducts)="onProductSelection($event)"
+    [searchTerm]="searchTerm"
   ></app-available-products>
+
   <br /><br />
   <br /><br />
   <br /><br />

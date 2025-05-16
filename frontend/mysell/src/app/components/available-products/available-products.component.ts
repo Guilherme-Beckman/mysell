@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { C } from '@angular/common/common_module.d-Qx8B6pmN';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AVAIABLE_PRODUCTS } from 'src/app/datas/availlable-products';
 import { getCategoryIconPath } from 'src/app/datas/categories';
@@ -20,21 +19,52 @@ export interface ProductSelect {
 })
 export class AvailableProductsComponent implements OnInit {
   @Input() products: ProductSelect[] = [];
+  @Input() searchTerm: string = '';
   @Output() hasAnyItemSelected = new EventEmitter<boolean>();
   @Output() selectedProducts = new EventEmitter<ProductSelect[]>();
+
+  filteredProducts: ProductSelect[] = [];
+  allProducts: ProductSelect[] = [];
+
   constructor(private productSelectionService: ProductSelectionService) {}
 
   ngOnInit(): void {
     if (!this.products.length) {
-      this.products = AVAIABLE_PRODUCTS;
+      this.allProducts = AVAIABLE_PRODUCTS;
+    } else {
+      this.allProducts = this.products;
     }
+
     if (this.productSelectionService.getSelectedProducts().length === 0) {
-      this.products.forEach((product) => (product.selected = false));
+      this.allProducts.forEach((product) => (product.selected = false));
     }
+
+    this.filteredProducts = [...this.allProducts];
   }
+
+  ngOnChanges() {
+    this.filterProducts();
+  }
+
+  filterProducts(): void {
+    if (!this.searchTerm || this.searchTerm.trim() === '') {
+      this.filteredProducts = [...this.allProducts];
+      return;
+    }
+
+    const term = this.searchTerm.toLowerCase().trim();
+    this.filteredProducts = this.allProducts.filter(
+      (item) =>
+        item.product.name.toLowerCase().includes(term) ||
+        item.product.brand.toLowerCase().includes(term) ||
+        item.product.category.toLowerCase().includes(term)
+    );
+  }
+
   public getIconPath(categoryName: string) {
     return getCategoryIconPath(categoryName);
   }
+
   toggleSelection(product: ProductSelect): void {
     product.selected = !product.selected;
 
@@ -56,17 +86,19 @@ export class AvailableProductsComponent implements OnInit {
   }
 
   private emmitCurrentSelectionState() {
-    const hasAny = this.products.some((product) => product.selected);
-
+    const hasAny = this.allProducts.some((product) => product.selected);
     this.hasAnyItemSelected.emit(hasAny);
   }
+
   sendAllSelectedProducts() {
     const selectedProducts = this.getSelectedProducts();
     this.selectedProducts.emit(selectedProducts);
   }
+
   private getSelectedProducts(): ProductSelect[] {
-    return this.products.filter((product) => product.selected);
+    return this.allProducts.filter((product) => product.selected);
   }
+
   formatCost(price: number): string {
     return price.toFixed(2).replace('.', ',');
   }

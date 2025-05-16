@@ -43,10 +43,13 @@ export class CreateProductsPage implements OnInit {
   public selectedProducts: Product[] = [];
   public progress = 2;
   public currentProgress = 0;
+  public searchTerm: string = '';
   public actionButtons: AddProductButton[] = [
     {
       svgPath: '/assets/svg/add-product.svg',
-      action: () => null,
+      action: () => {
+        this.showCreateForm = true;
+      },
     },
     {
       svgPath: '/assets/svg/barcode.svg',
@@ -64,11 +67,15 @@ export class CreateProductsPage implements OnInit {
     this.animateProgress();
   }
 
+  public onSearchChange(term: string): void {
+    this.searchTerm = term;
+  }
+
   public onProductSelection(productSelections: ProductSelect[]): void {
     const selectedProducts = productSelections.map(
       (selection) => selection.product
     );
-    this.selectedProducts.push(...selectedProducts);
+    this.selectedProducts = [...selectedProducts];
   }
 
   public navigateToProductEditing(): void {

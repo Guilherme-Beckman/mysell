@@ -1,10 +1,13 @@
 <div class="product-list-container">
   <div class="product-list-header">
     <h2 class="product-list-title">Produtos disponíveis</h2>
+    <p *ngIf="filteredProducts.length === 0" class="no-results">
+      Nenhum produto encontrado.
+    </p>
   </div>
 
   <div class="product-list">
-    <div *ngFor="let product of products" class="product-item">
+    <div *ngFor="let product of filteredProducts" class="product-item">
       <label class="product-checkbox">
         <input
           type="checkbox"
