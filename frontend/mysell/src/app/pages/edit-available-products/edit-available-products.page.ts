@@ -8,6 +8,8 @@ import {
   IonToolbar,
   NavController,
 } from '@ionic/angular/standalone';
+import { ActivatedRoute } from '@angular/router';
+
 import { EditProductFormComponent } from 'src/app/components/edit-product-form/edit-product-form.component';
 import { HomeRedirectComponent } from 'src/app/components/home-redirect/home-redirect.component';
 import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
@@ -16,7 +18,6 @@ import { ProguessBarComponent } from 'src/app/components/proguess-bar/proguess-b
 import { ConfirmPopUpComponent } from 'src/app/components/confirm-pop-up/confirm-pop-up.component';
 import { Product } from 'src/app/interfaces/product';
 import { ProductSelectionService } from 'src/app/services/product-selection.service';
-import { ActivatedRoute, Route, Router } from '@angular/router';
 import { EditedProductSelectionService } from 'src/app/services/edited-product-selection.service';
 
 @Component({
@@ -35,96 +36,102 @@ import { EditedProductSelectionService } from 'src/app/services/edited-product-s
   ],
 })
 export class EditAvailableProductsPage implements OnInit {
-  public isConfirmPopUpAtive: boolean = false;
-  public isConfirmPopUpAtiveNavigateBack: boolean = false;
+  isDeleteConfirmationActive = false;
+  isNavigateBackConfirmationActive = false;
+  selectedProducts: Product[] = [];
+  productIdToDelete = '';
+  targetProgress = 50;
+  currentProgress = 2;
 
-  public selectedProducts: Product[] = [];
-  public productExclusionId: string = '';
-  public progress = 50;
-  public currentProgress = 2;
   constructor(
     private navController: NavController,
-    private router: Router,
-    private productSelection: ProductSelectionService,
+    private originalProductSelection: ProductSelectionService,
     private editedProductSelection: EditedProductSelectionService,
     private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
-    if (
-      !this.editedProductSelection.getSelectedProducts() ||
-      this.editedProductSelection.getSelectedProducts().length == 0
-    ) {
-      this.selectedProducts = this.productSelection
-        .getSelectedProducts()
-        .map((product) => ({
-          ...product,
-          product: { ...product },
-        }));
-      this.editedProductSelection.setSelectedProducts(this.selectedProducts);
-    } else {
-      this.selectedProducts = this.editedProductSelection.getSelectedProducts();
-    }
+    this.initializeSelectedProducts();
+    this.setupProgressAnimation();
+  }
 
+  private initializeSelectedProducts() {
+    const storedProducts = this.editedProductSelection.getSelectedProducts();
+    if (!storedProducts || storedProducts.length === 0) {
+      const initialProducts = this.originalProductSelection
+        .getSelectedProducts()
+        .map((product) => ({ ...product, product: { ...product } }));
+      this.editedProductSelection.setSelectedProducts(initialProducts);
+      this.selectedProducts = initialProducts;
+    } else {
+      this.selectedProducts = storedProducts;
+    }
+  }
+
+  private setupProgressAnimation() {
     this.route.queryParams.subscribe((params) => {
-      const passed = parseInt(params['progress'], 10);
-      const start = isNaN(passed) ? this.currentProgress : passed;
-      this.currentProgress = start;
+      const progressParam = parseInt(params['progress'], 10);
+      this.currentProgress = isNaN(progressParam)
+        ? this.currentProgress
+        : progressParam;
     });
     this.animateProgress();
-
-    console.log('ngOnInit: ' + this.selectedProducts);
   }
 
-  animateProgress() {
-    const interval = setInterval(() => {
-      if (this.currentProgress < this.progress) {
+  private animateProgress() {
+    const animationInterval = setInterval(() => {
+      if (this.currentProgress < this.targetProgress) {
         this.currentProgress++;
-      } else if (this.currentProgress >= this.progress) {
+      } else if (this.currentProgress > this.targetProgress) {
         this.currentProgress--;
       } else {
-        clearInterval(interval);
+        clearInterval(animationInterval);
       }
-    }, 5); // ajuste conforme necessário
+    }, 5);
   }
 
-  public openConfirmPopUp(productId: string) {
-    console.log('openConfirmPopUp');
-    this.productExclusionId = productId;
-    this.isConfirmPopUpAtive = true;
+  public showDeleteConfirmation(productId: string) {
+    this.productIdToDelete = productId;
+    this.isDeleteConfirmationActive = true;
   }
-  public openConfirmPopUpNavigateBack() {
-    this.isConfirmPopUpAtiveNavigateBack = true;
+
+  public showNavigateBackConfirmation() {
+    this.isNavigateBackConfirmationActive = true;
   }
-  public closeConfirmPopUp() {
-    console.log('closeConfirmPopUp');
-    this.isConfirmPopUpAtive = false;
+
+  public hideDeleteConfirmation() {
+    this.isDeleteConfirmationActive = false;
   }
-  public closeConfirmPopUpNavigateBack() {
-    console.log('closeConfirmPopUp');
-    this.isConfirmPopUpAtiveNavigateBack = false;
+
+  public hideNavigateBackConfirmation() {
+    this.isNavigateBackConfirmationActive = false;
   }
-  public redirectBack() {
+
+  public navigateToCreateProducts() {
     this.navController.navigateRoot('/create-products');
   }
-  public confirmNavigateBack() {
+
+  public confirmNavigationBack() {
     this.editedProductSelection.clear();
-    this.redirectBack();
+    this.navigateToCreateProducts();
   }
-  public redirectFront() {
+
+  public navigateToSelectedProducts() {
     this.editedProductSelection.setSelectedProducts(this.selectedProducts);
     this.navController.navigateRoot('/selected-products');
   }
-  public confirmProductExclusion() {
-    this.productSelection.removeProductById(this.productExclusionId);
-    this.editedProductSelection.removeProductById(this.productExclusionId);
-    this.selectedProducts = this.productSelection.getSelectedProducts();
-    if (!this.selectedProducts || this.selectedProducts.length === 0) {
-      this.redirectBack();
+
+  public confirmProductDeletion() {
+    this.originalProductSelection.removeProductById(this.productIdToDelete);
+    this.editedProductSelection.removeProductById(this.productIdToDelete);
+    this.selectedProducts = this.originalProductSelection.getSelectedProducts();
+
+    if (this.selectedProducts.length === 0) {
+      this.navigateToCreateProducts();
     }
   }
 
-  public trackByProductId(index: number, item: Product): string {
-    return item.id;
+  public trackByProductId(index: number, product: Product): string {
+    return product.id;
   }
 }

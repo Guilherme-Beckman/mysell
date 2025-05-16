@@ -14,7 +14,7 @@
   >
     <div class="trash-item-title">
       <div class="trashcan">
-        <button (click)="openConfirmPopUp(product.id)">
+        <button (click)="showDeleteConfirmation(product.id)">
           <img src="assets/svg/trash.svg" alt="" />
         </button>
       </div>
@@ -28,11 +28,11 @@
 
   <app-bottom-arrow
     [direction]="'left'"
-    (arrowClick)="openConfirmPopUpNavigateBack()"
+    (arrowClick)="showNavigateBackConfirmation()"
   ></app-bottom-arrow>
   <app-bottom-arrow
     [direction]="'right'"
-    (arrowClick)="redirectFront()"
+    (arrowClick)="navigateToSelectedProducts()"
   ></app-bottom-arrow>
   <br /><br /><br /><br /><br />
   <br /><br /><br /><br /><br />
@@ -40,15 +40,15 @@
 <app-confirm-pop-up
   [firstMessage]="'Deseja excluir esse item?'"
   [secondMessage]="'A exclusão removerá o produto da lista de adição.'"
-  [isActive]="isConfirmPopUpAtive"
-  (closeButtonEvent)="closeConfirmPopUp()"
-  (confirm)="confirmProductExclusion()"
-  [id]="productExclusionId"
+  [isActive]="isDeleteConfirmationActive"
+  (closeButtonEvent)="hideDeleteConfirmation()"
+  (confirm)="confirmProductDeletion()"
+  [id]="productIdToDelete"
 ></app-confirm-pop-up>
 <app-confirm-pop-up
   [firstMessage]="'Deseja voltar?'"
   [secondMessage]="'Isso excluira as edições feitas nos produtos.'"
-  [isActive]="isConfirmPopUpAtiveNavigateBack"
-  (closeButtonEvent)="closeConfirmPopUpNavigateBack()"
-  (confirm)="confirmNavigateBack()"
+  [isActive]="isNavigateBackConfirmationActive"
+  (closeButtonEvent)="hideNavigateBackConfirmation()"
+  (confirm)="confirmNavigationBack()"
 ></app-confirm-pop-up>
