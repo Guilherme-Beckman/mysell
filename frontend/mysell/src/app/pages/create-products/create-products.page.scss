@@ -3,9 +3,17 @@
 }
 nav {
   height: 10vh;
+  z-index: 100000;
 }
 main {
   margin: 2rem;
+  overflow-y: auto;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-direction: column;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
 }
 h1 {
   text-align: center;

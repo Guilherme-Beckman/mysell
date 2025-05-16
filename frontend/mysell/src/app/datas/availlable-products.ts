@@ -89,7 +89,7 @@ export const AVAIABLE_PRODUCTS: ProductSelect[] = [
     product: {
       id: '8',
       name: 'Óleo de Soja',
-      category: 'Utensílios de cozinha e mesa',
+      category: 'Alimentos/Bebidas',
       purchasePrice: 4.5,
       sellingPrice: 6.0,
       brand: 'Liza',
@@ -197,7 +197,7 @@ export const AVAIABLE_PRODUCTS: ProductSelect[] = [
     product: {
       id: '17',
       name: 'Sabão em Pó',
-      category: 'Produtos de Limpeza',
+      category: 'Produtos de Limpeza / Higiene',
       purchasePrice: 12.0,
       sellingPrice: 15.0,
       brand: 'Omo',
@@ -209,7 +209,7 @@ export const AVAIABLE_PRODUCTS: ProductSelect[] = [
     product: {
       id: '18',
       name: 'Papel Higiênico',
-      category: 'Higiene Pessoal',
+      category: 'Beleza / Cuidados Pessoais / Higiene',
       purchasePrice: 10.0,
       sellingPrice: 13.0,
       brand: 'Neve',

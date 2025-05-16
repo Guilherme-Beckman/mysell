@@ -4,14 +4,13 @@
   [selectedProducts]="selectedProducts"
 ></app-create-product-form>
 
-<nav>
-  <div class="itens">
-    <app-arrow [direction]="'left'" [pageToGo]="'/home'"></app-arrow>
-    <app-home-redirect></app-home-redirect>
-  </div>
-</nav>
-
 <main>
+  <nav>
+    <div class="itens">
+      <app-arrow [direction]="'left'" [pageToGo]="'/home'"></app-arrow>
+      <app-home-redirect></app-home-redirect>
+    </div>
+  </nav>
   <h1>Adicionar Produtos</h1>
 
   <app-proguess-bar [progress]="currentProgress"></app-proguess-bar>
@@ -24,7 +23,10 @@
     (hasAnyItemSelected)="hasAnyItemSelected = $event"
     (selectedProducts)="onProductSelection($event)"
   ></app-available-products>
-
+  <br /><br />
+  <br /><br />
+  <br /><br />
+  <br /><br />
   <app-bottom-arrow
     [direction]="'right'"
     *ngIf="hasAnyItemSelected"
