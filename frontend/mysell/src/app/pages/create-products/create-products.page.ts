@@ -20,6 +20,8 @@ import { Product } from 'src/app/interfaces/product';
 import { ProguessBarComponent } from 'src/app/components/proguess-bar/proguess-bar.component';
 import { Barcode, BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
 import { AlertController } from '@ionic/angular/standalone';
+import { ProductService } from 'src/app/services/product.service';
+import { LoadingSppinerComponent } from 'src/app/components/loading-sppiner/loading-sppiner.component';
 @Component({
   selector: 'app-create-products',
   templateUrl: './create-products.page.html',
@@ -36,6 +38,7 @@ import { AlertController } from '@ionic/angular/standalone';
     AvailableProductsComponent,
     BottomArrowComponent,
     CreateProductFormComponent,
+    LoadingSppinerComponent,
   ],
 })
 export class CreateProductsPage implements OnInit {
@@ -45,6 +48,16 @@ export class CreateProductsPage implements OnInit {
   public progress = 2;
   public currentProgress = 0;
   public searchTerm: string = '';
+  public isLoading = false;
+  public scanedProduct: Product = {
+    id: '',
+    name: '',
+    category: '',
+    purchasePrice: 0,
+    sellingPrice: 0,
+    brand: '',
+    measure: '',
+  };
   public actionButtons: AddProductButton[] = [
     {
       svgPath: '/assets/svg/add-product.svg',
@@ -63,7 +76,8 @@ export class CreateProductsPage implements OnInit {
   constructor(
     private navController: NavController,
     private productSelectionService: ProductSelectionService,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private productService: ProductService
   ) {}
 
   ngOnInit() {
@@ -120,7 +134,28 @@ export class CreateProductsPage implements OnInit {
       return;
     }
     const { barcodes } = await BarcodeScanner.scan();
-    this.barcodes.push(...barcodes);
+    this.barcodes[0] = barcodes[0];
+    this.getProductByBarcode(barcodes[0].rawValue);
+    console.log(barcodes);
+  }
+  private getProductByBarcode(barcode: string): void {
+    console.log('Buscando produto com código de barras:', barcode);
+
+    this.isLoading = true; // Início do loading
+    this.productService.getProductByBarcode(barcode).subscribe({
+      next: (product) => {
+        console.log('Produto encontrado:', product);
+        this.scanedProduct = product;
+        this.isLoading = false; // Fim do loading no sucesso
+        // Aqui você pode fazer o tratamento que quiser, como atribuir a uma variável, etc.
+      },
+      error: (error) => {
+        console.error('Erro ao buscar o produto:', error);
+        this.isLoading = false; // Fim do loading no erro
+      },
+    });
+
+    this.showCreateForm = true;
   }
 
   async requestPermissions(): Promise<boolean> {

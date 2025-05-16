@@ -2,8 +2,9 @@
   [showModal]="showCreateForm"
   (closeModalEvent)="closeCreateForm()"
   [selectedProducts]="selectedProducts"
+  [product]="scanedProduct"
 ></app-create-product-form>
-
+<app-loading-sppiner [isLoading]="isLoading"></app-loading-sppiner>
 <main>
   <nav>
     <div class="itens">

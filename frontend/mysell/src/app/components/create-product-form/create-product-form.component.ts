@@ -23,12 +23,12 @@ export class CreateProductFormComponent implements OnInit {
   @Input() showModal: boolean = false;
   @Output() closeModalEvent = new EventEmitter<void>();
   @Input() selectedProducts: Product[] = [];
-  // Product model
-  product = {
+  @Input() product: Product = {
+    id: '',
     name: '',
     category: '',
-    purchasePrice: '',
-    sellingPrice: '',
+    purchasePrice: 0,
+    sellingPrice: 0,
     brand: '',
     measure: '',
   };
