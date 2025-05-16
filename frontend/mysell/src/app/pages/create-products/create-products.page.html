@@ -39,3 +39,10 @@
     (arrowClick)="navigateToProductEditing()"
   ></app-bottom-arrow>
 </main>
+<app-confirm-pop-up
+  [firstMessage]="popupMessage"
+  [secondMessage]="'Você pode tentar escanear outro código ou voltar para a página inicial'"
+  [isActive]="isPopupForScanFailedActive"
+  (closeButtonEvent)="closePopup()"
+  (confirm)="closePopup()"
+></app-confirm-pop-up>

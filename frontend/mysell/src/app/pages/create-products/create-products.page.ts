@@ -22,6 +22,7 @@ import { Barcode, BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
 import { AlertController } from '@ionic/angular/standalone';
 import { ProductService } from 'src/app/services/product.service';
 import { LoadingSppinerComponent } from 'src/app/components/loading-sppiner/loading-sppiner.component';
+import { ConfirmPopUpComponent } from 'src/app/components/confirm-pop-up/confirm-pop-up.component';
 @Component({
   selector: 'app-create-products',
   templateUrl: './create-products.page.html',
@@ -39,6 +40,7 @@ import { LoadingSppinerComponent } from 'src/app/components/loading-sppiner/load
     BottomArrowComponent,
     CreateProductFormComponent,
     LoadingSppinerComponent,
+    ConfirmPopUpComponent,
   ],
 })
 export class CreateProductsPage implements OnInit {
@@ -49,6 +51,8 @@ export class CreateProductsPage implements OnInit {
   public currentProgress = 0;
   public searchTerm: string = '';
   public isLoading = false;
+  public isPopupForScanFailedActive = false;
+  public popupMessage = '';
   public scanedProduct: Product = {
     id: '',
     name: '',
@@ -147,15 +151,24 @@ export class CreateProductsPage implements OnInit {
         console.log('Produto encontrado:', product);
         this.scanedProduct = product;
         this.isLoading = false; // Fim do loading no sucesso
-        // Aqui você pode fazer o tratamento que quiser, como atribuir a uma variável, etc.
+        this.showCreateForm = true;
       },
       error: (error) => {
         console.error('Erro ao buscar o produto:', error);
         this.isLoading = false; // Fim do loading no erro
+
+        if (error.status === 404) {
+          // Produto não encontrado
+          this.isPopupForScanFailedActive = true;
+          this.popupMessage = 'Produto não encontrado';
+        } else {
+          // Outros erros
+          this.isPopupForScanFailedActive = true;
+          this.popupMessage =
+            'Erro ao buscar o produto. Tente novamente mais tarde';
+        }
       },
     });
-
-    this.showCreateForm = true;
   }
 
   async requestPermissions(): Promise<boolean> {
@@ -170,5 +183,9 @@ export class CreateProductsPage implements OnInit {
       buttons: ['OK'],
     });
     await alert.present();
+  }
+  public closePopup() {
+    this.isPopupForScanFailedActive = false;
+    this.popupMessage = '';
   }
 }
