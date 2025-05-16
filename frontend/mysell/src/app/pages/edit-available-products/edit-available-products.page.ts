@@ -28,7 +28,6 @@ import { EditedProductSelectionService } from 'src/app/services/edited-product-s
   imports: [
     EditProductFormComponent,
     HomeRedirectComponent,
-    ArrowComponent,
     BottomArrowComponent,
     ProguessBarComponent,
     ConfirmPopUpComponent,
@@ -42,6 +41,7 @@ export class EditAvailableProductsPage implements OnInit {
   productIdToDelete = '';
   targetProgress = 50;
   currentProgress = 2;
+  isNavigateHomeConfirmationActive = false;
 
   constructor(
     private navController: NavController,
@@ -129,6 +129,17 @@ export class EditAvailableProductsPage implements OnInit {
     if (this.selectedProducts.length === 0) {
       this.navigateToCreateProducts();
     }
+  }
+  public showNavigateHomeConfirmation() {
+    this.isNavigateHomeConfirmationActive = true;
+  }
+
+  public hideNavigateHomeConfirmation() {
+    this.isNavigateHomeConfirmationActive = false;
+  }
+  public confirmNavigationHome() {
+    this.editedProductSelection.clear();
+    this.navController.navigateRoot('/home');
   }
 
   public trackByProductId(index: number, product: Product): string {

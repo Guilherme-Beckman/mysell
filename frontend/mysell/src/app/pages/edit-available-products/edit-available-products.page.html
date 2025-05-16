@@ -1,6 +1,9 @@
 <main>
   <nav>
-    <app-home-redirect></app-home-redirect>
+    <app-home-redirect
+      [emitOnly]="true"
+      (requestNavigationBack)="showNavigateHomeConfirmation()"
+    ></app-home-redirect>
   </nav>
   <h1>Adicionar Produtos</h1>
   <app-proguess-bar [progress]="currentProgress"></app-proguess-bar>
@@ -50,4 +53,11 @@
   [isActive]="isNavigateBackConfirmationActive"
   (closeButtonEvent)="hideNavigateBackConfirmation()"
   (confirm)="confirmNavigationBack()"
+></app-confirm-pop-up>
+<app-confirm-pop-up
+  [firstMessage]="'Deseja voltar para a página inicial?'"
+  [secondMessage]="'Você perderá as alterações feitas nos produtos.'"
+  [isActive]="isNavigateHomeConfirmationActive"
+  (closeButtonEvent)="hideNavigateHomeConfirmation()"
+  (confirm)="confirmNavigationHome()"
 ></app-confirm-pop-up>

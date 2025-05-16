@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NavController } from '@ionic/angular';
 
 @Component({
@@ -7,11 +7,20 @@ import { NavController } from '@ionic/angular';
   styleUrls: ['./home-redirect.component.scss'],
 })
 export class HomeRedirectComponent implements OnInit {
+  @Input() emitOnly = false; // se true, apenas emite o evento
+  @Output() requestNavigationBack = new EventEmitter<void>();
+
   private homePath = '/home';
+
   constructor(private navController: NavController) {}
 
   ngOnInit() {}
-  redirectToHome(): void {
-    this.navController.navigateRoot(this.homePath);
+
+  onClick(): void {
+    if (this.emitOnly) {
+      this.requestNavigationBack.emit();
+    } else {
+      this.navController.navigateRoot(this.homePath);
+    }
   }
 }
