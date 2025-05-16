@@ -31,60 +31,71 @@ import { EditedProductSelectionService } from 'src/app/services/edited-product-s
   ],
 })
 export class SelectedProductsPage implements OnInit {
-  public products: Product[] = [];
-  public isConfirmPopUpAtive: boolean = false;
-  public productExclusionId: string = '';
-  public progress = 100;
-  public currentProgress = 50;
-  openConfirmPopUp(productId: string) {
-    this.productExclusionId = productId;
-    this.isConfirmPopUpAtive = true;
-  }
-  animateProgress() {
-    const interval = setInterval(() => {
-      if (this.currentProgress < this.progress) {
-        this.currentProgress++;
-      } else {
-        clearInterval(interval);
-      }
-    }, 5); // ajuste o tempo para acelerar/desacelerar a animação
-  }
+  public selectedProducts: Product[] = [];
+  public isConfirmationPopupActive = false;
+  public productIdToExclude = '';
+  public maxProgress = 100;
+  public currentProgressValue = 50;
 
   constructor(
     private navController: NavController,
-    private productSelection: EditedProductSelectionService,
-    private selectedProducts: ProductSelectionService
+    private editedProductSelectionService: EditedProductSelectionService,
+    private productSelectionService: ProductSelectionService
   ) {}
-  public confirmProductExclusion() {
-    this.productSelection.removeProductById(this.productExclusionId);
-    this.selectedProducts.removeProductById(this.productExclusionId);
-    this.products = this.productSelection.getSelectedProducts();
-    if (!this.products || this.products.length === 0) {
-      this.redirectRoot();
-    }
-  }
-  public closeConfirmPopUp() {
-    console.log('closeConfirmPopUp');
-    this.isConfirmPopUpAtive = false;
-  }
 
   ngOnInit() {
-    this.products = this.productSelection.getSelectedProducts();
-    this.animateProgress();
+    this.selectedProducts =
+      this.editedProductSelectionService.getSelectedProducts();
+    this.animateProgressBar();
   }
-  trackById(index: number, item: Product) {
-    return item.id;
+
+  public openProductExclusionConfirmation(productId: string): void {
+    this.productIdToExclude = productId;
+    this.isConfirmationPopupActive = true;
   }
-  redirectBack() {
-    // Passa o progresso atual como query param
+
+  public handleProductExclusionConfirmation(): void {
+    this.editedProductSelectionService.removeProductById(
+      this.productIdToExclude
+    );
+    this.productSelectionService.removeProductById(this.productIdToExclude);
+    this.selectedProducts =
+      this.editedProductSelectionService.getSelectedProducts();
+
+    if (!this.selectedProducts.length) {
+      this.navigateToRoot();
+    }
+  }
+
+  public closeConfirmationPopup(): void {
+    this.isConfirmationPopupActive = false;
+  }
+
+  public navigateBack(): void {
     this.navController.navigateRoot(['/edit-available-products'], {
-      queryParams: { progress: this.currentProgress },
+      queryParams: { progress: this.currentProgressValue },
     });
   }
-  public getIconUrl(categoryName: string) {
+
+  public getCategoryIconUrl(categoryName: string) {
     return getCategoryIconPath(categoryName);
   }
-  public redirectRoot() {
+
+  public navigateToRoot(): void {
     this.navController.navigateRoot('/create-products');
+  }
+
+  public trackProductById(index: number, product: Product): string {
+    return product.id;
+  }
+
+  private animateProgressBar(): void {
+    const progressInterval = setInterval(() => {
+      if (this.currentProgressValue < this.maxProgress) {
+        this.currentProgressValue++;
+      } else {
+        clearInterval(progressInterval);
+      }
+    }, 5);
   }
 }
