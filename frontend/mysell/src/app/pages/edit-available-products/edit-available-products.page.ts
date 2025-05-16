@@ -16,7 +16,7 @@ import { ProguessBarComponent } from 'src/app/components/proguess-bar/proguess-b
 import { ConfirmPopUpComponent } from 'src/app/components/confirm-pop-up/confirm-pop-up.component';
 import { Product } from 'src/app/interfaces/product';
 import { ProductSelectionService } from 'src/app/services/product-selection.service';
-import { Route, Router } from '@angular/router';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 import { EditedProductSelectionService } from 'src/app/services/edited-product-selection.service';
 
 @Component({
@@ -46,7 +46,8 @@ export class EditAvailableProductsPage implements OnInit {
     private navController: NavController,
     private router: Router,
     private productSelection: ProductSelectionService,
-    private editedProductSelection: EditedProductSelectionService
+    private editedProductSelection: EditedProductSelectionService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
@@ -60,23 +61,33 @@ export class EditAvailableProductsPage implements OnInit {
           ...product,
           product: { ...product },
         }));
-      this.animateProgress();
       this.editedProductSelection.setSelectedProducts(this.selectedProducts);
     } else {
       this.selectedProducts = this.editedProductSelection.getSelectedProducts();
     }
 
+    this.route.queryParams.subscribe((params) => {
+      const passed = parseInt(params['progress'], 10);
+      const start = isNaN(passed) ? this.currentProgress : passed;
+      this.currentProgress = start;
+    });
+    this.animateProgress();
+
     console.log('ngOnInit: ' + this.selectedProducts);
   }
+
   animateProgress() {
     const interval = setInterval(() => {
       if (this.currentProgress < this.progress) {
         this.currentProgress++;
+      } else if (this.currentProgress >= this.progress) {
+        this.currentProgress--;
       } else {
         clearInterval(interval);
       }
-    }, 5); // ajuste o tempo para acelerar/desacelerar a animação
+    }, 5); // ajuste conforme necessário
   }
+
   public openConfirmPopUp(productId: string) {
     console.log('openConfirmPopUp');
     this.productExclusionId = productId;

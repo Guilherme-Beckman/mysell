@@ -75,8 +75,11 @@ export class SelectedProductsPage implements OnInit {
   trackById(index: number, item: Product) {
     return item.id;
   }
-  public redirectBack() {
-    this.navController.navigateRoot('/edit-available-products');
+  redirectBack() {
+    // Passa o progresso atual como query param
+    this.navController.navigateRoot(['/edit-available-products'], {
+      queryParams: { progress: this.currentProgress },
+    });
   }
   public getIconUrl(categoryName: string) {
     return getCategoryIconPath(categoryName);
