@@ -63,27 +63,12 @@ export class CreateProductsPage implements OnInit {
     this.initializeSelectedProducts();
     this.animateProgress();
   }
-  animateProgress() {
-    const interval = setInterval(() => {
-      if (this.currentProgress < this.progress) {
-        this.currentProgress++;
-      } else {
-        clearInterval(interval);
-      }
-    }, 5); // ajuste o tempo para acelerar/desacelerar a animação
-  }
-  private initializeSelectedProducts(): void {
-    const hasExistingSelections =
-      this.productSelectionService.getSelectedProducts().length > 0;
-    this.hasAnyItemSelected = hasExistingSelections;
-  }
 
-  public onProductSelection(productSelects: ProductSelect[]): void {
-    const selectedProducts = productSelects.map(
+  public onProductSelection(productSelections: ProductSelect[]): void {
+    const selectedProducts = productSelections.map(
       (selection) => selection.product
     );
     this.selectedProducts.push(...selectedProducts);
-    console.log('Selected products updated:', selectedProducts);
   }
 
   public navigateToProductEditing(): void {
@@ -94,14 +79,23 @@ export class CreateProductsPage implements OnInit {
     this.showCreateForm = false;
   }
 
-  private getNewUniqueSelections(existingIds: Set<string>): Product[] {
-    return this.productSelectionService
-      .getSelectedProducts()
-      .filter((product) => !existingIds.has(product.id));
+  private animateProgress(): void {
+    const interval = setInterval(() => {
+      if (this.currentProgress < this.progress) {
+        this.currentProgress++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 5);
+  }
+
+  private initializeSelectedProducts(): void {
+    const hasExistingSelections =
+      this.productSelectionService.getSelectedProducts().length > 0;
+    this.hasAnyItemSelected = hasExistingSelections;
   }
 
   private navigateToEditPage(): void {
-    console.log('Redirecting to selected products:', this.selectedProducts);
     this.navController.navigateRoot('/edit-available-products');
   }
 }
