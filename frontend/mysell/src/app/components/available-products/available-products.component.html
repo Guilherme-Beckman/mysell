@@ -16,18 +16,17 @@
 
       <div class="product-details">
         <div class="product-info">
-          <p class="product-name">Nome: {{ product.product.name }} |</p>
+          <p class="product-name">{{ product.product.name }}</p>
           <p class="product-price">
-            Custo:
             <span>R$ {{ formatCost(product.product.sellingPrice) }}</span>
           </p>
         </div>
-        <div class="product-icon">
-          <img
-            src="{{ getIconPath(product.product.category) }}"
-            alt="Food icon"
-          />
-        </div>
+      </div>
+      <div class="product-icon">
+        <img
+          src="{{ getIconPath(product.product.category) }}"
+          alt="Food icon"
+        />
       </div>
     </div>
   </div>

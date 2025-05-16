@@ -62,8 +62,11 @@
 }
 
 .product-info {
+  min-width: 100%;
+  text-align: left;
+  align-items: center;
+  position: relative;
   display: flex;
-  gap: 0.5rem;
   .product-name {
     font-size: 1rem;
     font-weight: 500;
@@ -72,10 +75,15 @@
   }
 
   .product-price {
+    position: absolute;
+    right: 0;
+    top: 0;
+    white-space: nowrap;
     font-size: 1rem;
     color: var(--text-gray);
     padding: 0.25rem 0.5rem;
     span {
+      display: inline-block;
       background-color: var(--medium-gray);
       padding: 0.25rem 0.5rem;
       border-radius: 5px;
