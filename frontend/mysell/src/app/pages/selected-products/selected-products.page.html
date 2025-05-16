@@ -1,6 +1,9 @@
 <nav>
   <div class="itens">
-    <app-home-redirect></app-home-redirect>
+    <app-home-redirect
+      [emitOnly]="true"
+      (requestNavigationBack)="showNavigateHomeConfirmation()"
+    ></app-home-redirect>
   </div>
 </nav>
 <main>
@@ -40,4 +43,11 @@
   (closeButtonEvent)="closeConfirmationPopup()"
   (confirm)="handleProductExclusionConfirmation()"
   [id]="productIdToExclude"
+></app-confirm-pop-up>
+<app-confirm-pop-up
+  [firstMessage]="'Deseja voltar para a página inicial?'"
+  [secondMessage]="'Você perderá as alterações feitas nos produtos.'"
+  [isActive]="isNavigateHomeConfirmationActive"
+  (closeButtonEvent)="hideNavigateHomeConfirmation()"
+  (confirm)="confirmNavigationHome()"
 ></app-confirm-pop-up>

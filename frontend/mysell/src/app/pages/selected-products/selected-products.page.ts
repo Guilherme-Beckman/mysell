@@ -22,7 +22,6 @@ import { EditedProductSelectionService } from 'src/app/services/edited-product-s
   imports: [
     CommonModule,
     FormsModule,
-    ArrowComponent,
     HomeRedirectComponent,
     ProguessBarComponent,
     BottomArrowComponent,
@@ -36,11 +35,11 @@ export class SelectedProductsPage implements OnInit {
   public productIdToExclude = '';
   public maxProgress = 100;
   public currentProgressValue = 50;
+  public isNavigateHomeConfirmationActive = false;
 
   constructor(
     private navController: NavController,
-    private editedProductSelectionService: EditedProductSelectionService,
-    private productSelectionService: ProductSelectionService
+    private editedProductSelectionService: EditedProductSelectionService
   ) {}
 
   ngOnInit() {
@@ -58,7 +57,6 @@ export class SelectedProductsPage implements OnInit {
     this.editedProductSelectionService.removeProductById(
       this.productIdToExclude
     );
-    this.productSelectionService.removeProductById(this.productIdToExclude);
     this.selectedProducts =
       this.editedProductSelectionService.getSelectedProducts();
 
@@ -97,5 +95,16 @@ export class SelectedProductsPage implements OnInit {
         clearInterval(progressInterval);
       }
     }, 5);
+  }
+  public showNavigateHomeConfirmation() {
+    this.isNavigateHomeConfirmationActive = true;
+  }
+
+  public hideNavigateHomeConfirmation() {
+    this.isNavigateHomeConfirmationActive = false;
+  }
+  public confirmNavigationHome() {
+    this.editedProductSelectionService.clear();
+    this.navController.navigateRoot('/home');
   }
 }
