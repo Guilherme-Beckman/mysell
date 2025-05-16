@@ -52,13 +52,18 @@ export class AvailableProductsComponent implements OnInit {
       return;
     }
 
-    const term = this.searchTerm.toLowerCase().trim();
+    const term = this.normalizeText(this.searchTerm.toLowerCase().trim());
     this.filteredProducts = this.allProducts.filter(
       (item) =>
-        item.product.name.toLowerCase().includes(term) ||
-        item.product.brand.toLowerCase().includes(term) ||
-        item.product.category.toLowerCase().includes(term)
+        this.normalizeText(item.product.name.toLowerCase()).includes(term) ||
+        this.normalizeText(item.product.brand.toLowerCase()).includes(term) ||
+        this.normalizeText(item.product.category.toLowerCase()).includes(term)
     );
+  }
+
+  // Remove diacritics (accent marks) from text for search purposes
+  normalizeText(text: string): string {
+    return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   }
 
   public getIconPath(categoryName: string) {
