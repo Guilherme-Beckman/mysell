@@ -50,13 +50,22 @@ export class EditAvailableProductsPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.selectedProducts = this.productSelection
-      .getSelectedProducts()
-      .map((product) => ({
-        ...product,
-        product: { ...product },
-      }));
-    this.animateProgress();
+    if (
+      !this.editedProductSelection.getSelectedProducts() ||
+      this.editedProductSelection.getSelectedProducts().length == 0
+    ) {
+      this.selectedProducts = this.productSelection
+        .getSelectedProducts()
+        .map((product) => ({
+          ...product,
+          product: { ...product },
+        }));
+      this.animateProgress();
+      this.editedProductSelection.setSelectedProducts(this.selectedProducts);
+    } else {
+      this.selectedProducts = this.editedProductSelection.getSelectedProducts();
+    }
+
     console.log('ngOnInit: ' + this.selectedProducts);
   }
   animateProgress() {
@@ -88,6 +97,7 @@ export class EditAvailableProductsPage implements OnInit {
     this.navController.navigateRoot('/create-products');
   }
   public confirmNavigateBack() {
+    this.editedProductSelection.clear();
     this.redirectBack();
   }
   public redirectFront() {

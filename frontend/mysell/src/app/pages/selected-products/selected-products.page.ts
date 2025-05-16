@@ -52,10 +52,12 @@ export class SelectedProductsPage implements OnInit {
 
   constructor(
     private navController: NavController,
-    private productSelection: EditedProductSelectionService
+    private productSelection: EditedProductSelectionService,
+    private selectedProducts: ProductSelectionService
   ) {}
   public confirmProductExclusion() {
     this.productSelection.removeProductById(this.productExclusionId);
+    this.selectedProducts.removeProductById(this.productExclusionId);
     this.products = this.productSelection.getSelectedProducts();
     if (!this.products || this.products.length === 0) {
       this.redirectRoot();
