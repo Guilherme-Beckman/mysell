@@ -141,16 +141,16 @@ input {
 /* MEASURE SELECT */
 .measure-select {
   display: flex;
-  width: 50%;
+  width: 48%;
   position: relative;
   img {
-    height: 18px;
+    height: 17px;
     width: 18px;
     background-color: #f8f8f8;
     border-radius: 5px;
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
-    border-right: none;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-left: none;
     padding: 12px;
   }
 }
@@ -160,9 +160,9 @@ input {
   position: relative;
 
   input {
-    border-left: none;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    border-right: none;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
   }
 }
 
@@ -197,9 +197,6 @@ input {
   &:hover {
     background-color: #f0f0f0;
   }
-}
-.input-with-icon {
-  padding-right: 30px;
 }
 
 .dropdown-icon {

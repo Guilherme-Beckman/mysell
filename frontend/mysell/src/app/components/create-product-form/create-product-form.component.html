@@ -12,9 +12,16 @@
           type="text"
           placeholder="Nome"
           [(ngModel)]="product.name"
+          class="input-full"
+        />
+      </div>
+      <div class="form-row">
+        <input
+          type="text"
+          placeholder="Marca"
+          [(ngModel)]="product.brand"
           class="input-half"
         />
-
         <div class="category-select">
           <img src="assets/svg/categories-icon.svg" alt="" />
           <div class="category-input">
@@ -52,39 +59,33 @@
           type="text"
           placeholder="Preço comprado"
           [(ngModel)]="product.purchasePrice"
-          class="input-full"
+          class="input-half"
         />
-      </div>
-
-      <div class="form-row">
         <input
           type="text"
           placeholder="Preço a vender"
           [(ngModel)]="product.sellingPrice"
-          class="input-full"
+          class="input-half"
         />
       </div>
 
       <div class="form-row">
         <input
           type="text"
-          placeholder="Marca"
-          [(ngModel)]="product.brand"
+          placeholder="Quantidade"
+          [(ngModel)]="product.measure.quantity"
           class="input-half"
         />
         <div class="measure-select">
-          <img src="assets/svg/ruler-icon.svg" alt="ícone medida" />
           <div class="measure-input">
             <input
               type="text"
-              placeholder="Medida"
               [(ngModel)]="measureSearch"
               (input)="filterMeasures()"
               (focus)="showMeasureDropdown = true"
               (blur)="hideMeasureDropdown()"
               class="input-with-icon"
             />
-            <span class="dropdown-icon">▼</span>
 
             <ul
               class="dropdown-measure"
@@ -98,6 +99,7 @@
               </li>
             </ul>
           </div>
+          <img src="assets/svg/ruler-icon.svg" alt="ícone medida" />
         </div>
       </div>
     </div>
