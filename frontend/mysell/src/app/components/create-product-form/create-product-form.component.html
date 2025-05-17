@@ -58,7 +58,8 @@
         <input
           type="text"
           placeholder="Preço comprado"
-          [(ngModel)]="product.purchasePrice"
+          [ngModel]="purchasePriceModel"
+          (ngModelChange)="onPurchasePriceChange($event)"
           mask="separator.2"
           thousandSeparator="."
           decimalMarker=","
@@ -69,7 +70,8 @@
         <input
           type="text"
           placeholder="Preço a vender"
-          [(ngModel)]="product.sellingPrice"
+          [ngModel]="sellingPriceModel"
+          (ngModelChange)="onSellingPriceChange($event)"
           mask="separator.2"
           thousandSeparator="."
           decimalMarker=","
@@ -82,9 +84,11 @@
         <input
           type="text"
           placeholder="Quantidade"
-          [(ngModel)]="product.measure.quantity"
+          [ngModel]="quantityModel"
+          (ngModelChange)="onQuantityChange($event)"
           class="input-half"
         />
+
         <div class="measure-select">
           <div class="measure-input">
             <input
