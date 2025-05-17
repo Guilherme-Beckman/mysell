@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Product } from 'src/app/interfaces/product';
@@ -16,11 +24,18 @@ import { NgxMaskDirective, NgxMaskService } from 'ngx-mask';
   standalone: true,
   imports: [CommonModule, FormsModule, NgxMaskDirective],
 })
-export class CreateProductFormComponent implements OnInit {
+export class CreateProductFormComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     console.log('CreateProductFormComponent initialized');
     console.log('Selected products:', this.selectedProducts);
   }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['product'] && changes['product'].currentValue) {
+      this.categorySearch = this.product.category || '';
+      this.measureSearch = this.product.measure.unitOfMeasure || '';
+    }
+  }
+
   // Inputs
   @Input() showModal: boolean = false;
   @Output() closeModalEvent = new EventEmitter<void>();
