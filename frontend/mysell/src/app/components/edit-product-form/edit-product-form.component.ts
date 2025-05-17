@@ -80,9 +80,9 @@ export class EditProductFormComponent implements OnInit {
     );
   }
 
-  selectMeasure(measure: Measure): void {
-    this.measureSearch = measure.unitOfMeasure;
-    this.product.measure = measure;
+  selectMeasure(measure: string): void {
+    this.measureSearch = measure;
+    this.product.measure.unitOfMeasure = measure;
     this.showMeasureDropdown = false;
   }
 
