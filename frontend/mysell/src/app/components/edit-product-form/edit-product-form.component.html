@@ -4,9 +4,16 @@
       type="text"
       placeholder="Nome"
       [(ngModel)]="productInfo.name"
+      class="input-full"
+    />
+  </div>
+  <div class="form-row">
+    <input
+      type="text"
+      placeholder="Marca"
+      [(ngModel)]="productInfo.brand"
       class="input-half"
     />
-
     <div class="category-select">
       <img src="assets/svg/categories-icon.svg" alt="" />
       <div class="category-input">
@@ -43,28 +50,36 @@
     <input
       type="text"
       placeholder="Preço comprado"
-      [(ngModel)]="productInfo.purchasePrice"
-      class="input-full"
-    />
-  </div>
-
-  <div class="form-row">
-    <input
-      type="text"
-      placeholder="Preço a vender"
-      [(ngModel)]="productInfo.sellingPrice"
-      class="input-full"
-    />
-  </div>
-
-  <div class="form-row">
-    <input
-      type="text"
-      placeholder="Marca"
-      [(ngModel)]="productInfo.brand"
+      [ngModel]="purchasePriceModel"
+      (ngModelChange)="onPurchasePriceChange($event)"
+      mask="separator.2"
+      thousandSeparator="."
+      decimalMarker=","
+      prefix="R$ "
       class="input-half"
     />
 
+    <input
+      type="text"
+      placeholder="Preço a vender"
+      [ngModel]="sellingPriceModel"
+      (ngModelChange)="onSellingPriceChange($event)"
+      mask="separator.2"
+      thousandSeparator="."
+      decimalMarker=","
+      prefix="R$ "
+      class="input-half"
+    />
+  </div>
+
+  <div class="form-row">
+    <input
+      type="text"
+      placeholder="Quantidade"
+      [ngModel]="quantityModel"
+      (ngModelChange)="onQuantityChange($event)"
+      class="input-half"
+    />
     <div class="measure-select">
       <img src="assets/svg/ruler-icon.svg" alt="ícone medida" />
       <div class="measure-input">

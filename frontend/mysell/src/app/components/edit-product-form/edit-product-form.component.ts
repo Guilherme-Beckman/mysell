@@ -100,4 +100,43 @@ export class EditProductFormComponent implements OnInit {
     console.log('Product added:', this.product);
     this.closeModal();
   }
+  get purchasePriceModel(): string | number {
+    return this.product.purchasePrice === 0 ? '' : this.product.purchasePrice;
+  }
+
+  get sellingPriceModel(): string | number {
+    return this.product.sellingPrice === 0 ? '' : this.product.sellingPrice;
+  }
+
+  onPurchasePriceChange(value: string): void {
+    this.product.purchasePrice = this.parseMaskedPrice(value);
+  }
+
+  onSellingPriceChange(value: string): void {
+    this.product.sellingPrice = this.parseMaskedPrice(value);
+  }
+
+  private parseMaskedPrice(value: string): number {
+    if (!value) return 0;
+    // Remove "R$ ", ".", substitui "," por "." para parsear corretamente
+    const cleaned = value.replace(/[R$\s.]/g, '').replace(',', '.');
+    const parsed = parseFloat(cleaned);
+    return isNaN(parsed) ? 0 : parsed;
+  }
+  get quantityModel(): string | number {
+    return this.product.measure.quantity === 0
+      ? ''
+      : this.product.measure.quantity;
+  }
+
+  onQuantityChange(value: string): void {
+    this.product.measure.quantity = this.parseMaskedQuantity(value);
+  }
+
+  private parseMaskedQuantity(value: string): number {
+    if (!value) return 0;
+    const cleaned = value.replace(',', '.'); // Suporte para vírgula como separador decimal
+    const parsed = parseFloat(cleaned);
+    return isNaN(parsed) ? 0 : parsed;
+  }
 }
