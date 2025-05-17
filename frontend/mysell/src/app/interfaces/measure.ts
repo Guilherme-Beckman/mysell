@@ -1,1 +1,4 @@
-export type Measure = string;
+export interface Measure {
+  quantity: number;
+  unitOfMeasure: string;
+}

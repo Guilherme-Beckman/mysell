@@ -1,6 +1,6 @@
 import { Measure } from '../interfaces/measure';
 
-export const MEASURES: Measure[] = [
+export const MEASURES: string[] = [
   'NONE',
   'ml',
   'l',

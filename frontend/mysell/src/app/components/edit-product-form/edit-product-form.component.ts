@@ -18,7 +18,7 @@ export class EditProductFormComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('edit produtc info:' + this.productInfo);
-    this.measureSearch = this.productInfo.measure;
+    this.measureSearch = this.productInfo.measure.unitOfMeasure;
     this.categorySearch = this.productInfo.category;
   }
   // Inputs
@@ -26,13 +26,17 @@ export class EditProductFormComponent implements OnInit {
   @Input() productInfo!: Product;
   @Output() closeModalEvent = new EventEmitter<void>();
   // Product model
-  product = {
+  product: Product = {
+    id: '',
     name: '',
     category: '',
-    purchasePrice: '',
-    sellingPrice: '',
+    purchasePrice: 0,
+    sellingPrice: 0,
     brand: '',
-    measure: '',
+    measure: {
+      quantity: 0,
+      unitOfMeasure: '',
+    },
   };
 
   // Category dropdown state
@@ -42,7 +46,7 @@ export class EditProductFormComponent implements OnInit {
 
   // Measure dropdown state
   measureSearch = '';
-  filteredMeasures: Measure[] = [];
+  filteredMeasures: string[] = [];
   showMeasureDropdown = false;
 
   // Static data
@@ -77,7 +81,7 @@ export class EditProductFormComponent implements OnInit {
   }
 
   selectMeasure(measure: Measure): void {
-    this.measureSearch = measure;
+    this.measureSearch = measure.unitOfMeasure;
     this.product.measure = measure;
     this.showMeasureDropdown = false;
   }

@@ -1,3 +1,5 @@
+import { Measure } from './measure';
+
 export interface Product {
   id: string;
   name: string;
@@ -5,5 +7,5 @@ export interface Product {
   purchasePrice: number;
   sellingPrice: number;
   brand: string;
-  measure: string;
+  measure: Measure;
 }

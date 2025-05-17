@@ -30,7 +30,10 @@ export class CreateProductFormComponent implements OnInit {
     purchasePrice: 0,
     sellingPrice: 0,
     brand: '',
-    measure: '',
+    measure: {
+      quantity: 0,
+      unitOfMeasure: '',
+    },
   };
 
   // Category dropdown state
@@ -40,7 +43,7 @@ export class CreateProductFormComponent implements OnInit {
 
   // Measure dropdown state
   measureSearch = '';
-  filteredMeasures: Measure[] = [];
+  filteredMeasures: string[] = [];
   showMeasureDropdown = false;
 
   // Static data
@@ -75,7 +78,7 @@ export class CreateProductFormComponent implements OnInit {
   }
 
   selectMeasure(measure: Measure): void {
-    this.measureSearch = measure;
+    this.measureSearch = measure.unitOfMeasure;
     this.product.measure = measure;
     this.showMeasureDropdown = false;
   }

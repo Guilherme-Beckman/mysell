@@ -60,7 +60,10 @@ export class CreateProductsPage implements OnInit {
     purchasePrice: 0,
     sellingPrice: 0,
     brand: '',
-    measure: '',
+    measure: {
+      quantity: 0,
+      unitOfMeasure: '',
+    },
   };
   public actionButtons: AddProductButton[] = [
     {
