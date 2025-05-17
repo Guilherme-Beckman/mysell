@@ -32,6 +32,7 @@
     "@capawesome/capacitor-screen-orientation": "^7.0.1",
     "@ionic/angular": "^8.0.0",
     "ionicons": "^7.0.0",
+    "ngx-mask": "^19.0.7",
     "remixicon": "^4.6.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

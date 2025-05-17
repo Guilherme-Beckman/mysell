@@ -6,13 +6,15 @@ import { Category } from 'src/app/interfaces/category';
 import { CATEGORIES } from 'src/app/datas/categories';
 import { MEASURES } from 'src/app/datas/measures';
 import { Measure } from 'src/app/interfaces/measure';
+import { NgxMaskApplierService } from 'ngx-mask/lib/ngx-mask-applier.service';
+import { NgxMaskDirective, NgxMaskService } from 'ngx-mask';
 
 @Component({
   selector: 'app-create-product-form',
   templateUrl: './create-product-form.component.html',
   styleUrls: ['./create-product-form.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NgxMaskDirective],
 })
 export class CreateProductFormComponent implements OnInit {
   ngOnInit(): void {

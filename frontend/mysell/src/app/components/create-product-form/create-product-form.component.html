@@ -59,12 +59,21 @@
           type="text"
           placeholder="Preço comprado"
           [(ngModel)]="product.purchasePrice"
+          mask="separator.2"
+          thousandSeparator="."
+          decimalMarker=","
+          prefix="R$ "
           class="input-half"
         />
+
         <input
           type="text"
           placeholder="Preço a vender"
           [(ngModel)]="product.sellingPrice"
+          mask="separator.2"
+          thousandSeparator="."
+          decimalMarker=","
+          prefix="R$ "
           class="input-half"
         />
       </div>
