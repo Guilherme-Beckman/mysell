@@ -79,6 +79,10 @@
       placeholder="Quantidade"
       [ngModel]="quantityModel"
       (ngModelChange)="onQuantityChange($event)"
+      mask="separator.2"
+      thousandSeparator="."
+      decimalMarker=","
+      [dropSpecialCharacters]="false"
       class="input-half"
     />
     <div class="measure-select">

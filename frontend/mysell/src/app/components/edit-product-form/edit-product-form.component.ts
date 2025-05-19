@@ -18,14 +18,21 @@ export class EditProductFormComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    console.log('edit produtc info:' + this.productInfo);
+    console.log('EditProductFormComponent initialized');
+    console.log(
+      'Quantidade inicial recebida do productInfo:',
+      this.productInfo.measure.quantity
+    );
+    this.product = { ...this.productInfo };
     this.measureSearch = this.productInfo.measure.unitOfMeasure;
     this.categorySearch = this.productInfo.category;
   }
+
   // Inputs
   @Input() showModal: boolean = false;
   @Input() productInfo!: Product;
   @Output() closeModalEvent = new EventEmitter<void>();
+
   // Product model
   product: Product = {
     id: '',
@@ -52,7 +59,6 @@ export class EditProductFormComponent implements OnInit {
 
   // Static data
   categories = CATEGORIES;
-
   measures = MEASURES;
 
   // Category methods
@@ -98,9 +104,10 @@ export class EditProductFormComponent implements OnInit {
   }
 
   confirmProduct(): void {
-    console.log('Product added:', this.product);
+    console.log('Produto confirmado:', this.product);
     this.closeModal();
   }
+
   get purchasePriceModel(): string | number {
     return this.product.purchasePrice === 0 ? '' : this.product.purchasePrice;
   }
@@ -119,25 +126,31 @@ export class EditProductFormComponent implements OnInit {
 
   private parseMaskedPrice(value: string): number {
     if (!value) return 0;
-    // Remove "R$ ", ".", substitui "," por "." para parsear corretamente
     const cleaned = value.replace(/[R$\s.]/g, '').replace(',', '.');
     const parsed = parseFloat(cleaned);
     return isNaN(parsed) ? 0 : parsed;
   }
+
   get quantityModel(): string | number {
-    return this.product.measure.quantity === 0
-      ? ''
-      : this.product.measure.quantity;
+    const quantity = this.product.measure.quantity;
+    console.log('Getter quantityModel chamado. Valor atual:', quantity);
+    return quantity === 0 ? '' : quantity;
   }
 
   onQuantityChange(value: string): void {
-    this.product.measure.quantity = this.parseMaskedQuantity(value);
+    console.log('onQuantityChange chamado com valor:', value);
+    const parsedQuantity = this.parseMaskedQuantity(value);
+    console.log('Quantidade parseada:', parsedQuantity);
+    this.product.measure.quantity = parsedQuantity;
+    console.log('Quantidade atual no model:', this.product.measure.quantity);
   }
 
   private parseMaskedQuantity(value: string): number {
+    console.log('parseMaskedQuantity chamado com valor:', value);
     if (!value) return 0;
-    const cleaned = value.replace(',', '.'); // Suporte para vírgula como separador decimal
+    const cleaned = value.replace(',', '.');
     const parsed = parseFloat(cleaned);
+    console.log('Valor limpo:', cleaned, '| Valor convertido:', parsed);
     return isNaN(parsed) ? 0 : parsed;
   }
 }
