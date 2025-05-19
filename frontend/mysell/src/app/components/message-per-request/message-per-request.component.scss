@@ -4,7 +4,7 @@
   top: 10%;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1000;
+  z-index: 10000000;
   display: flex;
   justify-content: center;
   width: 100%;
@@ -26,15 +26,27 @@
 
 /* Icon shake animation */
 @keyframes shake {
-  0%, 100% { transform: rotate(0deg); }
-  20% { transform: rotate(-10deg); }
-  40% { transform: rotate(10deg); }
-  60% { transform: rotate(-5deg); }
-  80% { transform: rotate(5deg); }
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  20% {
+    transform: rotate(-10deg);
+  }
+  40% {
+    transform: rotate(10deg);
+  }
+  60% {
+    transform: rotate(-5deg);
+  }
+  80% {
+    transform: rotate(5deg);
+  }
 }
 
 /* Common styles for both message types */
-.successMessage, .errorMessage {
+.successMessage,
+.errorMessage {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -62,7 +74,8 @@
 }
 
 /* Message text styling */
-.successMessage p, .errorMessage p {
+.successMessage p,
+.errorMessage p {
   margin: 0;
   flex-grow: 1;
   text-align: left;
@@ -88,7 +101,8 @@
 }
 
 /* Hover effect for messages */
-.successMessage:hover, .errorMessage:hover {
+.successMessage:hover,
+.errorMessage:hover {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
 }
@@ -99,7 +113,8 @@
     max-width: 90%;
     top: 5%;
   }
-  .successMessage, .errorMessage {
+  .successMessage,
+  .errorMessage {
     padding: 0.75rem 1rem;
     font-size: 0.9rem;
   }

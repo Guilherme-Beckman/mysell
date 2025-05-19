@@ -23,6 +23,8 @@ import { AlertController } from '@ionic/angular/standalone';
 import { ProductService } from 'src/app/services/product.service';
 import { LoadingSppinerComponent } from 'src/app/components/loading-sppiner/loading-sppiner.component';
 import { ConfirmPopUpComponent } from 'src/app/components/confirm-pop-up/confirm-pop-up.component';
+import { MessagePerRequestComponent } from 'src/app/components/message-per-request/message-per-request.component';
+import { MessageService } from 'src/app/services/message.service';
 @Component({
   selector: 'app-create-products',
   templateUrl: './create-products.page.html',
@@ -41,13 +43,15 @@ import { ConfirmPopUpComponent } from 'src/app/components/confirm-pop-up/confirm
     CreateProductFormComponent,
     LoadingSppinerComponent,
     ConfirmPopUpComponent,
+    MessagePerRequestComponent,
   ],
 })
 export class CreateProductsPage implements OnInit {
   public hasAnyItemSelected = false;
   public showCreateProductForm = false;
   public showCreateProductScanedForm = false;
-
+  public successMessage$ = this.messageService.successMessage$;
+  public errorMessage$ = this.messageService.errorMessage$;
   public selectedProducts: Product[] = [];
   public progress = 2;
   public currentProgress = 0;
@@ -86,7 +90,8 @@ export class CreateProductsPage implements OnInit {
     private navController: NavController,
     private productSelectionService: ProductSelectionService,
     private alertController: AlertController,
-    private productService: ProductService
+    private productService: ProductService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit() {
@@ -220,6 +225,10 @@ export class CreateProductsPage implements OnInit {
         console.log('[createProduct] Produto criado com sucesso na API');
         this.isLoading = false;
         console.log('[createProduct] isLoading desativado');
+        this.messageService.setSuccessMessage(
+          'Produto criado com sucesso!',
+          ''
+        );
         this.closeCreateProductForm();
         console.log('[createProduct] Formulário manual fechado');
         this.closeCreateScanedForm();
@@ -229,6 +238,7 @@ export class CreateProductsPage implements OnInit {
         console.error('[createProduct] Erro ao criar produto:', error);
         this.isLoading = false;
         console.log('[createProduct] isLoading desativado após erro');
+        this.messageService.setErrorMessage('Erro ao criar produto.', error);
       },
     });
   }

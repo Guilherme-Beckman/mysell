@@ -51,3 +51,7 @@
   (closeButtonEvent)="closePopup()"
   (confirm)="closePopup()"
 ></app-confirm-pop-up>
+<app-message-per-request
+  [errorMessage]="(errorMessage$ | async) ?? ''"
+  [successMessage]="(successMessage$ | async) ?? ''"
+></app-message-per-request>
