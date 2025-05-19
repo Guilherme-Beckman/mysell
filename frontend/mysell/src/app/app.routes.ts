@@ -29,4 +29,25 @@ export const routes: Routes = [
         (m) => m.EmailValidationPage
       ),
   },
+  {
+    path: 'create-products',
+    loadComponent: () =>
+      import('./pages/create-products/create-products.page').then(
+        (m) => m.CreateProductsPage
+      ),
+  },
+  {
+    path: 'edit-available-products',
+    loadComponent: () =>
+      import(
+        './pages/edit-available-products/edit-available-products.page'
+      ).then((m) => m.EditAvailableProductsPage),
+  },
+  {
+    path: 'selected-products',
+    loadComponent: () =>
+      import('./pages/selected-products/selected-products.page').then(
+        (m) => m.SelectedProductsPage
+      ),
+  },
 ];

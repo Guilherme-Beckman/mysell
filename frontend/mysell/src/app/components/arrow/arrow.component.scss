@@ -1,28 +1,26 @@
 .arrow {
-    transition: transform 0.3s ease-in-out;
-    position: absolute; 
-    top: 5rem;         
-  }
-  
-  .arrow-right {
-    right: 2rem;
-    transform: rotate(180deg);
-  }
-  
-  .arrow-left {
-    left: 2rem;
-    transform: rotate(0deg);
-  }
-  button {
-    background-color: transparent;
-    border: none;
-    transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
-  }
-  
-  /* Estado :active para melhorar a UX */
-  button:active {
-    transform: scale(0.95); /* Efeito de "pressionar" o botão */
-  }
-  
+  transition: transform 0.3s ease-in-out;
+  position: absolute;
+  top: 3rem;
+  z-index: 10000;
+}
 
-  
+.arrow-right {
+  right: 1rem;
+  transform: rotate(180deg);
+}
+
+.arrow-left {
+  left: 1rem;
+  transform: rotate(0deg);
+}
+button {
+  background-color: transparent;
+  border: none;
+  transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+/* Estado :active para melhorar a UX */
+button:active {
+  transform: scale(0.95); /* Efeito de "pressionar" o botão */
+}

@@ -1,0 +1,57 @@
+<app-create-product-form
+  [showModal]="showCreateProductForm"
+  (closeModalEvent)="closeCreateProductForm()"
+  (confirmCreateProductEvent)="createProduct($event)"
+></app-create-product-form>
+<app-create-product-form
+  [showModal]="showCreateProductScanedForm"
+  (closeModalEvent)="closeCreateScanedForm()"
+  [product]="scanedProduct"
+  (confirmCreateProductEvent)="createProduct($event)"
+></app-create-product-form>
+<app-loading-sppiner [isLoading]="isLoading"></app-loading-sppiner>
+<main>
+  <nav>
+    <div class="itens">
+      <app-arrow [direction]="'left'" [pageToGo]="'/home'"></app-arrow>
+      <app-home-redirect></app-home-redirect>
+    </div>
+  </nav>
+  <h1>Adicionar Produtos</h1>
+
+  <app-proguess-bar [progress]="currentProgress"></app-proguess-bar>
+
+  <app-search-bar
+    [placeholder]="'Buscar produtos'"
+    (searchChange)="onSearchChange($event)"
+  ></app-search-bar>
+
+  <app-add-product-buttons [buttons]="actionButtons"></app-add-product-buttons>
+
+  <app-available-products
+    (hasAnyItemSelected)="hasAnyItemSelected = $event"
+    (selectedProducts)="onProductSelection($event)"
+    [searchTerm]="searchTerm"
+  ></app-available-products>
+
+  <br /><br />
+  <br /><br />
+  <br /><br />
+  <br /><br />
+  <app-bottom-arrow
+    [direction]="'right'"
+    *ngIf="hasAnyItemSelected"
+    (arrowClick)="navigateToProductEditing()"
+  ></app-bottom-arrow>
+</main>
+<app-confirm-pop-up
+  [firstMessage]="popupMessage"
+  [secondMessage]="'Você pode tentar escanear outro código ou voltar para a página inicial'"
+  [isActive]="isPopupForScanFailedActive"
+  (closeButtonEvent)="closePopup()"
+  (confirm)="closePopup()"
+></app-confirm-pop-up>
+<app-message-per-request
+  [errorMessage]="(errorMessage$ | async) ?? ''"
+  [successMessage]="(successMessage$ | async) ?? ''"
+></app-message-per-request>

@@ -18,6 +18,7 @@ import {
   withInterceptors,
 } from '@angular/common/http';
 import { authInterceptor } from './app/interceptors/auth.interceptor';
+import { provideNgxMask } from 'ngx-mask';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -25,5 +26,6 @@ bootstrapApplication(AppComponent, {
     provideIonicAngular(),
     provideRouter(routes, withPreloading(PreloadAllModules)),
     provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
+    provideNgxMask(),
   ],
 });

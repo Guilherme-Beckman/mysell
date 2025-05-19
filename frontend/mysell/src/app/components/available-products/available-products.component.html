@@ -1,0 +1,36 @@
+<div class="product-list-container">
+  <div class="product-list-header">
+    <h2 class="product-list-title">Produtos disponíveis</h2>
+    <p *ngIf="filteredProducts.length === 0" class="no-results">
+      Nenhum produto encontrado.
+    </p>
+  </div>
+
+  <div class="product-list">
+    <div *ngFor="let product of filteredProducts" class="product-item">
+      <label class="product-checkbox">
+        <input
+          type="checkbox"
+          [checked]="product.selected"
+          (change)="toggleSelection(product)"
+        />
+        <span class="custom-checkbox"></span>
+      </label>
+
+      <div class="product-details">
+        <div class="product-info">
+          <p class="product-name">{{ product.product.name }}</p>
+          <p class="product-price">
+            <span>R$ {{ formatCost(product.product.sellingPrice) }}</span>
+          </p>
+        </div>
+      </div>
+      <div class="product-icon">
+        <img
+          src="{{ getIconPath(product.product.category) }}"
+          alt="Food icon"
+        />
+      </div>
+    </div>
+  </div>
+</div>

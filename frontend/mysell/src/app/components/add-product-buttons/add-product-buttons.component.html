@@ -1,0 +1,5 @@
+<div class="add-buttons">
+  <button *ngFor="let btn of buttons" (click)="btn.action()">
+    <img [src]="btn.svgPath" alt="" />
+  </button>
+</div>

@@ -1,0 +1,20 @@
+.confirm-button-wrapper {
+  position: absolute;
+  bottom: 4rem;
+  transition: transform 0.3s ease-in-out;
+}
+
+.confirm-right {
+  right: 1rem;
+}
+
+.confirm-left {
+  left: 1rem;
+}
+
+button {
+  padding: 0.75rem;
+  border: none;
+  background-color: var(--mysell-red);
+  border-radius: 10px;
+}

@@ -1,0 +1,112 @@
+.product-list-container {
+  margin-top: 2rem;
+}
+
+.product-list-header {
+  padding: 0.5rem 1rem;
+  border-bottom: 2px solid var(--text-gray);
+}
+
+.product-list-title {
+  text-align: center;
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--text-gray);
+}
+
+.product-list {
+  > :not(:first-child) {
+    border-top: 2px solid var(--medium-gray);
+  }
+}
+
+.product-item {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+}
+
+.product-checkbox {
+  display: inline-flex;
+  align-items: center;
+}
+
+.product-checkbox input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.custom-checkbox {
+  width: 0.75rem;
+  height: 0.75rem;
+  background-color: transparent;
+  border: 2px solid var(--medium-gray);
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+/* Quando o checkbox estiver checado */
+.product-checkbox input:checked + .custom-checkbox {
+  background-color: var(--mysell-red);
+}
+
+.product-details {
+  display: flex;
+  flex: 1 1 0%;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 0.75rem;
+}
+
+.product-info {
+  min-width: 100%;
+  text-align: left;
+  align-items: center;
+  position: relative;
+  display: flex;
+  .product-name {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-gray);
+    padding: 0.25rem 0.5rem;
+  }
+
+  .product-price {
+    position: absolute;
+    right: 0;
+    top: 0;
+    white-space: nowrap;
+    font-size: 1rem;
+    color: var(--text-gray);
+    padding: 0.25rem 0.5rem;
+    span {
+      display: inline-block;
+      background-color: var(--medium-gray);
+      padding: 0.25rem 0.5rem;
+      border-radius: 5px;
+    }
+  }
+}
+
+.product-icon {
+  color: var(--text-gray);
+
+  img {
+    height: 1.25rem;
+    width: 1.25rem;
+  }
+}
+
+.no-results {
+  color: #666;
+  font-style: italic;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.product-list-header {
+  margin-bottom: 15px;
+}

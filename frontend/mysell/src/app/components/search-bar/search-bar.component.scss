@@ -1,0 +1,44 @@
+.search-bar {
+  margin-top: 1rem;
+  display: flex;
+  width: 100%;
+  max-width: 400px; // ajuste conforme quiser
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--medium-gray); // cor de fundo cinza claro
+
+  input {
+    flex: 1;
+    border: none;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    background: transparent;
+    &:focus {
+      outline: none;
+    }
+  }
+
+  button {
+    background: var(--mysell-red); // vermelho suave
+    border: none;
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:disabled {
+      cursor: default;
+    }
+
+    img {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+
+    &:hover:not(:disabled) {
+      background: darken(#f07070, 5%);
+    }
+  }
+}

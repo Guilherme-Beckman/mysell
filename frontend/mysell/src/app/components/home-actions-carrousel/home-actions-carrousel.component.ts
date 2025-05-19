@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 
 export interface ActionButton {
   svgPath: string;
@@ -17,11 +18,11 @@ export interface ActionButton {
 export class HomeActionsCarrouselComponent implements OnInit {
   @Input() actions: ActionButton[] = [];
   ngOnInit(): void {}
-  constructor(private router: Router) {}
+  constructor(private navController: NavController) {}
 
   onAction(action: ActionButton) {
     if (action.route) {
-      this.router.navigateByUrl(action.route);
+      this.navController.navigateRoot(action.route);
     }
   }
 }

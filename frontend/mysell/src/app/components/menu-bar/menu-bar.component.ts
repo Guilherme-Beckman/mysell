@@ -26,6 +26,11 @@ export class MenuBarComponent implements OnInit {
       label: 'Análise de vendas',
       handler: () => console.log('Análise'),
     },
+    {
+      icon: 'assets/svg/product-svgrepo-com.svg',
+      label: 'Seus produtos',
+      handler: () => console.log('Análise'),
+    },
 
     {
       icon: 'assets/svg/add-product.svg',
