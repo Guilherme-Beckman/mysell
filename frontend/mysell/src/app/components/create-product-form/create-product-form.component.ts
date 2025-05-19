@@ -27,7 +27,6 @@ import { NgxMaskDirective, NgxMaskService } from 'ngx-mask';
 export class CreateProductFormComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     console.log('CreateProductFormComponent initialized');
-    console.log('Selected products:', this.selectedProducts);
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['product'] && changes['product'].currentValue) {
@@ -39,7 +38,7 @@ export class CreateProductFormComponent implements OnInit, OnChanges {
   // Inputs
   @Input() showModal: boolean = false;
   @Output() closeModalEvent = new EventEmitter<void>();
-  @Input() selectedProducts: Product[] = [];
+  @Output() confirmCreateProductEvent = new EventEmitter<Product>();
   @Input() product: Product = {
     id: '',
     name: '',
@@ -107,12 +106,24 @@ export class CreateProductFormComponent implements OnInit, OnChanges {
   // Modal methods
   closeModal(): void {
     console.log('Modal closed');
-    console.log('Selected products:', this.selectedProducts);
+    this.product = {
+      id: '',
+      name: '',
+      category: '',
+      purchasePrice: 0,
+      sellingPrice: 0,
+      brand: '',
+      measure: {
+        quantity: 0,
+        unitOfMeasure: '',
+      },
+    };
     this.closeModalEvent.emit();
   }
 
   confirmProduct(): void {
     console.log('Product added:', this.product);
+    this.confirmCreateProductEvent.emit(this.product);
     this.closeModal();
   }
   get purchasePriceModel(): string | number {
@@ -123,21 +134,21 @@ export class CreateProductFormComponent implements OnInit, OnChanges {
     return this.product.sellingPrice === 0 ? '' : this.product.sellingPrice;
   }
 
-  onPurchasePriceChange(value: string): void {
-    this.product.purchasePrice = this.parseMaskedPrice(value);
-  }
-
-  onSellingPriceChange(value: string): void {
-    this.product.sellingPrice = this.parseMaskedPrice(value);
-  }
-
-  private parseMaskedPrice(value: string): number {
+  private parseMaskedPrice(value: any): number {
     if (!value) return 0;
-    // Remove "R$ ", ".", substitui "," por "." para parsear corretamente
-    const cleaned = value.replace(/[R$\s.]/g, '').replace(',', '.');
+    const strValue = String(value);
+    const cleaned = strValue.replace(/[R$\s.]/g, '').replace(',', '.');
     const parsed = parseFloat(cleaned);
     return isNaN(parsed) ? 0 : parsed;
   }
+  onPurchasePriceChange(value: any): void {
+    this.product.purchasePrice = this.parseMaskedPrice(value);
+  }
+
+  onSellingPriceChange(value: any): void {
+    this.product.sellingPrice = this.parseMaskedPrice(value);
+  }
+
   get quantityModel(): string | number {
     return this.product.measure.quantity === 0
       ? ''

@@ -45,7 +45,9 @@ import { ConfirmPopUpComponent } from 'src/app/components/confirm-pop-up/confirm
 })
 export class CreateProductsPage implements OnInit {
   public hasAnyItemSelected = false;
-  public showCreateForm = false;
+  public showCreateProductForm = false;
+  public showCreateProductScanedForm = false;
+
   public selectedProducts: Product[] = [];
   public progress = 2;
   public currentProgress = 0;
@@ -69,7 +71,7 @@ export class CreateProductsPage implements OnInit {
     {
       svgPath: '/assets/svg/add-product.svg',
       action: () => {
-        this.showCreateForm = true;
+        this.showCreateProductForm = true;
       },
     },
     {
@@ -110,8 +112,11 @@ export class CreateProductsPage implements OnInit {
     this.navigateToEditPage();
   }
 
-  public closeCreateForm(): void {
-    this.showCreateForm = false;
+  public closeCreateProductForm(): void {
+    this.showCreateProductForm = false;
+  }
+  public closeCreateScanedForm(): void {
+    this.showCreateProductScanedForm = false;
   }
 
   private animateProgress(): void {
@@ -154,7 +159,7 @@ export class CreateProductsPage implements OnInit {
         console.log('Produto encontrado:', product);
         this.scanedProduct = product;
         this.isLoading = false; // Fim do loading no sucesso
-        this.showCreateForm = true;
+        this.showCreateProductScanedForm = true;
       },
       error: (error) => {
         console.error('Erro ao buscar o produto:', error);
@@ -190,5 +195,41 @@ export class CreateProductsPage implements OnInit {
   public closePopup() {
     this.isPopupForScanFailedActive = false;
     this.popupMessage = '';
+    this.scanedProduct = {
+      id: '',
+      name: '',
+      category: '',
+      purchasePrice: 0,
+      sellingPrice: 0,
+      brand: '',
+      measure: {
+        quantity: 0,
+        unitOfMeasure: '',
+      },
+    };
+  }
+  public createProduct(product: Product) {
+    console.log('[createProduct] Iniciando criação de produto...');
+    console.log('[createProduct] Produto recebido:', product);
+
+    this.isLoading = true;
+    console.log('[createProduct] isLoading ativado');
+
+    this.productService.createProduct(product).subscribe({
+      next: () => {
+        console.log('[createProduct] Produto criado com sucesso na API');
+        this.isLoading = false;
+        console.log('[createProduct] isLoading desativado');
+        this.closeCreateProductForm();
+        console.log('[createProduct] Formulário manual fechado');
+        this.closeCreateScanedForm();
+        console.log('[createProduct] Formulário escaneado fechado');
+      },
+      error: (error) => {
+        console.error('[createProduct] Erro ao criar produto:', error);
+        this.isLoading = false;
+        console.log('[createProduct] isLoading desativado após erro');
+      },
+    });
   }
 }

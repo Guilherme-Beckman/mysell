@@ -1,8 +1,13 @@
 <app-create-product-form
-  [showModal]="showCreateForm"
-  (closeModalEvent)="closeCreateForm()"
-  [selectedProducts]="selectedProducts"
+  [showModal]="showCreateProductForm"
+  (closeModalEvent)="closeCreateProductForm()"
+  (confirmCreateProductEvent)="createProduct($event)"
+></app-create-product-form>
+<app-create-product-form
+  [showModal]="showCreateProductScanedForm"
+  (closeModalEvent)="closeCreateScanedForm()"
   [product]="scanedProduct"
+  (confirmCreateProductEvent)="createProduct($event)"
 ></app-create-product-form>
 <app-loading-sppiner [isLoading]="isLoading"></app-loading-sppiner>
 <main>
