@@ -56,7 +56,7 @@ export class ProductService {
       brand: product.brand,
       productUnitOfMeasureDTO: {
         quantity: product.measure.quantity,
-        unitOfMeasureId: unitOfMeasureId,
+        unitOfMeasureId: unitOfMeasureId ?? 1,
       },
     };
 
