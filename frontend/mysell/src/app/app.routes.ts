@@ -50,4 +50,8 @@ export const routes: Routes = [
         (m) => m.SelectedProductsPage
       ),
   },
+  {
+    path: 'your-products',
+    loadComponent: () => import('./your-products/your-products.page').then( m => m.YourProductsPage)
+  },
 ];
