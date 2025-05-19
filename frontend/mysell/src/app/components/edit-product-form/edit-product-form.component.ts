@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { NgxMaskDirective } from 'ngx-mask';
 import { CATEGORIES } from 'src/app/datas/categories';
 import { MEASURES } from 'src/app/datas/measures';
 import { Category } from 'src/app/interfaces/category';
@@ -11,7 +12,7 @@ import { Product } from 'src/app/interfaces/product';
   selector: 'app-edit-product-form',
   templateUrl: './edit-product-form.component.html',
   styleUrls: ['./edit-product-form.component.scss'],
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NgxMaskDirective],
 })
 export class EditProductFormComponent implements OnInit {
   constructor() {}

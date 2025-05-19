@@ -54,7 +54,6 @@
           </div>
         </div>
       </div>
-
       <div class="form-row">
         <input
           type="text"
@@ -65,9 +64,9 @@
           thousandSeparator="."
           decimalMarker=","
           prefix="R$ "
+          [dropSpecialCharacters]="false"
           class="input-half"
         />
-
         <input
           type="text"
           placeholder="Preço a vender"
@@ -77,6 +76,7 @@
           thousandSeparator="."
           decimalMarker=","
           prefix="R$ "
+          [dropSpecialCharacters]="false"
           class="input-half"
         />
       </div>
