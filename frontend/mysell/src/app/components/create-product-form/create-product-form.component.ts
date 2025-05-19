@@ -122,10 +122,33 @@ export class CreateProductFormComponent implements OnInit, OnChanges {
   }
 
   confirmProduct(): void {
+    const { name, purchasePrice, sellingPrice } = this.product;
+
+    if (!name.trim()) {
+      alert('O nome do produto não pode ser vazio.');
+      return;
+    }
+
+    if (
+      purchasePrice == null ||
+      sellingPrice == null ||
+      isNaN(purchasePrice) ||
+      isNaN(sellingPrice)
+    ) {
+      alert('Os preços devem ser informados corretamente.');
+      return;
+    }
+
+    if (sellingPrice < purchasePrice) {
+      alert('O preço de venda não pode ser menor que o preço de compra.');
+      return;
+    }
+
     console.log('Product added:', this.product);
     this.confirmCreateProductEvent.emit(this.product);
     this.closeModal();
   }
+
   get purchasePriceModel(): string | number {
     return this.product.purchasePrice === 0 ? '' : this.product.purchasePrice;
   }
