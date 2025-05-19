@@ -1,8 +1,3 @@
-export interface Measure {
-  quantity: number;
-  unitOfMeasure: string;
-}
-
 import { ProductSelect } from '../components/available-products/available-products.component';
 
 export const AVAIABLE_PRODUCTS: ProductSelect[] = [
