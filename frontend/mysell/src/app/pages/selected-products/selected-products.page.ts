@@ -13,6 +13,11 @@ import { Product } from 'src/app/interfaces/product';
 import { getCategoryIconPath } from 'src/app/datas/categories';
 import { ConfirmPopUpComponent } from 'src/app/components/confirm-pop-up/confirm-pop-up.component';
 import { EditedProductSelectionService } from 'src/app/services/edited-product-selection.service';
+import { ProductService } from 'src/app/services/product.service';
+import { forkJoin } from 'rxjs';
+import { MessageService } from 'src/app/services/message.service';
+import { MessagePerRequestComponent } from 'src/app/components/message-per-request/message-per-request.component';
+import { LoadingSppinerComponent } from 'src/app/components/loading-sppiner/loading-sppiner.component';
 
 @Component({
   selector: 'app-selected-products',
@@ -27,6 +32,8 @@ import { EditedProductSelectionService } from 'src/app/services/edited-product-s
     BottomArrowComponent,
     ConfirmButtonComponent,
     ConfirmPopUpComponent,
+    MessagePerRequestComponent,
+    LoadingSppinerComponent,
   ],
 })
 export class SelectedProductsPage implements OnInit {
@@ -36,10 +43,14 @@ export class SelectedProductsPage implements OnInit {
   public maxProgress = 100;
   public currentProgressValue = 50;
   public isNavigateHomeConfirmationActive = false;
-
+  public isLoading = false;
+  public successMessage$ = this.messageService.successMessage$;
+  public errorMessage$ = this.messageService.errorMessage$;
   constructor(
     private navController: NavController,
-    private editedProductSelectionService: EditedProductSelectionService
+    private editedProductSelectionService: EditedProductSelectionService,
+    private productService: ProductService,
+    private messageService: MessageService // <-- adicione aqui
   ) {}
 
   ngOnInit() {
@@ -82,6 +93,9 @@ export class SelectedProductsPage implements OnInit {
   public navigateToRoot(): void {
     this.navController.navigateRoot('/create-products');
   }
+  public navigateHome(): void {
+    this.navController.navigateRoot('/home');
+  }
 
   public trackProductById(index: number, product: Product): string {
     return product.id;
@@ -106,5 +120,38 @@ export class SelectedProductsPage implements OnInit {
   public confirmNavigationHome() {
     this.editedProductSelectionService.clear();
     this.navController.navigateRoot('/home');
+  }
+
+  public confirmCreateProducts(): void {
+    if (!this.selectedProducts.length) {
+      this.messageService.setErrorMessage(
+        'Nenhum produto selecionado para criação.',
+        ''
+      );
+      return;
+    }
+
+    this.isLoading = true; // se quiser um loading (crie a propriedade isLoading na página)
+
+    const creationObservables = this.selectedProducts.map((product) =>
+      this.productService.createProduct(product)
+    );
+
+    forkJoin(creationObservables).subscribe({
+      next: () => {
+        this.messageService.setSuccessMessage(
+          'Produtos criados com sucesso!',
+          ''
+        );
+        this.isLoading = false;
+        setTimeout(() => {
+          this.navigateHome();
+        }, 2000);
+      },
+      error: (error) => {
+        this.messageService.setErrorMessage('Erro ao criar produtos.', error);
+        this.isLoading = false;
+      },
+    });
   }
 }
