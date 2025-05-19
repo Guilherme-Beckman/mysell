@@ -50,7 +50,7 @@ export class ProductService {
 
     const dto = {
       name: product.name,
-      categoryId: category?.id,
+      categoryId: category?.id ?? 1,
       purchasedPrice: product.purchasePrice,
       priceToSell: product.sellingPrice,
       brand: product.brand,
