@@ -12,6 +12,10 @@ import { MessageService } from '../services/message.service';
 import { YourProductListComponent } from '../components/your-product-list/your-product-list.component';
 import { ProductSelect } from '../components/available-products/available-products.component';
 import { BottomTrashcanComponent } from '../components/bottom-trashcan/bottom-trashcan.component';
+import { Product } from '../interfaces/product';
+import { ConfirmPopUpComponent } from '../components/confirm-pop-up/confirm-pop-up.component';
+import { ProductService } from '../services/product.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-your-products',
@@ -29,6 +33,7 @@ import { BottomTrashcanComponent } from '../components/bottom-trashcan/bottom-tr
     MessagePerRequestComponent,
     YourProductListComponent,
     BottomTrashcanComponent,
+    ConfirmPopUpComponent,
   ],
 })
 export class YourProductsPage implements OnInit {
@@ -37,10 +42,12 @@ export class YourProductsPage implements OnInit {
   public successMessage$ = this.messageService.successMessage$;
   public errorMessage$ = this.messageService.errorMessage$;
   public hasAnyItemSelected = false;
-
+  public selectedProducts: Product[] = [];
+  public deleteProductPopup = false;
   constructor(
     private navController: NavController,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private productService: ProductService
   ) {}
 
   ngOnInit() {}
@@ -51,6 +58,61 @@ export class YourProductsPage implements OnInit {
     this.navController.navigateRoot('/edit-available-products');
   }
   onProductSelection(productSelections: ProductSelect[]) {
-    return productSelections;
+    const selectedProducts = productSelections.map(
+      (selection) => selection.product
+    );
+    this.selectedProducts = [...selectedProducts];
+    console.log('onProductSelection:', this.selectedProducts);
+  }
+  showDeleteConfirmation() {
+    this.deleteProductPopup = true;
+  }
+  confirmProductsDeletion() {
+    if (this.selectedProducts.length === 0) return;
+
+    this.isLoading = true;
+
+    const deletions$ = this.selectedProducts.map((product) =>
+      this.productService.deleteProductById(product.id!)
+    );
+
+    forkJoin(deletions$).subscribe({
+      next: () => {
+        this.messageService.setSuccessMessage(
+          'Produtos deletados com sucesso!',
+          ''
+        );
+        this.refreshProductList();
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Erro ao deletar produtos:', err);
+        this.messageService.setErrorMessage('Erro ao deletar produtos!', '');
+        this.isLoading = false;
+      },
+      complete: () => {
+        this.isLoading = false;
+        this.selectedProducts = [];
+        this.hasAnyItemSelected = false;
+        this.deleteProductPopup = false;
+      },
+    });
+  }
+
+  private refreshProductList() {
+    this.productService.getMyProducts().subscribe({
+      next: (products) => {
+        this.selectedProducts = [];
+        const yourListComponent = document.querySelector(
+          'app-your-product-list'
+        ) as any;
+        if (yourListComponent?.reloadWithProducts) {
+          yourListComponent.reloadWithProducts(products);
+        }
+      },
+      error: (err) => {
+        console.error('Erro ao recarregar produtos:', err);
+      },
+    });
   }
 }

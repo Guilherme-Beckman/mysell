@@ -82,4 +82,7 @@ export class ProductService {
       )
     );
   }
+  public deleteProductById(id: string): Observable<any> {
+    return this.httpClient.delete(`${this.apiUrl}product/${id}`);
+  }
 }
