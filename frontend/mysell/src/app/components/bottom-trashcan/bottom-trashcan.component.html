@@ -1,3 +1,11 @@
-<p>
-  bottom-trashcan works!
-</p>
+<div
+  class="bottom-arrow"
+  [ngClass]="{
+    'rotate-right arrow-right': direction === 'right',
+    'rotate-left arrow-left': direction === 'left'
+  }"
+>
+  <button (click)="onClick()">
+    <img src="assets/svg/trashcan.svg" alt="" />
+  </button>
+</div>

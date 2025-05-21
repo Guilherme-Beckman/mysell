@@ -11,6 +11,7 @@ import { NavController } from '@ionic/angular';
 import { MessageService } from '../services/message.service';
 import { YourProductListComponent } from '../components/your-product-list/your-product-list.component';
 import { ProductSelect } from '../components/available-products/available-products.component';
+import { BottomTrashcanComponent } from '../components/bottom-trashcan/bottom-trashcan.component';
 
 @Component({
   selector: 'app-your-products',
@@ -27,6 +28,7 @@ import { ProductSelect } from '../components/available-products/available-produc
     LoadingSppinerComponent,
     MessagePerRequestComponent,
     YourProductListComponent,
+    BottomTrashcanComponent,
   ],
 })
 export class YourProductsPage implements OnInit {

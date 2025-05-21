@@ -5,6 +5,7 @@ import { getCategoryIconPath } from 'src/app/datas/categories';
 import { AVAIABLE_PRODUCTS } from 'src/app/datas/availlable-products';
 import { ProductService } from 'src/app/services/product.service';
 import { Product } from 'src/app/interfaces/product';
+import { BottomTrashcanComponent } from '../bottom-trashcan/bottom-trashcan.component';
 
 @Component({
   selector: 'app-your-product-list',
