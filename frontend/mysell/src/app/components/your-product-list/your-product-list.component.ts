@@ -6,16 +6,19 @@ import { AVAIABLE_PRODUCTS } from 'src/app/datas/availlable-products';
 import { ProductService } from 'src/app/services/product.service';
 import { Product } from 'src/app/interfaces/product';
 import { BottomTrashcanComponent } from '../bottom-trashcan/bottom-trashcan.component';
+import { IonSkeletonText } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-your-product-list',
   templateUrl: './your-product-list.component.html',
   styleUrls: ['./your-product-list.component.scss'],
-  imports: [CommonModule],
+  imports: [CommonModule, IonSkeletonText],
 })
 export class YourProductListComponent implements OnInit {
   @Input() searchTerm: string = '';
   @Output() hasAnyItemSelected = new EventEmitter<boolean>();
+
+  public isLoading = false;
 
   @Output() selectedProducts = new EventEmitter<ProductSelect[]>();
   allProducts: ProductSelect[] = [];
@@ -23,6 +26,7 @@ export class YourProductListComponent implements OnInit {
   public filteredProducts: ProductSelect[] = [];
   constructor(private productService: ProductService) {}
   ngOnInit() {
+    this.isLoading = true;
     this.productService.getMyProducts().subscribe({
       next: (products) => {
         const mappedProducts = products.map((product) => ({
@@ -31,9 +35,11 @@ export class YourProductListComponent implements OnInit {
         }));
         this.filteredProducts = mappedProducts;
         this.allProducts = mappedProducts;
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Erro ao buscar produtos:', err);
+        this.isLoading = false;
       },
     });
   }
@@ -63,6 +69,8 @@ export class YourProductListComponent implements OnInit {
     return this.allProducts.filter((product) => product.selected);
   }
   public reloadProducts() {
+    this.isLoading = true;
+
     this.productService.getMyProducts().subscribe({
       next: (products) => {
         const mappedProducts = products.map((product) => ({
@@ -75,9 +83,11 @@ export class YourProductListComponent implements OnInit {
         // Limpa qualquer seleção anterior
         this.emmitCurrentSelectionState();
         this.sendAllSelectedProducts();
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Erro ao recarregar produtos:', err);
+        this.isLoading = false;
       },
     });
   }
