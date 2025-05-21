@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ArrowComponent } from '../components/arrow/arrow.component';
@@ -37,6 +37,9 @@ import { forkJoin } from 'rxjs';
   ],
 })
 export class YourProductsPage implements OnInit {
+  @ViewChild(YourProductListComponent)
+  productListComponent!: YourProductListComponent;
+
   public searchTerm: string = '';
   public isLoading = false;
   public successMessage$ = this.messageService.successMessage$;
@@ -82,36 +85,19 @@ export class YourProductsPage implements OnInit {
           'Produtos deletados com sucesso!',
           ''
         );
-        this.refreshProductList();
-        this.isLoading = false;
+
+        // ✅ Recarrega a lista após deletar
+        this.productListComponent.reloadProducts();
       },
       error: (err) => {
         console.error('Erro ao deletar produtos:', err);
         this.messageService.setErrorMessage('Erro ao deletar produtos!', '');
-        this.isLoading = false;
       },
       complete: () => {
         this.isLoading = false;
         this.selectedProducts = [];
         this.hasAnyItemSelected = false;
         this.deleteProductPopup = false;
-      },
-    });
-  }
-
-  private refreshProductList() {
-    this.productService.getMyProducts().subscribe({
-      next: (products) => {
-        this.selectedProducts = [];
-        const yourListComponent = document.querySelector(
-          'app-your-product-list'
-        ) as any;
-        if (yourListComponent?.reloadWithProducts) {
-          yourListComponent.reloadWithProducts(products);
-        }
-      },
-      error: (err) => {
-        console.error('Erro ao recarregar produtos:', err);
       },
     });
   }

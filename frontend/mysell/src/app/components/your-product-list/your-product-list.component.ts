@@ -16,6 +16,7 @@ import { BottomTrashcanComponent } from '../bottom-trashcan/bottom-trashcan.comp
 export class YourProductListComponent implements OnInit {
   @Input() searchTerm: string = '';
   @Output() hasAnyItemSelected = new EventEmitter<boolean>();
+
   @Output() selectedProducts = new EventEmitter<ProductSelect[]>();
   allProducts: ProductSelect[] = [];
 
@@ -60,5 +61,24 @@ export class YourProductListComponent implements OnInit {
   }
   private getSelectedProducts(): ProductSelect[] {
     return this.allProducts.filter((product) => product.selected);
+  }
+  public reloadProducts() {
+    this.productService.getMyProducts().subscribe({
+      next: (products) => {
+        const mappedProducts = products.map((product) => ({
+          product,
+          selected: false,
+        }));
+        this.filteredProducts = mappedProducts;
+        this.allProducts = mappedProducts;
+
+        // Limpa qualquer seleção anterior
+        this.emmitCurrentSelectionState();
+        this.sendAllSelectedProducts();
+      },
+      error: (err) => {
+        console.error('Erro ao recarregar produtos:', err);
+      },
+    });
   }
 }
