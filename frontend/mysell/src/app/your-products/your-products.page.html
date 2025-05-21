@@ -43,3 +43,7 @@
   (confirm)="confirmProductsDeletion()"
   (closeButtonEvent)="deleteProductPopup = false"
 ></app-confirm-pop-up>
+<app-bottom-edit-pen
+  *ngIf="hasAnyItemSelected"
+  [direction]="'right'"
+></app-bottom-edit-pen>

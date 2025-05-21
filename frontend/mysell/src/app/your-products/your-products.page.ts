@@ -16,6 +16,7 @@ import { Product } from '../interfaces/product';
 import { ConfirmPopUpComponent } from '../components/confirm-pop-up/confirm-pop-up.component';
 import { ProductService } from '../services/product.service';
 import { forkJoin } from 'rxjs';
+import { BottomEditPenComponent } from '../components/bottom-edit-pen/bottom-edit-pen.component';
 
 @Component({
   selector: 'app-your-products',
@@ -34,6 +35,7 @@ import { forkJoin } from 'rxjs';
     YourProductListComponent,
     BottomTrashcanComponent,
     ConfirmPopUpComponent,
+    BottomEditPenComponent,
   ],
 })
 export class YourProductsPage implements OnInit {

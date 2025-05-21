@@ -1,3 +1,11 @@
-<p>
-  bottom-edit-pen works!
-</p>
+<div
+  class="bottom-arrow"
+  [ngClass]="{
+    'rotate-right arrow-right': direction === 'right',
+    'rotate-left arrow-left': direction === 'left'
+  }"
+>
+  <button (click)="onClick()">
+    <img src="assets/svg/pen.svg" alt="" />
+  </button>
+</div>
