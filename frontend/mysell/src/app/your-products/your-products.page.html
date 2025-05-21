@@ -12,7 +12,11 @@
     [placeholder]="'Buscar produtos'"
     (searchChange)="onSearchChange($event)"
   ></app-search-bar>
-  <app-your-product-list></app-your-product-list>
+  <app-your-product-list
+    (hasAnyItemSelected)="hasAnyItemSelected = $event"
+    (selectedProducts)="onProductSelection($event)"
+    [searchTerm]="searchTerm"
+  ></app-your-product-list>
   <br /><br />
   <br /><br />
   <br /><br />

@@ -9,6 +9,8 @@ import { MessagePerRequestComponent } from '../components/message-per-request/me
 import { BottomArrowComponent } from '../components/bottom-arrow/bottom-arrow.component';
 import { NavController } from '@ionic/angular';
 import { MessageService } from '../services/message.service';
+import { YourProductListComponent } from '../components/your-product-list/your-product-list.component';
+import { ProductSelect } from '../components/available-products/available-products.component';
 
 @Component({
   selector: 'app-your-products',
@@ -24,6 +26,7 @@ import { MessageService } from '../services/message.service';
     BottomArrowComponent,
     LoadingSppinerComponent,
     MessagePerRequestComponent,
+    YourProductListComponent,
   ],
 })
 export class YourProductsPage implements OnInit {
@@ -31,6 +34,8 @@ export class YourProductsPage implements OnInit {
   public isLoading = false;
   public successMessage$ = this.messageService.successMessage$;
   public errorMessage$ = this.messageService.errorMessage$;
+  public hasAnyItemSelected = false;
+
   constructor(
     private navController: NavController,
     private messageService: MessageService
@@ -42,5 +47,8 @@ export class YourProductsPage implements OnInit {
   }
   public navigateToEditPage(): void {
     this.navController.navigateRoot('/edit-available-products');
+  }
+  onProductSelection(productSelections: ProductSelect[]) {
+    return productSelections;
   }
 }

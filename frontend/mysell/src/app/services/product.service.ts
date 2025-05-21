@@ -63,4 +63,23 @@ export class ProductService {
     console.log('[ProductService] convertToCreateProductDTO result:', dto);
     return dto;
   }
+  public getMyProducts(): Observable<Product[]> {
+    return this.httpClient.get<any[]>(`${this.apiUrl}product/my`).pipe(
+      map((response) =>
+        response.map((item) => ({
+          id: item.productsId ?? '',
+          name: item.name,
+          category: item.category?.name ?? '',
+          purchasePrice: item.purchasedPrice ?? 0,
+          sellingPrice: item.priceToSell ?? 0,
+          brand: item.brand,
+          measure: {
+            quantity: item.productUnitOfMeasureDTO?.quantity ?? 0,
+            unitOfMeasure:
+              item.productUnitOfMeasureDTO?.unityOfMeasure?.name ?? '',
+          },
+        }))
+      )
+    );
+  }
 }
