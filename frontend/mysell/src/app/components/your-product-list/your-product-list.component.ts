@@ -44,6 +44,28 @@ export class YourProductListComponent implements OnInit {
     });
   }
 
+  ngOnChanges() {
+    this.filterProducts();
+  }
+
+  filterProducts(): void {
+    if (!this.searchTerm || this.searchTerm.trim() === '') {
+      this.filteredProducts = [...this.allProducts];
+      return;
+    }
+
+    const term = this.normalizeText(this.searchTerm.toLowerCase().trim());
+    this.filteredProducts = this.allProducts.filter(
+      (item) =>
+        this.normalizeText(item.product.name.toLowerCase()).includes(term) ||
+        this.normalizeText(item.product.brand.toLowerCase()).includes(term) ||
+        this.normalizeText(item.product.category.toLowerCase()).includes(term)
+    );
+  }
+  normalizeText(text: string): string {
+    return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
   toggleSelection(product: ProductSelect): void {
     product.selected = !product.selected;
 
