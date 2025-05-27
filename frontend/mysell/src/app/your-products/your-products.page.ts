@@ -17,6 +17,7 @@ import { ConfirmPopUpComponent } from '../components/confirm-pop-up/confirm-pop-
 import { ProductService } from '../services/product.service';
 import { forkJoin } from 'rxjs';
 import { BottomEditPenComponent } from '../components/bottom-edit-pen/bottom-edit-pen.component';
+import { ProductSelectionService } from '../services/product-selection.service';
 
 @Component({
   selector: 'app-your-products',
@@ -52,7 +53,8 @@ export class YourProductsPage implements OnInit {
   constructor(
     private navController: NavController,
     private messageService: MessageService,
-    private productService: ProductService
+    private productService: ProductService,
+    private productSelectionService: ProductSelectionService
   ) {}
 
   ngOnInit() {}
@@ -60,7 +62,8 @@ export class YourProductsPage implements OnInit {
     this.searchTerm = term;
   }
   public navigateToEditPage(): void {
-    this.navController.navigateRoot('/edit-available-products');
+    this.productSelectionService.setSelectedProducts(this.selectedProducts);
+    this.navController.navigateRoot('/edit-product');
   }
   onProductSelection(productSelections: ProductSelect[]) {
     const selectedProducts = productSelections.map(

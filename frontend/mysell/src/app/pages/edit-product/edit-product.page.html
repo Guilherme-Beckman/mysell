@@ -1,13 +1,49 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>edit-product</ion-title>
-  </ion-toolbar>
-</ion-header>
+<main>
+  <nav>
+    <app-home-redirect
+      [emitOnly]="true"
+      (requestNavigationBack)="showNavigateHomeConfirmation()"
+    ></app-home-redirect>
+  </nav>
+  <div class="title">
+    <h1>Editar Produtos</h1>
+  </div>
+  <div
+    class="edit-form"
+    *ngFor="let product of selectedProducts; trackBy: trackByProductId"
+  >
+    <div class="trash-item-title">
+      <div class="item-title">
+        <h1>{{product.name}}</h1>
+        <img src="" alt="" />
+      </div>
+    </div>
+    <app-edit-product-form [productInfo]="product"></app-edit-product-form>
+  </div>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">edit-product</ion-title>
-    </ion-toolbar>
-  </ion-header>
-</ion-content>
+  <app-bottom-arrow
+    [direction]="'left'"
+    (arrowClick)="showNavigateBackConfirmation()"
+  ></app-bottom-arrow>
+  <app-bottom-arrow
+    [direction]="'right'"
+    (arrowClick)="navigateToSelectedProducts()"
+  ></app-bottom-arrow>
+  <br /><br /><br /><br /><br />
+  <br /><br /><br /><br /><br />
+</main>
+
+<app-confirm-pop-up
+  [firstMessage]="'Deseja voltar?'"
+  [secondMessage]="'Isso excluira as edições feitas nos produtos.'"
+  [isActive]="isNavigateBackConfirmationActive"
+  (closeButtonEvent)="hideNavigateBackConfirmation()"
+  (confirm)="confirmNavigationBack()"
+></app-confirm-pop-up>
+<app-confirm-pop-up
+  [firstMessage]="'Deseja voltar para a página inicial?'"
+  [secondMessage]="'Você perderá as alterações feitas nos produtos.'"
+  [isActive]="isNavigateHomeConfirmationActive"
+  (closeButtonEvent)="hideNavigateHomeConfirmation()"
+  (confirm)="confirmNavigationHome()"
+></app-confirm-pop-up>

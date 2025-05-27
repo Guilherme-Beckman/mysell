@@ -14,6 +14,10 @@ export class ProductSelectionService {
   }
 
   getSelectedProducts(): Product[] {
+    console.log(
+      'ProductSelectionService.getSelectedProducts called, returning:',
+      this._selectedProducts
+    );
     return this._selectedProducts;
   }
 
