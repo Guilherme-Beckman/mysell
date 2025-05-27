@@ -41,10 +41,12 @@ export class SellPage implements OnInit {
   public searchTerm: string = '';
   public successMessage$ = this.messageService.successMessage$;
   public errorMessage$ = this.messageService.errorMessage$;
+  public hasAnyItemSelected = false;
   constructor(private messageService: MessageService) {}
 
   ngOnInit() {}
   public onSearchChange(term: string): void {
     this.searchTerm = term;
   }
+  onProductSelection(event: any) {}
 }

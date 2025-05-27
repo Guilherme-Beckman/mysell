@@ -10,9 +10,9 @@ import { CommonModule } from '@angular/common';
 })
 export class CounterComponent {
   /** Valor atual */
-  @Input() count = 0;
+  @Input() count = 1;
   /** Valor mínimo permitido */
-  @Input() min = 0;
+  @Input() min = 1;
   /** Valor máximo permitido */
   @Input() max = Infinity;
   /** Desabilita todo o controle */

@@ -4,12 +4,13 @@ import { ProductService } from 'src/app/services/product.service';
 import { ProductSelect } from '../available-products/available-products.component';
 import { IonSkeletonText } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
+import { CounterComponent } from '../counter/counter.component';
 
 @Component({
   selector: 'app-products-to-sell',
   templateUrl: './products-to-sell.component.html',
   styleUrls: ['./products-to-sell.component.scss'],
-  imports: [CommonModule, IonSkeletonText],
+  imports: [CommonModule, IonSkeletonText, CounterComponent],
 })
 export class ProductsToSellComponent implements OnInit {
   @Input() searchTerm: string = '';

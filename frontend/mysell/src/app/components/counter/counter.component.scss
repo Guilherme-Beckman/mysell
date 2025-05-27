@@ -1,14 +1,10 @@
 .counter {
   display: inline-flex;
+  border-radius: 50px;
   align-items: center;
   border-top: 1px solid #ccc;
-  border-bottom: 1px solid #ccc;
-  padding: 4px 0;
-
-  &.active {
-    border-top-color: #e55353;
-    border-bottom-color: #e55353;
-  }
+  padding: 2px;
+  border: 1.5px solid var(--medium-gray);
 
   .btn {
     width: 32px;
@@ -28,7 +24,7 @@
       color: #888;
 
       .active & & {
-        background-color: #e55353;
+        background-color: var(--mysell-red);
         color: white;
       }
     }
@@ -38,7 +34,7 @@
       color: #888;
 
       .active & & {
-        background-color: #e55353;
+        background-color: var(--mysell-red);
         color: white;
       }
     }
@@ -57,7 +53,7 @@
     color: #333;
 
     .active & {
-      color: #e55353;
+      color: var(--mysell-red);
     }
   }
 }

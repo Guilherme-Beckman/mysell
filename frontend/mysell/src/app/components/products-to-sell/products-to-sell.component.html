@@ -20,15 +20,16 @@
 
         <div class="product-details">
           <div class="product-info">
+            <div class="product-icon">
+              <img
+                [src]="getIconPath(product.product.category)"
+                alt="Food icon"
+              />
+            </div>
             <p class="product-name">{{ product.product.name }}</p>
-            <p class="product-price">
-              <span>R$ {{ formatCost(product.product.sellingPrice) }}</span>
-            </p>
           </div>
         </div>
-        <div class="product-icon">
-          <img [src]="getIconPath(product.product.category)" alt="Food icon" />
-        </div>
+        <app-counter></app-counter>
       </div>
     </ng-container>
 
