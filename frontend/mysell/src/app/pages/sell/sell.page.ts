@@ -16,6 +16,7 @@ import { ConfirmPopUpComponent } from 'src/app/components/confirm-pop-up/confirm
 import { HomeRedirectComponent } from 'src/app/components/home-redirect/home-redirect.component';
 import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
 import { MessageService } from 'src/app/services/message.service';
+import { ProductsToSellComponent } from 'src/app/components/products-to-sell/products-to-sell.component';
 
 @Component({
   selector: 'app-sell',
@@ -32,6 +33,7 @@ import { MessageService } from 'src/app/services/message.service';
     ConfirmPopUpComponent,
     ArrowComponent,
     HomeRedirectComponent,
+    ProductsToSellComponent,
   ],
 })
 export class SellPage implements OnInit {
