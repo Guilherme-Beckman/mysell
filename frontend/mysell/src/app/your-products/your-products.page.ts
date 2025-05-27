@@ -88,7 +88,6 @@ export class YourProductsPage implements OnInit {
           ''
         );
 
-        // ✅ Recarrega a lista após deletar
         this.productListComponent.reloadProducts();
       },
       error: (err) => {
