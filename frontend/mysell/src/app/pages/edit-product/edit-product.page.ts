@@ -22,6 +22,7 @@ import { LoadingSppinerComponent } from 'src/app/components/loading-sppiner/load
 import { ProductService } from 'src/app/services/product.service';
 import { forkJoin } from 'rxjs';
 import { MessagePerRequestComponent } from 'src/app/components/message-per-request/message-per-request.component';
+import { EditProductSelectionServiceService } from 'src/app/services/edit-product-selection-service.service';
 
 @Component({
   selector: 'app-edit-product',
@@ -54,7 +55,7 @@ export class EditProductPage implements OnInit {
   public errorMessage$ = this.messageService.errorMessage$;
   constructor(
     private navController: NavController,
-    private originalProductSelection: ProductSelectionService,
+    private originalProductSelection: EditProductSelectionServiceService,
     private messageService: MessageService,
     private productService: ProductService
   ) {}

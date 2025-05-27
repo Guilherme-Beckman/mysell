@@ -18,6 +18,7 @@ import { ProductService } from '../services/product.service';
 import { forkJoin } from 'rxjs';
 import { BottomEditPenComponent } from '../components/bottom-edit-pen/bottom-edit-pen.component';
 import { ProductSelectionService } from '../services/product-selection.service';
+import { EditProductSelectionServiceService } from '../services/edit-product-selection-service.service';
 
 @Component({
   selector: 'app-your-products',
@@ -54,7 +55,7 @@ export class YourProductsPage implements OnInit {
     private navController: NavController,
     private messageService: MessageService,
     private productService: ProductService,
-    private productSelectionService: ProductSelectionService
+    private productSelectionService: EditProductSelectionServiceService
   ) {}
 
   ngOnInit() {}
