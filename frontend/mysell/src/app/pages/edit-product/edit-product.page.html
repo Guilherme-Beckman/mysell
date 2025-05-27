@@ -1,3 +1,5 @@
+<app-loading-sppiner [isLoading]="isLoading"></app-loading-sppiner>
+
 <main>
   <nav>
     <app-home-redirect
@@ -25,10 +27,10 @@
     [direction]="'left'"
     (arrowClick)="showNavigateBackConfirmation()"
   ></app-bottom-arrow>
-  <app-bottom-arrow
-    [direction]="'right'"
-    (arrowClick)="navigateToSelectedProducts()"
-  ></app-bottom-arrow>
+  <app-confirm-button
+    [position]="'right'"
+    (confirm)="confirmUpdateProducts()"
+  ></app-confirm-button>
   <br /><br /><br /><br /><br />
   <br /><br /><br /><br /><br />
 </main>
@@ -47,3 +49,7 @@
   (closeButtonEvent)="hideNavigateHomeConfirmation()"
   (confirm)="confirmNavigationHome()"
 ></app-confirm-pop-up>
+<app-message-per-request
+  [errorMessage]="(errorMessage$ | async) ?? ''"
+  [successMessage]="(successMessage$ | async) ?? ''"
+></app-message-per-request>

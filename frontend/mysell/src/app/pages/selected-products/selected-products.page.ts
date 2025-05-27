@@ -50,7 +50,7 @@ export class SelectedProductsPage implements OnInit {
     private navController: NavController,
     private editedProductSelectionService: EditedProductSelectionService,
     private productService: ProductService,
-    private messageService: MessageService // <-- adicione aqui
+    private messageService: MessageService
   ) {}
 
   ngOnInit() {

@@ -18,11 +18,6 @@ export class EditProductFormComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    console.log('EditProductFormComponent initialized');
-    console.log(
-      'Quantidade inicial recebida do productInfo:',
-      this.productInfo.measure.quantity
-    );
     this.product = { ...this.productInfo };
     this.measureSearch = this.productInfo.measure.unitOfMeasure;
     this.categorySearch = this.productInfo.category;
@@ -99,12 +94,10 @@ export class EditProductFormComponent implements OnInit {
 
   // Modal methods
   closeModal(): void {
-    console.log('Modal closed');
     this.closeModalEvent.emit();
   }
 
   confirmProduct(): void {
-    console.log('Produto confirmado:', this.product);
     this.closeModal();
   }
 
@@ -133,24 +126,18 @@ export class EditProductFormComponent implements OnInit {
 
   get quantityModel(): string | number {
     const quantity = this.product.measure.quantity;
-    console.log('Getter quantityModel chamado. Valor atual:', quantity);
     return quantity === 0 ? '' : quantity;
   }
 
   onQuantityChange(value: string): void {
-    console.log('onQuantityChange chamado com valor:', value);
     const parsedQuantity = this.parseMaskedQuantity(value);
-    console.log('Quantidade parseada:', parsedQuantity);
     this.product.measure.quantity = parsedQuantity;
-    console.log('Quantidade atual no model:', this.product.measure.quantity);
   }
 
   private parseMaskedQuantity(value: string): number {
-    console.log('parseMaskedQuantity chamado com valor:', value);
     if (!value) return 0;
     const cleaned = value.replace(',', '.');
     const parsed = parseFloat(cleaned);
-    console.log('Valor limpo:', cleaned, '| Valor convertido:', parsed);
     return isNaN(parsed) ? 0 : parsed;
   }
 }

@@ -16,6 +16,12 @@ import { HomeRedirectComponent } from 'src/app/components/home-redirect/home-red
 import { BottomArrowComponent } from 'src/app/components/bottom-arrow/bottom-arrow.component';
 import { ProguessBarComponent } from 'src/app/components/proguess-bar/proguess-bar.component';
 import { ConfirmPopUpComponent } from 'src/app/components/confirm-pop-up/confirm-pop-up.component';
+import { ConfirmButtonComponent } from 'src/app/components/confirm-button/confirm-button.component';
+import { MessageService } from 'src/app/services/message.service';
+import { LoadingSppinerComponent } from 'src/app/components/loading-sppiner/loading-sppiner.component';
+import { ProductService } from 'src/app/services/product.service';
+import { forkJoin } from 'rxjs';
+import { MessagePerRequestComponent } from 'src/app/components/message-per-request/message-per-request.component';
 
 @Component({
   selector: 'app-edit-product',
@@ -28,9 +34,11 @@ import { ConfirmPopUpComponent } from 'src/app/components/confirm-pop-up/confirm
     EditProductFormComponent,
     HomeRedirectComponent,
     BottomArrowComponent,
-    ProguessBarComponent,
     ConfirmPopUpComponent,
     CommonModule,
+    ConfirmButtonComponent,
+    LoadingSppinerComponent,
+    MessagePerRequestComponent,
   ],
 })
 export class EditProductPage implements OnInit {
@@ -41,11 +49,14 @@ export class EditProductPage implements OnInit {
   targetProgress = 50;
   currentProgress = 2;
   isNavigateHomeConfirmationActive = false;
-
+  isLoading = false;
+  public successMessage$ = this.messageService.successMessage$;
+  public errorMessage$ = this.messageService.errorMessage$;
   constructor(
     private navController: NavController,
     private originalProductSelection: ProductSelectionService,
-    private route: ActivatedRoute
+    private messageService: MessageService,
+    private productService: ProductService
   ) {}
 
   ngOnInit() {
@@ -67,26 +78,18 @@ export class EditProductPage implements OnInit {
     this.isNavigateBackConfirmationActive = false;
   }
 
-  public navigateToCreateProducts() {
-    this.navController.navigateRoot('/create-products');
+  public navigateToYourProducts() {
+    this.navController.navigateRoot('/your-products');
   }
 
   public confirmNavigationBack() {
-    this.navigateToCreateProducts();
+    this.navigateToYourProducts();
   }
 
   public navigateToSelectedProducts() {
     this.navController.navigateRoot('/selected-products');
   }
 
-  public confirmProductDeletion() {
-    this.originalProductSelection.removeProductById(this.productIdToDelete);
-    this.selectedProducts = this.originalProductSelection.getSelectedProducts();
-
-    if (this.selectedProducts.length === 0) {
-      this.navigateToCreateProducts();
-    }
-  }
   public showNavigateHomeConfirmation() {
     this.isNavigateHomeConfirmationActive = true;
   }
@@ -100,5 +103,40 @@ export class EditProductPage implements OnInit {
 
   public trackByProductId(index: number, product: Product): string {
     return product.id;
+  }
+  public confirmUpdateProducts(): void {
+    if (!this.selectedProducts.length) {
+      this.messageService.setErrorMessage(
+        'Nenhum produto selecionado para atualização.',
+        ''
+      );
+      return;
+    }
+
+    this.isLoading = true;
+
+    const updateObservables = this.selectedProducts.map((product) =>
+      this.productService.updateProduct(product)
+    );
+
+    forkJoin(updateObservables).subscribe({
+      next: () => {
+        this.messageService.setSuccessMessage(
+          'Produtos atualizados com sucesso!',
+          ''
+        );
+        this.isLoading = false;
+        setTimeout(() => {
+          this.navController.navigateRoot('/home');
+        }, 2000);
+      },
+      error: (error) => {
+        this.messageService.setErrorMessage(
+          'Erro ao atualizar produtos.',
+          error
+        );
+        this.isLoading = false;
+      },
+    });
   }
 }

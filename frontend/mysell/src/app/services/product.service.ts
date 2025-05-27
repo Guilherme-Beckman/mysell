@@ -85,4 +85,16 @@ export class ProductService {
   public deleteProductById(id: string): Observable<any> {
     return this.httpClient.delete(`${this.apiUrl}product/${id}`);
   }
+  public updateProduct(product: Product): Observable<any> {
+    if (!product.id) {
+      throw new Error('Produto sem ID não pode ser atualizado.');
+    }
+
+    console.log('[ProductService] Produto recebido para atualização:', product);
+
+    const dto = this.convertToCreateProductDTO(product);
+    console.log('[ProductService] DTO convertido para atualização:', dto);
+
+    return this.httpClient.put(`${this.apiUrl}product/${product.id}`, dto);
+  }
 }
