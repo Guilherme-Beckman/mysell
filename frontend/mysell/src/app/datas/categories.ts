@@ -2,7 +2,7 @@ import { ProductSelect } from '../components/available-products/available-produc
 import { Category } from '../interfaces/category';
 
 export const CATEGORIES: Category[] = [
-  { id: 1, name: 'Outros', pathSvg: 'assets/svg/categories/others.svg' },
+  { id: 1, name: 'OTHERS', pathSvg: 'assets/svg/categories/others.svg' },
   {
     id: 2,
     name: 'Alimentos/Bebidas',

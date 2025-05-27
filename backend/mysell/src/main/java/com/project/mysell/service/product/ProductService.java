@@ -1,10 +1,10 @@
 package com.project.mysell.service.product;
 
 import java.time.Duration;
+
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,9 @@ import com.project.mysell.infra.security.jwt.JwtTokenProvider;
 import com.project.mysell.model.ProductModel;
 import com.project.mysell.model.ProductUnitOfMeasureModel;
 import com.project.mysell.repository.ProductRepository;
+import com.project.mysell.repository.SellRepository;
 import com.project.mysell.service.CategoryService;
+import com.project.mysell.service.SellService;
 import com.project.mysell.service.UnityOfMeasureService;
 
 import reactor.core.publisher.Flux;
@@ -50,6 +52,8 @@ public class ProductService {
     private RedisService redisService;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private SellRepository sellRepository;
     
     private static final Duration CACHE_TTL = Duration.ofDays(1);
 
@@ -141,12 +145,16 @@ public class ProductService {
         return getProductById(id)
             .flatMap(existingProduct ->
                 validateOwnership(existingProduct.getUserId(), userId)
+                	.then(deleteSellsByproductId(id))
                     .then(deleteProductAndMeasureUnit(existingProduct))
                     .then(evictProductCache(id))
                     .then()
             );
+    
     }
-
+    private Mono<Void> deleteSellsByproductId(Long id ){
+    	return this.sellRepository.deleteAllSellByProduct(id);
+    }
     private Mono<ProductResponseDTO> update(ProductModel existingProduct, ProductUpdateDTO productDTO) {
         updateProductFields(existingProduct, productDTO);
         if (productDTO.productUnitOfMeasureDTO() == null) {

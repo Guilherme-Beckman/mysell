@@ -1,0 +1,46 @@
+<app-loading-sppiner [isLoading]="isLoading"></app-loading-sppiner>
+<main>
+  <nav>
+    <div class="itens">
+      <app-arrow [direction]="'left'" [pageToGo]="'/home'"></app-arrow>
+      <app-home-redirect></app-home-redirect>
+    </div>
+  </nav>
+  <h1>Seus Produtos</h1>
+
+  <app-search-bar
+    [placeholder]="'Buscar produtos'"
+    (searchChange)="onSearchChange($event)"
+  ></app-search-bar>
+  <app-your-product-list
+    (hasAnyItemSelected)="hasAnyItemSelected = $event"
+    (selectedProducts)="onProductSelection($event)"
+    [searchTerm]="searchTerm"
+  ></app-your-product-list>
+  <br /><br />
+  <br /><br />
+  <br /><br />
+  <br /><br />
+</main>
+
+<app-message-per-request
+  [errorMessage]="(errorMessage$ | async) ?? ''"
+  [successMessage]="(successMessage$ | async) ?? ''"
+></app-message-per-request>
+<app-bottom-trashcan
+  [direction]="'right'"
+  (arrowClick)="showDeleteConfirmation()"
+  *ngIf="hasAnyItemSelected"
+></app-bottom-trashcan>
+<app-confirm-pop-up
+  [isActive]="deleteProductPopup"
+  [firstMessage]="'Tem certeza que deseja deletar os produtos selecionados?'"
+  [secondMessage]="'Essa ação não poderá ser desfeita.'"
+  (confirm)="confirmProductsDeletion()"
+  (closeButtonEvent)="deleteProductPopup = false"
+></app-confirm-pop-up>
+<app-bottom-edit-pen
+  *ngIf="hasAnyItemSelected"
+  [direction]="'right'"
+  (arrowClick)="navigateToEditPage()"
+></app-bottom-edit-pen>

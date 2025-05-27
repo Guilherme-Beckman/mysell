@@ -1,13 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  NavController,
-} from '@ionic/angular/standalone';
+import { NavController } from '@ionic/angular/standalone';
 import { ActivatedRoute } from '@angular/router';
 
 import { EditProductFormComponent } from 'src/app/components/edit-product-form/edit-product-form.component';
@@ -113,6 +106,7 @@ export class EditAvailableProductsPage implements OnInit {
 
   public confirmNavigationBack() {
     this.editedProductSelection.clear();
+    this.originalProductSelection.clear();
     this.navigateToCreateProducts();
   }
 

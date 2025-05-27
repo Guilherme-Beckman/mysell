@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Product } from '../interfaces/product';
-import { TmplAstHoverDeferredTrigger } from '@angular/compiler';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ProductSelectionService {
+export class EditProductSelectionServiceService {
   constructor() {}
   private _selectedProducts: Product[] = [];
 

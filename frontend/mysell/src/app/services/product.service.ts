@@ -63,4 +63,38 @@ export class ProductService {
     console.log('[ProductService] convertToCreateProductDTO result:', dto);
     return dto;
   }
+  public getMyProducts(): Observable<Product[]> {
+    return this.httpClient.get<any[]>(`${this.apiUrl}product/my`).pipe(
+      map((response) =>
+        response.map((item) => ({
+          id: item.productsId ?? '',
+          name: item.name,
+          category: item.category?.name ?? '',
+          purchasePrice: item.purchasedPrice ?? 0,
+          sellingPrice: item.priceToSell ?? 0,
+          brand: item.brand,
+          measure: {
+            quantity: item.productUnitOfMeasureDTO?.quantity ?? 0,
+            unitOfMeasure:
+              item.productUnitOfMeasureDTO?.unityOfMeasure?.name ?? '',
+          },
+        }))
+      )
+    );
+  }
+  public deleteProductById(id: string): Observable<any> {
+    return this.httpClient.delete(`${this.apiUrl}product/${id}`);
+  }
+  public updateProduct(product: Product): Observable<any> {
+    if (!product.id) {
+      throw new Error('Produto sem ID não pode ser atualizado.');
+    }
+
+    console.log('[ProductService] Produto recebido para atualização:', product);
+
+    const dto = this.convertToCreateProductDTO(product);
+    console.log('[ProductService] DTO convertido para atualização:', dto);
+
+    return this.httpClient.put(`${this.apiUrl}product/${product.id}`, dto);
+  }
 }

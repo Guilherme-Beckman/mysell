@@ -230,4 +230,6 @@ public class SellService {
         String cacheKey = getSellCacheKey(sell.getSellsId());
         return redisService.setValueWithExpiration(cacheKey, sell, CACHE_TTL.getSeconds());
     }
+
+
 }

@@ -1,0 +1,58 @@
+<div class="product-list-container">
+  <div class="product-list-header">
+    <p *ngIf="filteredProducts.length === 0 && !isLoading" class="no-results">
+      Nenhum produto encontrado.
+    </p>
+  </div>
+
+  <div class="product-list">
+    <!-- Se não estiver carregando, mostra os produtos -->
+    <ng-container *ngIf="!isLoading; else skeletonProducts">
+      <div *ngFor="let product of filteredProducts" class="product-item">
+        <label class="product-checkbox">
+          <input
+            type="checkbox"
+            [checked]="product.selected"
+            (change)="toggleSelection(product)"
+          />
+          <span class="custom-checkbox"></span>
+        </label>
+
+        <div class="product-details">
+          <div class="product-info">
+            <p class="product-name">{{ product.product.name }}</p>
+            <p class="product-price">
+              <span>R$ {{ formatCost(product.product.sellingPrice) }}</span>
+            </p>
+          </div>
+        </div>
+        <div class="product-icon">
+          <img [src]="getIconPath(product.product.category)" alt="Food icon" />
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Skeleton loading -->
+    <ng-template #skeletonProducts>
+      <div class="product-item" *ngFor="let i of [1, 2, 3, 4, 6, 7, 8, 9, 10]">
+        <label class="product-checkbox">
+          <ion-skeleton-text
+            animated="true"
+            style="width: 1.2rem; height: 1.2rem; border-radius: 4px"
+          ></ion-skeleton-text>
+        </label>
+
+        <div class="product-details">
+          <div class="product-info">
+            <p class="product-name">
+              <ion-skeleton-text
+                animated="true"
+                style="width: 17rem; height: 1rem; border-radius: 100px"
+              ></ion-skeleton-text>
+            </p>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+</div>

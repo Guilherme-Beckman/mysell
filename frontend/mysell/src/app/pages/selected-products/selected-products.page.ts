@@ -50,7 +50,7 @@ export class SelectedProductsPage implements OnInit {
     private navController: NavController,
     private editedProductSelectionService: EditedProductSelectionService,
     private productService: ProductService,
-    private messageService: MessageService // <-- adicione aqui
+    private messageService: MessageService
   ) {}
 
   ngOnInit() {
@@ -130,7 +130,7 @@ export class SelectedProductsPage implements OnInit {
       );
       return;
     }
-
+    this.editedProductSelectionService.clear();
     this.isLoading = true; // se quiser um loading (crie a propriedade isLoading na página)
 
     const creationObservables = this.selectedProducts.map((product) =>
