@@ -1,3 +1,19 @@
-<p>
-  counter works!
-</p>
+<div class="counter" [class.active]="!disabled">
+  <button
+    class="btn btn-minus"
+    (click)="decrement()"
+    [disabled]="disabled || count <= min"
+  >
+    –
+  </button>
+
+  <span class="count">{{ count }}</span>
+
+  <button
+    class="btn btn-plus"
+    (click)="increment()"
+    [disabled]="disabled || count >= max"
+  >
+    +
+  </button>
+</div>
