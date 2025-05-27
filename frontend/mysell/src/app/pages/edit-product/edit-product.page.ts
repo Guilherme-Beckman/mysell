@@ -84,6 +84,7 @@ export class EditProductPage implements OnInit {
   }
 
   public confirmNavigationBack() {
+    this.originalProductSelection.clear();
     this.navigateToYourProducts();
   }
 

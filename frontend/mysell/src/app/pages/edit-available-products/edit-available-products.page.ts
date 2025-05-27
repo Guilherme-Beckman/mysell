@@ -106,6 +106,7 @@ export class EditAvailableProductsPage implements OnInit {
 
   public confirmNavigationBack() {
     this.editedProductSelection.clear();
+    this.originalProductSelection.clear();
     this.navigateToCreateProducts();
   }
 

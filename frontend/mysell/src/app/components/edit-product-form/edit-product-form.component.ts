@@ -18,7 +18,6 @@ export class EditProductFormComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.product = { ...this.productInfo };
     this.measureSearch = this.productInfo.measure.unitOfMeasure;
     this.categorySearch = this.productInfo.category;
   }
@@ -29,18 +28,6 @@ export class EditProductFormComponent implements OnInit {
   @Output() closeModalEvent = new EventEmitter<void>();
 
   // Product model
-  product: Product = {
-    id: '',
-    name: '',
-    category: '',
-    purchasePrice: 0,
-    sellingPrice: 0,
-    brand: '',
-    measure: {
-      quantity: 0,
-      unitOfMeasure: '',
-    },
-  };
 
   // Category dropdown state
   categorySearch = '';
@@ -66,7 +53,7 @@ export class EditProductFormComponent implements OnInit {
 
   selectCategory(category: Category): void {
     this.categorySearch = category.name;
-    this.product.category = category.name;
+    this.productInfo.category = category.name;
     this.showDropdown = false;
   }
 
@@ -84,7 +71,7 @@ export class EditProductFormComponent implements OnInit {
 
   selectMeasure(measure: string): void {
     this.measureSearch = measure;
-    this.product.measure.unitOfMeasure = measure;
+    this.productInfo.measure.unitOfMeasure = measure;
     this.showMeasureDropdown = false;
   }
 
@@ -102,19 +89,23 @@ export class EditProductFormComponent implements OnInit {
   }
 
   get purchasePriceModel(): string | number {
-    return this.product.purchasePrice === 0 ? '' : this.product.purchasePrice;
+    return this.productInfo.purchasePrice === 0
+      ? ''
+      : this.productInfo.purchasePrice;
   }
 
   get sellingPriceModel(): string | number {
-    return this.product.sellingPrice === 0 ? '' : this.product.sellingPrice;
+    return this.productInfo.sellingPrice === 0
+      ? ''
+      : this.productInfo.sellingPrice;
   }
 
   onPurchasePriceChange(value: string): void {
-    this.product.purchasePrice = this.parseMaskedPrice(value);
+    this.productInfo.purchasePrice = this.parseMaskedPrice(value);
   }
 
   onSellingPriceChange(value: string): void {
-    this.product.sellingPrice = this.parseMaskedPrice(value);
+    this.productInfo.sellingPrice = this.parseMaskedPrice(value);
   }
 
   private parseMaskedPrice(value: string): number {
@@ -125,13 +116,13 @@ export class EditProductFormComponent implements OnInit {
   }
 
   get quantityModel(): string | number {
-    const quantity = this.product.measure.quantity;
+    const quantity = this.productInfo.measure.quantity;
     return quantity === 0 ? '' : quantity;
   }
 
   onQuantityChange(value: string): void {
     const parsedQuantity = this.parseMaskedQuantity(value);
-    this.product.measure.quantity = parsedQuantity;
+    this.productInfo.measure.quantity = parsedQuantity;
   }
 
   private parseMaskedQuantity(value: string): number {
