@@ -16,7 +16,7 @@ export class CounterComponent {
   /** Valor máximo permitido */
   @Input() max = Infinity;
   /** Desabilita todo o controle */
-  @Input() disabled = false;
+  @Input() disabled = true;
   /** Emite sempre que o count mudar */
   @Output() countChange = new EventEmitter<number>();
 

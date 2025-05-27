@@ -29,7 +29,7 @@
             <p class="product-name">{{ product.product.name }}</p>
           </div>
         </div>
-        <app-counter></app-counter>
+        <app-counter [disabled]="!product.selected"></app-counter>
       </div>
     </ng-container>
 

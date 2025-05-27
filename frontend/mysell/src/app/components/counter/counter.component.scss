@@ -22,21 +22,11 @@
     &-minus {
       background-color: #f0f0f0;
       color: #888;
-
-      .active & & {
-        background-color: var(--mysell-red);
-        color: white;
-      }
     }
 
     &-plus {
       background-color: #f0f0f0;
       color: #888;
-
-      .active & & {
-        background-color: var(--mysell-red);
-        color: white;
-      }
     }
 
     &:disabled {
@@ -51,8 +41,16 @@
     font-size: 16px;
     margin: 0 8px;
     color: #333;
+  }
 
-    .active & {
+  &.active {
+    .btn-minus,
+    .btn-plus {
+      background-color: var(--mysell-red);
+      color: white;
+    }
+
+    .count {
       color: var(--mysell-red);
     }
   }
