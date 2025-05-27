@@ -115,6 +115,7 @@ export class EditProductPage implements OnInit {
     }
 
     this.isLoading = true;
+    this.originalProductSelection.clear();
 
     const updateObservables = this.selectedProducts.map((product) =>
       this.productService.updateProduct(product)
