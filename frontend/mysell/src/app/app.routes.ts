@@ -58,4 +58,8 @@ export const routes: Routes = [
     path: 'edit-product',
     loadComponent: () => import('./pages/edit-product/edit-product.page').then( m => m.EditProductPage)
   },
+  {
+    path: 'sell',
+    loadComponent: () => import('./pages/sell/sell.page').then( m => m.SellPage)
+  },
 ];
