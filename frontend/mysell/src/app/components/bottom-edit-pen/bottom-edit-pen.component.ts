@@ -11,12 +11,12 @@ import { NavController } from '@ionic/angular';
 export class BottomEditPenComponent implements OnInit {
   @Input() direction: 'right' | 'left' = 'right';
   @Output() arrowClick = new EventEmitter<void>();
-
+  @Input() pageToGo: string = '';
   constructor(private navController: NavController) {}
 
   ngOnInit() {}
 
   onClick() {
-    this.arrowClick.emit();
+    this.navController.navigateRoot(this.pageToGo);
   }
 }
