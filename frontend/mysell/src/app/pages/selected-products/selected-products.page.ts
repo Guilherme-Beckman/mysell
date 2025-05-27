@@ -130,7 +130,7 @@ export class SelectedProductsPage implements OnInit {
       );
       return;
     }
-
+    this.editedProductSelectionService.clear();
     this.isLoading = true; // se quiser um loading (crie a propriedade isLoading na página)
 
     const creationObservables = this.selectedProducts.map((product) =>
