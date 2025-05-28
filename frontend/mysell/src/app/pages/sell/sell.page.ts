@@ -16,7 +16,10 @@ import { ConfirmPopUpComponent } from 'src/app/components/confirm-pop-up/confirm
 import { HomeRedirectComponent } from 'src/app/components/home-redirect/home-redirect.component';
 import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
 import { MessageService } from 'src/app/services/message.service';
-import { ProductsToSellComponent } from 'src/app/components/products-to-sell/products-to-sell.component';
+import {
+  ProductSelectCount,
+  ProductsToSellComponent,
+} from 'src/app/components/products-to-sell/products-to-sell.component';
 
 @Component({
   selector: 'app-sell',
@@ -26,11 +29,9 @@ import { ProductsToSellComponent } from 'src/app/components/products-to-sell/pro
   imports: [
     CommonModule,
     FormsModule,
-    CounterComponent,
     LoadingSppinerComponent,
     MessagePerRequestComponent,
     SearchBarComponent,
-    ConfirmPopUpComponent,
     ArrowComponent,
     HomeRedirectComponent,
     ProductsToSellComponent,
@@ -48,5 +49,11 @@ export class SellPage implements OnInit {
   public onSearchChange(term: string): void {
     this.searchTerm = term;
   }
-  onProductSelection(event: any) {}
+  onProductSelection(selected: ProductSelectCount[]) {
+    console.log('Produtos selecionados:', selected);
+    // Exemplo de acesso:
+    selected.forEach((p) =>
+      console.log(`${p.product.name}: ${p.count} unidade(s)`)
+    );
+  }
 }

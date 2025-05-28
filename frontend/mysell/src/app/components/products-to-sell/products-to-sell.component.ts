@@ -5,6 +5,12 @@ import { ProductSelect } from '../available-products/available-products.componen
 import { IonSkeletonText } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { CounterComponent } from '../counter/counter.component';
+import { Product } from 'src/app/interfaces/product';
+export interface ProductSelectCount {
+  product: Product;
+  selected: boolean;
+  count: number; // nova propriedade
+}
 
 @Component({
   selector: 'app-products-to-sell',
@@ -18,10 +24,10 @@ export class ProductsToSellComponent implements OnInit {
 
   public isLoading = false;
 
-  @Output() selectedProducts = new EventEmitter<ProductSelect[]>();
-  allProducts: ProductSelect[] = [];
+  @Output() selectedProducts = new EventEmitter<ProductSelectCount[]>();
+  allProducts: ProductSelectCount[] = [];
 
-  public filteredProducts: ProductSelect[] = [];
+  public filteredProducts: ProductSelectCount[] = [];
   constructor(private productService: ProductService) {}
   ngOnInit() {
     this.isLoading = true;
@@ -30,6 +36,7 @@ export class ProductsToSellComponent implements OnInit {
         const mappedProducts = products.map((product) => ({
           product,
           selected: false,
+          count: 1,
         }));
         this.filteredProducts = mappedProducts;
         this.allProducts = mappedProducts;
@@ -85,7 +92,7 @@ export class ProductsToSellComponent implements OnInit {
     const selectedProducts = this.getSelectedProducts();
     this.selectedProducts.emit(selectedProducts);
   }
-  private getSelectedProducts(): ProductSelect[] {
+  private getSelectedProducts(): ProductSelectCount[] {
     return this.allProducts.filter((product) => product.selected);
   }
   public reloadProducts() {
@@ -96,6 +103,7 @@ export class ProductsToSellComponent implements OnInit {
         const mappedProducts = products.map((product) => ({
           product,
           selected: false,
+          count: 1,
         }));
         this.filteredProducts = mappedProducts;
         this.allProducts = mappedProducts;
@@ -110,5 +118,9 @@ export class ProductsToSellComponent implements OnInit {
         this.isLoading = false;
       },
     });
+  }
+  onCountChange(product: ProductSelectCount, newCount: number): void {
+    product.count = newCount;
+    this.sendAllSelectedProducts(); // para atualizar no pai
   }
 }

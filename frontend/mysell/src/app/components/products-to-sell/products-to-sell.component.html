@@ -29,7 +29,11 @@
             <p class="product-name">{{ product.product.name }}</p>
           </div>
         </div>
-        <app-counter [disabled]="!product.selected"></app-counter>
+        <app-counter
+          [disabled]="!product.selected"
+          [count]="product.count"
+          (countChange)="onCountChange(product, $event)"
+        ></app-counter>
       </div>
     </ng-container>
 
