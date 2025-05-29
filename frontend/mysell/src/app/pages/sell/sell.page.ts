@@ -21,7 +21,9 @@ import {
   ProductsToSellComponent,
 } from 'src/app/components/products-to-sell/products-to-sell.component';
 import { ConfirmSellPopUpComponent } from 'src/app/components/confirm-sell-pop-up/confirm-sell-pop-up.component';
-
+import { SellService } from 'src/app/services/sell.service';
+import { forkJoin } from 'rxjs';
+import { NavController } from '@ionic/angular';
 @Component({
   selector: 'app-sell',
   templateUrl: './sell.page.html',
@@ -48,7 +50,11 @@ export class SellPage implements OnInit {
   public hasAnyItemSelected = false;
   public selectedProducts: ProductSelectCount[] = [];
   public confirmPopupVisible = false;
-  constructor(private messageService: MessageService) {}
+  constructor(
+    private messageService: MessageService,
+    private sellService: SellService,
+    private navController: NavController
+  ) {}
 
   ngOnInit() {}
   public onSearchChange(term: string): void {
@@ -63,5 +69,32 @@ export class SellPage implements OnInit {
   closeConfirmPopup() {
     this.confirmPopupVisible = false;
   }
-  confirmSell() {}
+  public confirmSell() {
+    if (this.selectedProducts.length === 0) return;
+
+    this.isLoading = true;
+
+    const sellRequests$ = this.selectedProducts.map((product) =>
+      this.sellService.sellProduct(product.product.id, product.count)
+    );
+
+    forkJoin(sellRequests$).subscribe({
+      next: () => {
+        this.messageService.setSuccessMessage(
+          'Venda realizada com sucesso!',
+          ''
+        );
+      },
+      error: (err) => {
+        console.error('Erro ao realizar venda:', err);
+        this.messageService.setErrorMessage('Erro ao realizar venda!', '');
+      },
+      complete: () => {
+        this.isLoading = false;
+        this.selectedProducts = [];
+        this.hasAnyItemSelected = false;
+        this.confirmPopupVisible = false;
+      },
+    });
+  }
 }

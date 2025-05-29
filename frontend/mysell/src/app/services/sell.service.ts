@@ -16,4 +16,11 @@ export class SellService {
       withCredentials: true,
     });
   }
+  public sellProduct(productId: string, quantity: number): Observable<any> {
+    return this.httpClient.post<any>(
+      `${this.apiUrl}sell`,
+      { productId, quantity },
+      { withCredentials: true }
+    );
+  }
 }
