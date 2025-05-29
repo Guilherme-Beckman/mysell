@@ -1,10 +1,24 @@
 <div *ngIf="isActive" class="confirm-pop-up-overlay">
   <div class="confirm-pop-up">
     <button class="close-button" (click)="closePopUpButton()">&times;</button>
-    <p class="confirm-message">
-      {{ firstMessage }}.<br />
-      {{ secondMessage }}
-    </p>
+    <h1>CONFIRMAÇÃO</h1>
+    <div class="selected-products">
+      <div class="product" *ngFor="let product of selectedProducts">
+        <div class="product-quantity">{{ product.count }}x</div>
+
+        <div class="product-name">{{ product.product.name }}</div>
+        <div class="product-price">
+          +{{ product.product.sellingPrice * product.count | currency : "BRL" }}
+        </div>
+      </div>
+    </div>
+    <div class="total">
+      <p>TOTAL</p>
+      <p class="total-price">
+        {{ totalPrice | currency : "BRL" }}
+      </p>
+    </div>
+
     <button class="confirm-button" (click)="confirmButton()">Continuar</button>
   </div>
 </div>

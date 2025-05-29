@@ -35,4 +35,7 @@
 ></app-message-per-request>
 <app-confirm-sell-pop-up
   [isActive]="confirmPopupVisible"
+  [selectedProducts]="selectedProducts"
+  (closeButtonEvent)="closeConfirmPopup()"
+  (confirm)="confirmSell()"
 ></app-confirm-sell-pop-up>

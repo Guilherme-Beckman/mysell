@@ -10,8 +10,18 @@
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 9999;
 }
+h1 {
+  font-size: 1.5rem;
+  text-align: center;
+  font-weight: 400;
+  border-bottom: 1px solid var(--text-gray);
+  color: var(--text-gray);
+  margin-bottom: 1rem;
+}
 
 .confirm-pop-up {
+  min-width: 250px;
+
   margin: 4rem;
   position: relative;
   background-color: white;
@@ -19,12 +29,6 @@
   border-radius: 12px;
   text-align: center;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-}
-
-.confirm-message {
-  font-size: 1rem;
-  color: #555;
-  margin-bottom: 1.5rem;
 }
 
 .confirm-button {
@@ -52,4 +56,47 @@
   font-size: 1.5rem;
   color: var(--text-gray);
   cursor: pointer;
+}
+.selected-products {
+  padding-bottom: 1rem;
+  max-height: 350px;
+  position: relative;
+  overflow-y: auto;
+}
+.product {
+  display: flex;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  gap: 0.5rem;
+}
+.product-name {
+  text-align: left;
+  font-weight: 500;
+  color: var(--text-gray);
+}
+.product-quantity {
+  text-align: left;
+  font-weight: 500;
+  color: var(--text-gray);
+}
+.product-price {
+  position: absolute;
+  right: 0;
+  text-align: right;
+  font-weight: 500;
+  color: var(--mysell-red);
+}
+.total {
+  display: flex;
+  position: relative;
+  display: flex;
+  padding-bottom: 1rem;
+}
+.total-price {
+  position: absolute;
+  right: 0;
+  text-align: right;
+  font-weight: 500;
+  color: var(--mysell-red);
+  font-size: 1.2rem;
 }

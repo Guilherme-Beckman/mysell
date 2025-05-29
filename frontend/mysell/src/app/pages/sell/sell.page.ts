@@ -46,7 +46,7 @@ export class SellPage implements OnInit {
   public successMessage$ = this.messageService.successMessage$;
   public errorMessage$ = this.messageService.errorMessage$;
   public hasAnyItemSelected = false;
-  private selectedProducts: ProductSelectCount[] = [];
+  public selectedProducts: ProductSelectCount[] = [];
   public confirmPopupVisible = false;
   constructor(private messageService: MessageService) {}
 
@@ -60,4 +60,8 @@ export class SellPage implements OnInit {
   showConfirmPopup() {
     this.confirmPopupVisible = true;
   }
+  closeConfirmPopup() {
+    this.confirmPopupVisible = false;
+  }
+  confirmSell() {}
 }
