@@ -22,9 +22,17 @@
   <br /><br />
   <br /><br />
   <br /><br />
+  <app-confirm-button
+    *ngIf="hasAnyItemSelected"
+    [position]="'right'"
+    (confirm)="showConfirmPopup()"
+  ></app-confirm-button>
 </main>
 
 <app-message-per-request
   [errorMessage]="(errorMessage$ | async) ?? ''"
   [successMessage]="(successMessage$ | async) ?? ''"
 ></app-message-per-request>
+<app-confirm-sell-pop-up
+  [isActive]="confirmPopupVisible"
+></app-confirm-sell-pop-up>

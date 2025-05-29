@@ -20,6 +20,7 @@ import {
   ProductSelectCount,
   ProductsToSellComponent,
 } from 'src/app/components/products-to-sell/products-to-sell.component';
+import { ConfirmSellPopUpComponent } from 'src/app/components/confirm-sell-pop-up/confirm-sell-pop-up.component';
 
 @Component({
   selector: 'app-sell',
@@ -35,6 +36,8 @@ import {
     ArrowComponent,
     HomeRedirectComponent,
     ProductsToSellComponent,
+    ConfirmButtonComponent,
+    ConfirmSellPopUpComponent,
   ],
 })
 export class SellPage implements OnInit {
@@ -43,6 +46,8 @@ export class SellPage implements OnInit {
   public successMessage$ = this.messageService.successMessage$;
   public errorMessage$ = this.messageService.errorMessage$;
   public hasAnyItemSelected = false;
+  private selectedProducts: ProductSelectCount[] = [];
+  public confirmPopupVisible = false;
   constructor(private messageService: MessageService) {}
 
   ngOnInit() {}
@@ -50,10 +55,9 @@ export class SellPage implements OnInit {
     this.searchTerm = term;
   }
   onProductSelection(selected: ProductSelectCount[]) {
-    console.log('Produtos selecionados:', selected);
-    // Exemplo de acesso:
-    selected.forEach((p) =>
-      console.log(`${p.product.name}: ${p.count} unidade(s)`)
-    );
+    this.selectedProducts = selected;
+  }
+  showConfirmPopup() {
+    this.confirmPopupVisible = true;
   }
 }
