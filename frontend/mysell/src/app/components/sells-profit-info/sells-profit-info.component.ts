@@ -26,7 +26,8 @@ export class SellsProfitInfoComponent implements OnInit {
         this.totalSells = report.numberOfSales ?? 0;
         this.profit = report.profit ?? 0;
         this.formattedTotalSells = this.formatBigNumber(this.totalSells);
-        this.formattedProfit = this.formatBigNumber(this.profit);
+        const roundedProfit = Math.round(this.profit * 100) / 100;
+        this.formattedProfit = this.formatBigNumber(roundedProfit);
       },
       error: (err) => {
         this.isLoading = false;

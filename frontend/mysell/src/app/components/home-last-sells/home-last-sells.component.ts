@@ -83,7 +83,8 @@ export class HomeLastSellsComponent implements OnInit {
 
   /** Valor total formatado */
   totalValueFormatted(): string {
-    return this.formatBigNumber(this.totalValue());
+    const roundedTotal = Math.round(this.totalValue() * 100) / 100;
+    return this.formatBigNumber(roundedTotal);
   }
 
   /** Formata números grandes em K, M, B */
