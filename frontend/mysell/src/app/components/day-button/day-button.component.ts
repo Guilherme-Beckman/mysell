@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { O } from '@angular/router/router_module.d-6zbCxc1T';
 
 @Component({
   selector: 'app-day-button',
@@ -8,9 +9,13 @@ import { Component, Input, OnInit } from '@angular/core';
   imports: [CommonModule],
 })
 export class DayButtonComponent implements OnInit {
-  @Input() day: string = '';
-  @Input() selected: boolean = false;
+  @Input() day: number = 0;
+  @Input() selected: boolean = true;
+  @Output() daySelected = new EventEmitter<number>();
   constructor() {}
 
   ngOnInit() {}
+  onClick(): void {
+    this.daySelected.emit(this.day);
+  }
 }

@@ -9,7 +9,12 @@ import { DayButtonComponent } from '../day-button/day-button.component';
   imports: [CommonModule, DayButtonComponent],
 })
 export class ReportRangeSelectorComponent implements OnInit {
+  public dayOptions: number[] = [1, 7];
+  public selectedDay: number = 1;
   constructor() {}
 
+  onDaySelected(day: number) {
+    this.selectedDay = day;
+  }
   ngOnInit() {}
 }

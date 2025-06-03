@@ -1,1 +1,3 @@
-<button [ngClass]="{ selected: selected }">{{ day }}D</button>
+<button [ngClass]="{ selected: selected }" (click)="onClick()">
+  {{ day }}D
+</button>

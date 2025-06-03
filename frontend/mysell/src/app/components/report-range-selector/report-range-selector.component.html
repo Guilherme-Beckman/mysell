@@ -1,4 +1,11 @@
 <h2>Relatório</h2>
-<app-day-button [day]="'1'"></app-day-button>
-<app-day-button [day]="'7'"></app-day-button>
-<p>Exibindo dados das ultimas 24 horas</p>
+<div class="data-buttons">
+  <app-day-button
+    *ngFor="let day of dayOptions"
+    [day]="day"
+    [selected]="day === selectedDay"
+    (daySelected)="onDaySelected($event)"
+  ></app-day-button>
+</div>
+
+<p>Exibindo dados dos últimos {{ selectedDay }} dias</p>
