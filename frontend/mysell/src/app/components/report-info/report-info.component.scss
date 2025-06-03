@@ -6,7 +6,23 @@ main {
 }
 .content {
   margin: 1rem;
-  background-color: aqua;
-  height: 90%;
+  height: 100%;
   width: 100%;
+}
+.info-blocks {
+  display: flex;
+  gap: 5%;
+}
+.profit,
+.sales {
+  color: var(--text-gray);
+  text-align: center;
+  width: 50%;
+  padding: 1rem;
+  background-color: var(--medium-gray);
+  border-radius: 10px;
+  span {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
 }

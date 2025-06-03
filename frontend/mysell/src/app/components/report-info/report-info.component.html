@@ -1,11 +1,14 @@
 <main>
   <div class="content">
-    <div class="profit">
-      <h3>Lucro</h3>
-      <span></span>
-    </div>
-    <div class="sales">
-      <h3>Vendas</h3>
+    <div class="info-blocks">
+      <div class="profit">
+        <h3>Lucro</h3>
+        <span>{{ profit | currency : "BRL" : "symbol" : "1.2-2" }}</span>
+      </div>
+      <div class="sales">
+        <h3>Vendas</h3>
+        <span>{{ sales }}</span>
+      </div>
     </div>
   </div>
 </main>
