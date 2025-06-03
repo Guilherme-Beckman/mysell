@@ -1,3 +1,17 @@
-<p>
-  product-ranking works!
-</p>
+<h3>Mais vendidos</h3>
+<div class="product-info">
+  <div
+    class="product-sale"
+    *ngFor="let product of productRanking; let i = index"
+    [ngClass]="{ 'top-product': i < 3 }"
+  >
+    <div class="product-rank">
+      <p>{{ i + 1 }}</p>
+    </div>
+    <div class="product-name">
+      <p>{{ product.name }}</p>
+    </div>
+    <div class="product-sales"></div>
+    <p>{{ product.sales }}x</p>
+  </div>
+</div>

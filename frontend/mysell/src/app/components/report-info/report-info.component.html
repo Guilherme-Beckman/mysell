@@ -10,8 +10,10 @@
         <span>{{ sales }}</span>
       </div>
     </div>
-  </div>
-  <div class="ranking">
-    <app-product-ranking></app-product-ranking>
+    <div class="ranking">
+      <app-product-ranking
+        [productRanking]="productRanking"
+      ></app-product-ranking>
+    </div>
   </div>
 </main>
