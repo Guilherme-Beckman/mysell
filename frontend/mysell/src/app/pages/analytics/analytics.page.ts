@@ -9,13 +9,20 @@ import {
 } from '@ionic/angular/standalone';
 import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
 import { HomeRedirectComponent } from 'src/app/components/home-redirect/home-redirect.component';
+import { ReportRangeSelectorComponent } from 'src/app/components/report-range-selector/report-range-selector.component';
 
 @Component({
   selector: 'app-analytics',
   templateUrl: './analytics.page.html',
   styleUrls: ['./analytics.page.scss'],
   standalone: true,
-  imports: [ArrowComponent, HomeRedirectComponent, CommonModule, FormsModule],
+  imports: [
+    ArrowComponent,
+    HomeRedirectComponent,
+    CommonModule,
+    FormsModule,
+    ReportRangeSelectorComponent,
+  ],
 })
 export class AnalyticsPage implements OnInit {
   constructor() {}
