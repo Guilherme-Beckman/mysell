@@ -10,6 +10,7 @@ import {
 import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
 import { HomeRedirectComponent } from 'src/app/components/home-redirect/home-redirect.component';
 import { ReportRangeSelectorComponent } from 'src/app/components/report-range-selector/report-range-selector.component';
+import { ReportInfoComponent } from 'src/app/components/report-info/report-info.component';
 
 @Component({
   selector: 'app-analytics',
@@ -22,6 +23,7 @@ import { ReportRangeSelectorComponent } from 'src/app/components/report-range-se
     CommonModule,
     FormsModule,
     ReportRangeSelectorComponent,
+    ReportInfoComponent,
   ],
 })
 export class AnalyticsPage implements OnInit {

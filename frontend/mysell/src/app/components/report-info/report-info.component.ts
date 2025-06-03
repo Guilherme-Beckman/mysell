@@ -1,14 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-report-info',
   templateUrl: './report-info.component.html',
   styleUrls: ['./report-info.component.scss'],
 })
-export class ReportInfoComponent  implements OnInit {
-
-  constructor() { }
+export class ReportInfoComponent implements OnInit {
+  @Input() report: any;
+  constructor() {}
 
   ngOnInit() {}
-
 }
