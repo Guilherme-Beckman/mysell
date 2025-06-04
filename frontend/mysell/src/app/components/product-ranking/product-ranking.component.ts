@@ -19,6 +19,14 @@ export class ProductRankingComponent implements OnInit {
       { name: 'Macarrão Renata', sales: 9 },
       { name: 'Açúcar União', sales: 7 },
       { name: 'Café Pilão', sales: 5 },
+      { name: 'Café Pilão', sales: 5 },
+      { name: 'Café Pilão', sales: 5 },
+      { name: 'Café Pilão', sales: 5 },
+      { name: 'Café Pilão', sales: 5 },
+      { name: 'Café Pilão', sales: 5 },
+      { name: 'Café Pilão', sales: 5 },
+      { name: 'Café Pilão', sales: 5 },
+      { name: 'Café Pilão', sales: 5 },
     ];
   }
 }
