@@ -10,13 +10,21 @@
         <span>{{ sales }}</span>
       </div>
     </div>
-    <div class="ranking">
-      <app-product-ranking
-        [productRanking]="productRanking"
-      ></app-product-ranking>
-    </div>
-    <div class="pizza-graph">
-      <app-pizza-graph></app-pizza-graph>
+    <div class="ranking-graph">
+      <div class="ranking">
+        <div class="ranking-header">
+          <h3>Mais vendidos</h3>
+        </div>
+        <div class="ranking-scroll">
+          <app-product-ranking
+            [productRanking]="productRanking"
+          ></app-product-ranking>
+        </div>
+      </div>
+
+      <div class="pizza-graph">
+        <app-pizza-graph></app-pizza-graph>
+      </div>
     </div>
   </div>
 </main>

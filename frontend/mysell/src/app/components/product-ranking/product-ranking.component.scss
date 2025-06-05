@@ -1,10 +1,7 @@
 .top-product {
   color: var(--mysell-red);
 }
-.product-info {
-  max-height: 60%;
-  overflow-y: auto;
-}
+
 .product-sale {
   font-size: 0.9rem;
   display: flex;
@@ -13,7 +10,4 @@
 }
 .product-sales {
   margin-left: auto;
-}
-h3 {
-  text-align: center;
 }

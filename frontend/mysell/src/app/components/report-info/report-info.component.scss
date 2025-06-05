@@ -31,8 +31,33 @@ main {
     font-weight: 600;
   }
 }
+.ranking-graph {
+  display: flex;
+}
+
 .ranking {
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 32vh;
+  width: 50%;
+  margin-top: 1rem;
+}
+
+.ranking-header {
+  h3 {
+    text-align: center;
+  }
+  flex-shrink: 0;
+  padding: 0.5rem;
+}
+
+.ranking-scroll {
+  overflow: auto;
+  flex-grow: 1;
+}
+
+.pizza-graph {
+  height: 32vh;
   width: 50%;
   margin-top: 1rem;
 }
