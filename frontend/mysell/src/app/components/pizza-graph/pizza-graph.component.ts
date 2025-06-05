@@ -38,6 +38,7 @@ export class PizzaGraphComponent implements OnInit {
     { name: 'Produto E', sales: 25 },
   ];
   @Output() expand = new EventEmitter<void>();
+  @Output() closeInfoEvent = new EventEmitter<void>();
 
   @ViewChild('chartCanvas', { static: true })
   chartCanvas!: ElementRef<HTMLCanvasElement>;
@@ -55,6 +56,10 @@ export class PizzaGraphComponent implements OnInit {
   }
   public expandInfo() {
     this.expand.emit();
+    this.updateChart(); // Atualiza o gráfico após expandir ou recolher
+  }
+  public closeInfo() {
+    this.closeInfoEvent.emit();
     this.updateChart(); // Atualiza o gráfico após expandir ou recolher
   }
   private createChart() {

@@ -28,6 +28,9 @@
     </div>
   </div>
   <div class="expanded-graph" *ngIf="isExpanded">
-    <app-pizza-graph [isExpanded]="true"></app-pizza-graph>
+    <app-pizza-graph
+      [isExpanded]="true"
+      (closeInfoEvent)="closeGraphInfo()"
+    ></app-pizza-graph>
   </div>
 </main>

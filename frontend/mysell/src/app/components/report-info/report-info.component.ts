@@ -23,4 +23,7 @@ export class ReportInfoComponent implements OnInit {
   expandGraph() {
     this.isExpanded = !this.isExpanded;
   }
+  closeGraphInfo() {
+    this.isExpanded = false;
+  }
 }
