@@ -3,6 +3,13 @@
     <canvas #chartCanvas></canvas>
   </div>
   <div class="info-icon">
-    <img src="assets/svg/info.svg" alt="" />
+    <button (click)="expandInfo()" *ngIf="!isExpanded">
+      <img src="assets/svg/info.svg" alt="" />
+    </button>
+  </div>
+  <div class="back-button">
+    <button (click)="expandInfo()" *ngIf="isExpanded">
+      <img src="assets/svg/arrow.svg" alt="" />
+    </button>
   </div>
 </div>

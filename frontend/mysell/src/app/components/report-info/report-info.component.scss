@@ -60,4 +60,14 @@ main {
   height: 32vh;
   width: 50%;
   margin-top: 1rem;
+  justify-content: center; /* centraliza horizontalmente */
+  align-items: center; /* centraliza verticalmente */
+}
+.expanded-graph {
+  display: flex;
+  justify-content: center; /* centraliza horizontalmente */
+  align-items: center; /* centraliza verticalmente */
+  width: 100%;
+  height: 100%;
+  overflow: auto;
 }

@@ -1,13 +1,18 @@
 import {
   Component,
   ElementRef,
+  EventEmitter,
   Input,
   OnInit,
+  Output,
+  output,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
 import { IonContent } from '@ionic/angular/standalone';
+import { CommonModule } from '@angular/common';
+import { BottomArrowComponent } from '../bottom-arrow/bottom-arrow.component';
 
 Chart.register(...registerables);
 
@@ -19,6 +24,7 @@ export interface Product {
   selector: 'app-pizza-graph',
   templateUrl: './pizza-graph.component.html',
   styleUrls: ['./pizza-graph.component.scss'],
+  imports: [CommonModule],
 })
 export class PizzaGraphComponent implements OnInit {
   @Input() isExpanded = false;
@@ -27,9 +33,11 @@ export class PizzaGraphComponent implements OnInit {
     { name: 'Produto B', sales: 95 },
     { name: 'Produto C', sales: 60 },
     { name: 'Produto D', sales: 25 },
+    { name: 'Produto D', sales: 25 },
 
     { name: 'Produto E', sales: 25 },
   ];
+  @Output() expand = new EventEmitter<void>();
 
   @ViewChild('chartCanvas', { static: true })
   chartCanvas!: ElementRef<HTMLCanvasElement>;
@@ -45,7 +53,10 @@ export class PizzaGraphComponent implements OnInit {
       this.updateChart();
     }
   }
-
+  public expandInfo() {
+    this.expand.emit();
+    this.updateChart(); // Atualiza o gráfico após expandir ou recolher
+  }
   private createChart() {
     if (this.chart) {
       this.chart.destroy();

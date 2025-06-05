@@ -1,5 +1,5 @@
 <main>
-  <div class="content">
+  <div class="content" *ngIf="!isExpanded">
     <div class="info-blocks">
       <div class="profit">
         <h3>Lucro</h3>
@@ -23,8 +23,11 @@
       </div>
 
       <div class="pizza-graph">
-        <app-pizza-graph></app-pizza-graph>
+        <app-pizza-graph (expand)="expandGraph()"></app-pizza-graph>
       </div>
     </div>
+  </div>
+  <div class="expanded-graph" *ngIf="isExpanded">
+    <app-pizza-graph [isExpanded]="true"></app-pizza-graph>
   </div>
 </main>

@@ -16,8 +16,11 @@ export class ReportInfoComponent implements OnInit {
   @Input() profit: number = 0;
   @Input() sales: number = 0;
   @Input() productRanking: ProductNameSales[] = [];
-
+  public isExpanded = false;
   constructor() {}
 
   ngOnInit() {}
+  expandGraph() {
+    this.isExpanded = !this.isExpanded;
+  }
 }
