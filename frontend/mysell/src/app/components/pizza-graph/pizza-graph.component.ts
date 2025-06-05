@@ -7,6 +7,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
+import { IonContent } from '@ionic/angular/standalone';
 
 Chart.register(...registerables);
 
@@ -25,7 +26,8 @@ export class PizzaGraphComponent implements OnInit {
     { name: 'Produto A', sales: 120 },
     { name: 'Produto B', sales: 95 },
     { name: 'Produto C', sales: 60 },
-    { name: 'Produto D', sales: 45 },
+    { name: 'Produto D', sales: 25 },
+
     { name: 'Produto E', sales: 25 },
   ];
 
