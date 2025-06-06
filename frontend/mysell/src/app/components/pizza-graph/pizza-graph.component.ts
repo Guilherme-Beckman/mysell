@@ -24,7 +24,7 @@ export interface Product {
   selector: 'app-pizza-graph',
   templateUrl: './pizza-graph.component.html',
   styleUrls: ['./pizza-graph.component.scss'],
-  imports: [CommonModule],
+  imports: [CommonModule, BottomArrowComponent],
 })
 export class PizzaGraphComponent implements OnInit {
   @Input() isExpanded = false;

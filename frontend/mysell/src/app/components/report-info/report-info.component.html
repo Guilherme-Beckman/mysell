@@ -38,7 +38,7 @@
     ></app-pizza-graph>
   </div>
 </main>
-<div class="total-revenue">
+<div class="total-revenue" *ngIf="!isExpanded">
   <h2>Renda Total</h2>
   <span>{{ totalRevenue | currency : "BRL" : "symbol" : "1.2-2" }}</span>
 </div>

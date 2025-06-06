@@ -1,7 +1,7 @@
 <nav>
   <div class="itens">
     <app-home-redirect></app-home-redirect>
-    <app-arrow></app-arrow>
+    <app-arrow [direction]="'left'" [pageToGo]="'/home'"></app-arrow>
   </div>
 </nav>
 <main>
@@ -10,6 +10,11 @@
     <app-report-range-selector></app-report-range-selector>
   </div>
   <div class="report-info">
-    <app-report-info></app-report-info>
+    <app-report-info
+      [profit]="profit"
+      [sales]="sales"
+      [totalRevenue]="totalRevenue"
+      [productRanking]="productRanking"
+    ></app-report-info>
   </div>
 </main>

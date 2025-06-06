@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, input, OnInit } from '@angular/core';
 import { ProductRankingComponent } from '../product-ranking/product-ranking.component';
 import { PizzaGraphComponent } from '../pizza-graph/pizza-graph.component';
+import { BottomArrowComponent } from '../bottom-arrow/bottom-arrow.component';
 export interface ProductNameSales {
   name: string;
   sales: number;

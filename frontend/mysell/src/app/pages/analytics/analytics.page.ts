@@ -10,7 +10,11 @@ import {
 import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
 import { HomeRedirectComponent } from 'src/app/components/home-redirect/home-redirect.component';
 import { ReportRangeSelectorComponent } from 'src/app/components/report-range-selector/report-range-selector.component';
-import { ReportInfoComponent } from 'src/app/components/report-info/report-info.component';
+import {
+  ReportInfoComponent,
+  ProductNameSales,
+} from 'src/app/components/report-info/report-info.component';
+import { ReportService } from 'src/app/services/report.service';
 
 @Component({
   selector: 'app-analytics',
@@ -27,7 +31,22 @@ import { ReportInfoComponent } from 'src/app/components/report-info/report-info.
   ],
 })
 export class AnalyticsPage implements OnInit {
-  constructor() {}
+  profit: number = 0;
+  totalRevenue: number = 0;
+  sales: number = 0;
+  productRanking: ProductNameSales[] = [];
 
-  ngOnInit() {}
+  constructor(private reportService: ReportService) {}
+
+  ngOnInit() {
+    this.reportService.getDailyReport().subscribe((report) => {
+      this.profit = report.profit;
+      this.totalRevenue = report.grossRevenue;
+      this.sales = report.numberOfSales;
+      this.productRanking = report.sellsByProduct.map((item: any) => ({
+        name: item.productResponseDTO.name,
+        sales: item.saleCount,
+      }));
+    });
+  }
 }

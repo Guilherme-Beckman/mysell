@@ -1,21 +1,32 @@
 <div class="content">
-  <ng-container *ngIf="products && products.length > 0; else noProducts">
-    <div class="chart-container">
+  <ng-container>
+    <div
+      class="chart-container"
+      [class.expanded]="isExpanded"
+      [hidden]="!products || products.length === 0"
+    >
       <canvas #chartCanvas></canvas>
     </div>
-    <div class="info-icon">
-      <button (click)="expandInfo()" *ngIf="!isExpanded">
+    <div
+      class="info-icon"
+      [hidden]="!products || products.length === 0 || isExpanded"
+    >
+      <button (click)="expandInfo()">
         <img src="assets/svg/info.svg" alt="Abrir informações" />
       </button>
     </div>
-    <div class="back-button">
-      <button (click)="closeInfo()" *ngIf="isExpanded">
-        <img src="assets/svg/arrow.svg" alt="Voltar" />
-      </button>
-    </div>
-  </ng-container>
 
-  <ng-template #noProducts>
-    <p class="no-products">Nenhum dado disponível para o gráfico.</p>
-  </ng-template>
+    <p class="no-products" [hidden]="products && products.length > 0">
+      Nenhum dado disponível para o gráfico.
+    </p>
+  </ng-container>
 </div>
+<div
+  class="back-button"
+  [hidden]="!products || products.length === 0 || !isExpanded"
+></div>
+<app-bottom-arrow
+  (arrowClick)="closeInfo()"
+  [direction]="'left'"
+  *ngIf="isExpanded"
+></app-bottom-arrow>
