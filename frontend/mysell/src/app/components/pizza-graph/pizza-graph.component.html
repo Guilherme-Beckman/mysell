@@ -21,10 +21,6 @@
   </p>
 </div>
 
-<div
-  class="back-button"
-  [hidden]="!products || products.length === 0 || !isExpanded"
-></div>
 <app-bottom-arrow
   (arrowClick)="closeInfo()"
   [direction]="'left'"
