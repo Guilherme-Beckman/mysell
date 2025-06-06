@@ -15,12 +15,12 @@
         <img src="assets/svg/info.svg" alt="Abrir informações" />
       </button>
     </div>
-
-    <p class="no-products" [hidden]="products && products.length > 0">
-      Nenhum dado disponível para o gráfico.
-    </p>
   </ng-container>
+  <p class="no-products" [hidden]="products && products.length > 0">
+    Nenhum dado disponível para o gráfico.
+  </p>
 </div>
+
 <div
   class="back-button"
   [hidden]="!products || products.length === 0 || !isExpanded"
