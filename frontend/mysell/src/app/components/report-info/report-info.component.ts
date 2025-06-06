@@ -16,6 +16,7 @@ export class ReportInfoComponent implements OnInit {
   @Input() profit: number = 0;
   @Input() sales: number = 0;
   @Input() productRanking: ProductNameSales[] = [];
+  @Input() totalRevenue: number = 0;
   public isExpanded = false;
   constructor() {}
 

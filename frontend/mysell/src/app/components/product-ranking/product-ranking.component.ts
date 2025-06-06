@@ -12,21 +12,5 @@ export class ProductRankingComponent implements OnInit {
   @Input() productRanking: ProductNameSales[] = [];
   constructor() {}
 
-  ngOnInit() {
-    this.productRanking = [
-      { name: 'Arroz Tio João', sales: 15 },
-      { name: 'Feijão Camil', sales: 12 },
-      { name: 'Macarrão Renata', sales: 9 },
-      { name: 'Açúcar União', sales: 7 },
-      { name: 'Café Pilão', sales: 5 },
-      { name: 'Café Pilão', sales: 5 },
-      { name: 'Café Pilão', sales: 5 },
-      { name: 'Café Pilão', sales: 5 },
-      { name: 'Café Pilão', sales: 5 },
-      { name: 'Café Pilão', sales: 5 },
-      { name: 'Café Pilão', sales: 5 },
-      { name: 'Café Pilão', sales: 5 },
-      { name: 'Café Pilão', sales: 5 },
-    ];
-  }
+  ngOnInit() {}
 }

@@ -23,7 +23,10 @@
       </div>
 
       <div class="pizza-graph">
-        <app-pizza-graph (expand)="expandGraph()"></app-pizza-graph>
+        <app-pizza-graph
+          (expand)="expandGraph()"
+          [products]="productRanking"
+        ></app-pizza-graph>
       </div>
     </div>
   </div>
@@ -31,6 +34,11 @@
     <app-pizza-graph
       [isExpanded]="true"
       (closeInfoEvent)="closeGraphInfo()"
+      [products]="productRanking"
     ></app-pizza-graph>
   </div>
 </main>
+<div class="total-revenue">
+  <h2>Renda Total</h2>
+  <span>{{ totalRevenue | currency : "BRL" : "symbol" : "1.2-2" }}</span>
+</div>

@@ -28,15 +28,7 @@ export interface Product {
 })
 export class PizzaGraphComponent implements OnInit {
   @Input() isExpanded = false;
-  @Input() products: Product[] = [
-    { name: 'Produto A', sales: 120 },
-    { name: 'Produto B', sales: 95 },
-    { name: 'Produto C', sales: 60 },
-    { name: 'Produto D', sales: 25 },
-    { name: 'Produto D', sales: 25 },
-
-    { name: 'Produto E', sales: 25 },
-  ];
+  @Input() products: Product[] = [];
   @Output() expand = new EventEmitter<void>();
   @Output() closeInfoEvent = new EventEmitter<void>();
 

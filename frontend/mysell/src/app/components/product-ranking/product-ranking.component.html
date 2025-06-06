@@ -1,16 +1,24 @@
 <div class="product-info">
-  <div
-    class="product-sale"
-    *ngFor="let product of productRanking; let i = index"
-    [ngClass]="{ 'top-product': i < 3 }"
+  <ng-container
+    *ngIf="productRanking && productRanking.length > 0; else noProducts"
   >
-    <div class="product-rank">
-      <p>{{ i + 1 }}</p>
+    <div
+      class="product-sale"
+      *ngFor="let product of productRanking; let i = index"
+      [ngClass]="{ 'top-product': i < 3 }"
+    >
+      <div class="product-rank">
+        <p>{{ i + 1 }}</p>
+      </div>
+      <div class="product-name">
+        <p>{{ product.name }}</p>
+      </div>
+      <div class="product-sales"></div>
+      <p>{{ product.sales }}x</p>
     </div>
-    <div class="product-name">
-      <p>{{ product.name }}</p>
-    </div>
-    <div class="product-sales"></div>
-    <p>{{ product.sales }}x</p>
-  </div>
+  </ng-container>
+
+  <ng-template #noProducts>
+    <p class="no-products">Nenhum produto encontrado.</p>
+  </ng-template>
 </div>
