@@ -4,7 +4,8 @@ import { redirectGuard } from './guards/redirect.guard';
 export const routes: Routes = [
   {
     path: 'home',
-    loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
+    loadComponent: () =>
+      import('./pages/analytics/analytics.page').then((m) => m.AnalyticsPage),
   },
   {
     path: '',
