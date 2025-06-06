@@ -79,3 +79,21 @@ main {
     font-weight: 800;
   }
 }
+.skeleton {
+  width: 80%;
+  height: 1.5rem;
+  background: linear-gradient(90deg, #dcdcdc 25%, #050505 50%, #dcdcdc 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

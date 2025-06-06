@@ -3,13 +3,31 @@
     <div class="info-blocks">
       <div class="profit">
         <h3>Lucro</h3>
-        <span>{{ profit | currency : "BRL" : "symbol" : "1.2-2" }}</span>
+        <ng-container *ngIf="isLoading; else profitData">
+          <ion-skeleton-text
+            animated
+            style="width: 60%; height: 1.5rem"
+          ></ion-skeleton-text>
+        </ng-container>
+        <ng-template #profitData>
+          <span>{{ profit | currency : "BRL" : "symbol" : "1.2-2" }}</span>
+        </ng-template>
       </div>
+
       <div class="sales">
         <h3>Vendas</h3>
-        <span>{{ sales }}</span>
+        <ng-container *ngIf="isLoading; else salesData">
+          <ion-skeleton-text
+            animated
+            style="width: 40%; height: 1.5rem"
+          ></ion-skeleton-text>
+        </ng-container>
+        <ng-template #salesData>
+          <span>{{ sales }}</span>
+        </ng-template>
       </div>
     </div>
+
     <div class="ranking-graph">
       <div class="ranking">
         <div class="ranking-header">
@@ -43,5 +61,13 @@
 </main>
 <div class="total-revenue" *ngIf="!isExpanded">
   <h2>Renda Total</h2>
-  <span>{{ totalRevenue | currency : "BRL" : "symbol" : "1.2-2" }}</span>
+  <ng-container *ngIf="isLoading; else revenueValue">
+    <ion-skeleton-text
+      animated
+      style="width: 120px; height: 2rem; border-radius: 8px"
+    ></ion-skeleton-text>
+  </ng-container>
+  <ng-template #revenueValue>
+    <span>{{ totalRevenue | currency : "BRL" : "symbol" : "1.2-2" }}</span>
+  </ng-template>
 </div>
