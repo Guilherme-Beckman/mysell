@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 })
 export class ProductRankingComponent implements OnInit {
   @Input() productRanking: ProductNameSales[] = [];
+  @Input() isLoading: boolean = false;
   constructor() {}
 
   ngOnInit() {}

@@ -35,10 +35,11 @@ export class AnalyticsPage implements OnInit {
   totalRevenue: number = 0;
   sales: number = 0;
   productRanking: ProductNameSales[] = [];
+  isLoading: boolean = false;
 
   constructor(private reportService: ReportService) {}
-
   ngOnInit() {
+    this.isLoading = true;
     this.reportService.getDailyReport().subscribe((report) => {
       this.profit = report.profit;
       this.totalRevenue = report.grossRevenue;
@@ -47,6 +48,7 @@ export class AnalyticsPage implements OnInit {
         name: item.productResponseDTO.name,
         sales: item.saleCount,
       }));
+      this.isLoading = false;
     });
   }
 }

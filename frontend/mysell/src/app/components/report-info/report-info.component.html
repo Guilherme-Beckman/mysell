@@ -17,6 +17,7 @@
         </div>
         <div class="ranking-scroll">
           <app-product-ranking
+            [isLoading]="isLoading"
             [productRanking]="productRanking"
           ></app-product-ranking>
         </div>
@@ -24,6 +25,7 @@
 
       <div class="pizza-graph">
         <app-pizza-graph
+          [isLoading]="isLoading"
           (expand)="expandGraph()"
           [products]="productRanking"
         ></app-pizza-graph>
@@ -32,6 +34,7 @@
   </div>
   <div class="expanded-graph" *ngIf="isExpanded">
     <app-pizza-graph
+      [isLoading]="isLoading"
       [isExpanded]="true"
       (closeInfoEvent)="closeGraphInfo()"
       [products]="productRanking"

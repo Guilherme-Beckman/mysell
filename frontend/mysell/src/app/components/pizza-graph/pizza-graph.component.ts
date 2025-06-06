@@ -31,7 +31,7 @@ export class PizzaGraphComponent implements OnInit {
   @Input() products: Product[] = [];
   @Output() expand = new EventEmitter<void>();
   @Output() closeInfoEvent = new EventEmitter<void>();
-
+  @Input() isLoading = false;
   @ViewChild('chartCanvas', { static: true })
   chartCanvas!: ElementRef<HTMLCanvasElement>;
 
