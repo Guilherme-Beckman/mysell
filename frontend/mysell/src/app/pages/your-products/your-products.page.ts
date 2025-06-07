@@ -1,25 +1,23 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ArrowComponent } from '../components/arrow/arrow.component';
-import { HomeRedirectComponent } from '../components/home-redirect/home-redirect.component';
-import { SearchBarComponent } from '../components/search-bar/search-bar.component';
-import { LoadingSppinerComponent } from '../components/loading-sppiner/loading-sppiner.component';
-import { MessagePerRequestComponent } from '../components/message-per-request/message-per-request.component';
-import { BottomArrowComponent } from '../components/bottom-arrow/bottom-arrow.component';
-import { NavController } from '@ionic/angular';
-import { MessageService } from '../services/message.service';
-import { YourProductListComponent } from '../components/your-product-list/your-product-list.component';
-import { ProductSelect } from '../components/available-products/available-products.component';
-import { BottomTrashcanComponent } from '../components/bottom-trashcan/bottom-trashcan.component';
-import { Product } from '../interfaces/product';
-import { ConfirmPopUpComponent } from '../components/confirm-pop-up/confirm-pop-up.component';
-import { ProductService } from '../services/product.service';
 import { forkJoin } from 'rxjs';
-import { BottomEditPenComponent } from '../components/bottom-edit-pen/bottom-edit-pen.component';
-import { ProductSelectionService } from '../services/product-selection.service';
-import { EditProductSelectionServiceService } from '../services/edit-product-selection-service.service';
-
+import { ArrowComponent } from 'src/app/components/arrow/arrow.component';
+import { ProductSelect } from 'src/app/components/available-products/available-products.component';
+import { BottomArrowComponent } from 'src/app/components/bottom-arrow/bottom-arrow.component';
+import { BottomEditPenComponent } from 'src/app/components/bottom-edit-pen/bottom-edit-pen.component';
+import { BottomTrashcanComponent } from 'src/app/components/bottom-trashcan/bottom-trashcan.component';
+import { ConfirmPopUpComponent } from 'src/app/components/confirm-pop-up/confirm-pop-up.component';
+import { HomeRedirectComponent } from 'src/app/components/home-redirect/home-redirect.component';
+import { LoadingSppinerComponent } from 'src/app/components/loading-sppiner/loading-sppiner.component';
+import { MessagePerRequestComponent } from 'src/app/components/message-per-request/message-per-request.component';
+import { SearchBarComponent } from 'src/app/components/search-bar/search-bar.component';
+import { YourProductListComponent } from 'src/app/components/your-product-list/your-product-list.component';
+import { Product } from 'src/app/interfaces/product';
+import { EditProductSelectionServiceService } from 'src/app/services/edit-product-selection-service.service';
+import { MessageService } from 'src/app/services/message.service';
+import { ProductService } from 'src/app/services/product.service';
+import { NavController } from '@ionic/angular/standalone';
 @Component({
   selector: 'app-your-products',
   templateUrl: './your-products.page.html',
@@ -31,7 +29,6 @@ import { EditProductSelectionServiceService } from '../services/edit-product-sel
     ArrowComponent,
     HomeRedirectComponent,
     SearchBarComponent,
-    BottomArrowComponent,
     LoadingSppinerComponent,
     MessagePerRequestComponent,
     YourProductListComponent,

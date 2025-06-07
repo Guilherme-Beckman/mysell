@@ -3,17 +3,19 @@ import { CommonModule } from '@angular/common';
 import { SellService } from 'src/app/services/sell.service';
 import { getCategoryIconPath } from 'src/app/datas/categories';
 import { IonSkeletonText } from '@ionic/angular/standalone';
+import { ConfirmPopUpComponent } from '../confirm-pop-up/confirm-pop-up.component';
 @Component({
   selector: 'app-sales-history',
   standalone: true,
   templateUrl: './sales-history.component.html',
   styleUrls: ['./sales-history.component.scss'],
-  imports: [IonSkeletonText, CommonModule],
+  imports: [IonSkeletonText, CommonModule, ConfirmPopUpComponent],
 })
 export class SalesHistoryComponent implements OnInit {
   sales: any[] = [];
   filter: string = '24h';
   isLoading = false;
+  isConfirmPopupOpen = false;
   constructor(private sellService: SellService) {}
 
   ngOnInit(): void {

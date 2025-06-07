@@ -4,7 +4,8 @@ import { redirectGuard } from './guards/redirect.guard';
 export const routes: Routes = [
   {
     path: 'home',
-    loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
+    loadComponent: () =>
+      import('./pages/history/history.page').then((m) => m.HistoryPage),
   },
   {
     path: '',
@@ -53,7 +54,7 @@ export const routes: Routes = [
   {
     path: 'your-products',
     loadComponent: () =>
-      import('./your-products/your-products.page').then(
+      import('./pages/your-products/your-products.page').then(
         (m) => m.YourProductsPage
       ),
   },
@@ -76,6 +77,7 @@ export const routes: Routes = [
   },
   {
     path: 'history',
-    loadComponent: () => import('./pages/history/history.page').then( m => m.HistoryPage)
+    loadComponent: () =>
+      import('./pages/history/history.page').then((m) => m.HistoryPage),
   },
 ];
