@@ -7,7 +7,11 @@
   </nav>
 
   <h1>Histórico de Vendas</h1>
+  <app-search-bar
+    [placeholder]="'Buscar vendas...'"
+    (searchChange)="onSearchChange($event)"
+  ></app-search-bar>
   <div class="sales-history">
-    <app-sales-history></app-sales-history>
+    <app-sales-history [searchTerm]="searchTerm"></app-sales-history>
   </div>
 </main>

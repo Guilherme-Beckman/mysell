@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SellService } from 'src/app/services/sell.service';
 import { getCategoryIconPath } from 'src/app/datas/categories';
@@ -21,6 +21,7 @@ import { MessagePerRequestComponent } from '../message-per-request/message-per-r
   ],
 })
 export class SalesHistoryComponent implements OnInit {
+  @Input() searchTerm: string = '';
   sales: any[] = [];
   filter: string = '24h';
   isLoading = false;
@@ -49,26 +50,51 @@ export class SalesHistoryComponent implements OnInit {
     });
   }
 
+  normalizeText(text: string): string {
+    return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
   setFilter(newFilter: string) {
     this.filter = newFilter;
   }
 
   get filteredSales(): any[] {
-    if (!this.sales) {
-      return [];
-    }
+    if (!this.sales) return [];
+
     const now = new Date();
-    let startDate;
+    let startDate: Date | null = null;
+
     if (this.filter === '24h') {
       startDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
     } else if (this.filter === '7d') {
       startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     } else if (this.filter === '30d') {
       startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-    } else {
-      return this.sales;
     }
-    return this.sales.filter((sale) => new Date(sale.createdAt) >= startDate);
+
+    const term = this.normalizeText(this.searchTerm.toLowerCase().trim());
+
+    return this.sales.filter((sale) => {
+      const saleDate = new Date(sale.createdAt);
+      const matchDate = !startDate || saleDate >= startDate;
+
+      const normalizedName = this.normalizeText(
+        sale.productResponseDTO.name.toLowerCase()
+      );
+      const normalizedBrand = this.normalizeText(
+        sale.productResponseDTO.brand.toLowerCase()
+      );
+      const normalizedCategory = this.normalizeText(
+        sale.productResponseDTO.category.name.toLowerCase()
+      );
+      const matchText =
+        !term ||
+        normalizedName.includes(term) ||
+        normalizedBrand.includes(term) ||
+        normalizedCategory.includes(term);
+
+      return matchDate && matchText;
+    });
   }
 
   get totalSales(): number {
