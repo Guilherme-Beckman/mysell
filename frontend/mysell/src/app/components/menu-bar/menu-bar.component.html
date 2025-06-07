@@ -7,9 +7,13 @@
       <h1>{{ email }}</h1>
     </nav>
 
-    <app-menu-actions
-      [actions]="menuActions"
-      (actionSelected)="onMenuAction($event)"
-    ></app-menu-actions>
+    <app-menu-actions [actions]="menuActions"></app-menu-actions>
   </main>
 </ion-menu>
+<app-confirm-pop-up
+  [firstMessage]="'Tem certeza que deseja sair?'"
+  [secondMessage]="'Você precisará fazer login novamente.'"
+  [isActive]="isConfirmPopupOpen"
+  (confirm)="confirmLogout()"
+  (closeButtonEvent)="isConfirmPopupOpen = false"
+></app-confirm-pop-up>
