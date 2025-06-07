@@ -1,24 +1,53 @@
 <div class="filter-buttons">
   <button [ngClass]="{ selected: filter === '24h' }" (click)="setFilter('24h')">
-    Last จาก 24 hours
+    Últimas 24h
   </button>
   <button [ngClass]="{ selected: filter === '7d' }" (click)="setFilter('7d')">
-    Last 7 days
+    Últimos 7 dias
   </button>
   <button [ngClass]="{ selected: filter === '30d' }" (click)="setFilter('30d')">
-    Last 30 days
+    Últimos 30 dias
   </button>
 </div>
+
 <div class="sales-list">
   <div *ngFor="let sale of filteredSales" class="sale-item">
-    <p>
-      {{ sale.productResponseDTO.name }} - Quantity: {{ sale.quantity }} - Date:
-      {{ sale.createdAt | date : "short" }} - Total:
-      {{ sale.quantity * sale.productResponseDTO.priceToSell | currency }}
-    </p>
+    <div class="sale-icon">
+      <img
+        [src]="getCategoryIconPath(sale.productResponseDTO.category.name)"
+        alt="Ícone da categoria"
+      />
+    </div>
+    <div class="sale-details">
+      <h4>{{ sale.productResponseDTO.name }}</h4>
+      <p>
+        Quantidade: <strong>{{ sale.quantity }}</strong
+        ><br />
+        Data: {{ sale.createdAt | date : "dd/MM/yyyy HH:mm" }}<br />
+        Total:
+        <span class="sale-total">
+          {{
+            sale.quantity * sale.productResponseDTO.priceToSell
+              | currency : "BRL" : "symbol"
+          }}
+        </span>
+      </p>
+    </div>
   </div>
-  <div *ngIf="filteredSales.length === 0">
-    <p>No sales found in this period.</p>
+
+  <div *ngIf="filteredSales.length === 0" class="no-sales">
+    <p>Nenhuma venda encontrada nesse período.</p>
   </div>
 </div>
-<p class="total-sales">Total Sales: {{ totalSales | currency }}</p>
+
+<p class="total-sales">
+  Total de Vendas:
+  <span class="total-amount">{{
+    totalSales | currency : "BRL" : "symbol"
+  }}</span>
+</p>
+<br />
+<br />
+
+<br /><br />
+<br />

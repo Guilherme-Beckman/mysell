@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SellService } from 'src/app/services/sell.service';
+import { getCategoryIconPath } from 'src/app/datas/categories';
 
 @Component({
   selector: 'app-sales-history',
@@ -48,5 +49,10 @@ export class SalesHistoryComponent implements OnInit {
       (sum, sale) => sum + sale.quantity * sale.productResponseDTO.priceToSell,
       0
     );
+  }
+  getCategoryIconPath(categoryName: string): string | undefined {
+    return getCategoryIconPath(categoryName);
+    {
+    }
   }
 }
