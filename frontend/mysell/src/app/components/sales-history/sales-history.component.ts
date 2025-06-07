@@ -2,23 +2,32 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SellService } from 'src/app/services/sell.service';
 import { getCategoryIconPath } from 'src/app/datas/categories';
-
+import { IonSkeletonText } from '@ionic/angular/standalone';
 @Component({
   selector: 'app-sales-history',
   standalone: true,
-  imports: [CommonModule],
   templateUrl: './sales-history.component.html',
   styleUrls: ['./sales-history.component.scss'],
+  imports: [IonSkeletonText, CommonModule],
 })
 export class SalesHistoryComponent implements OnInit {
   sales: any[] = [];
   filter: string = '7d';
-
+  isLoading = false;
   constructor(private sellService: SellService) {}
 
-  ngOnInit() {
-    this.sellService.getMySell().subscribe((data) => {
-      this.sales = data;
+  ngOnInit(): void {
+    this.isLoading = true;
+    this.sellService.getMySell().subscribe({
+      next: (data) => {
+        this.sales = data;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar vendas:', err);
+      },
+      complete: () => {
+        this.isLoading = false;
+      },
     });
   }
 

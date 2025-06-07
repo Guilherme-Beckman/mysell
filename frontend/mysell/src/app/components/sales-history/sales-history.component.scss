@@ -70,10 +70,17 @@
 }
 
 .total-sales {
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background-color: var(--medium-gray);
   margin-top: 2rem;
   font-size: 1.1rem;
   font-weight: bold;
   text-align: right;
+  position: absolute;
+  right: 1rem;
+  bottom: 3rem;
+  z-index: 1000;
 }
 
 .total-amount {
