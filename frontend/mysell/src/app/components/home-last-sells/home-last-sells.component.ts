@@ -89,12 +89,13 @@ export class HomeLastSellsComponent implements OnInit {
 
   /** Formata números grandes em K, M, B */
   public formatBigNumber(value: number): string {
+    value = Math.round(value * 100) / 100;
     if (value >= 1_000_000_000) return this.format(value, 1_000_000_000, 'B');
     if (value >= 1_000_000) return this.format(value, 1_000_000, 'M');
     if (value >= 100_000) return Math.round(value / 1_000) + 'K';
     if (value >= 10_000) return this.format(value, 1_000, 'K');
     if (value > 9_999) return '9999+';
-    return value.toString();
+    return value.toFixed(2).replace('.', ','); // Arredondado com vírgula
   }
 
   private format(value: number, divisor: number, suffix: string): string {
