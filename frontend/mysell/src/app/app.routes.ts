@@ -74,4 +74,8 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/analytics/analytics.page').then((m) => m.AnalyticsPage),
   },
+  {
+    path: 'history',
+    loadComponent: () => import('./pages/history/history.page').then( m => m.HistoryPage)
+  },
 ];
