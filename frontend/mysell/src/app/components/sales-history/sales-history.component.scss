@@ -1,0 +1,132 @@
+.filter-buttons {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  justify-content: center;
+}
+
+.filter-buttons button {
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 2rem;
+  padding: 0.5rem 1.2rem;
+  border: none;
+  background-color: var(--light-gray);
+  color: var(--text-gray);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-buttons button.selected {
+  background-color: var(--mysell-dark-red);
+  color: var(--white);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
+}
+
+.sales-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sale-item {
+  position: relative;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  border-radius: 0.75rem;
+  background-color: var(--white);
+  padding: 1rem;
+  border: 1px solid var(--fine-gray);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+}
+
+.sale-icon img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.sale-details h4 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  color: var(--mysell-dark-red);
+}
+
+.sale-details p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.sale-total {
+  font-weight: bold;
+  color: var(--mysell-red);
+}
+
+.no-sales {
+  text-align: center;
+  font-style: italic;
+  color: var(--text-gray);
+}
+
+.total-sales {
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background-color: var(--medium-gray);
+  margin-top: 2rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-align: right;
+  position: absolute;
+  right: 1rem;
+  bottom: 3rem;
+  z-index: 1000;
+}
+
+.total-amount {
+  color: var(--mysell-red);
+}
+.actions-buttons {
+  display: flex;
+  gap: 0.5rem;
+  position: absolute;
+  top: 0rem;
+  right: 0rem;
+  z-index: 1000;
+}
+
+.delete-sale-button {
+  margin-top: 0.5rem;
+  margin-right: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  border: none;
+  color: var(--white);
+  border-radius: 0.6rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.delete-sale-button {
+  background-color: var(--mysell-red);
+}
+
+.delete-sale-button:hover {
+  background-color: #5a5a5a; /* levemente mais escuro */
+}
+
+.delete-sale-button:active {
+  background-color: var(--mysell-red);
+  transform: scale(0.96); /* efeito de clique */
+}
+
+.delete-sale-button img {
+  width: 18px;
+  height: 18px;
+  filter: brightness(100%);
+}

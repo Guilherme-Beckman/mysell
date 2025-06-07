@@ -1,0 +1,112 @@
+<div class="filter-buttons">
+  <button [ngClass]="{ selected: filter === '24h' }" (click)="setFilter('24h')">
+    Últimas 24h
+  </button>
+  <button [ngClass]="{ selected: filter === '7d' }" (click)="setFilter('7d')">
+    Últimos 7 dias
+  </button>
+  <button [ngClass]="{ selected: filter === '30d' }" (click)="setFilter('30d')">
+    Últimos 30 dias
+  </button>
+</div>
+
+<!-- Lista de vendas ou skeleton -->
+<div class="sales-list">
+  <ng-container *ngIf="!isLoading; else salesSkeleton">
+    <div *ngFor="let sale of filteredSales" class="sale-item">
+      <div class="sale-icon">
+        <img
+          [src]="getCategoryIconPath(sale.productResponseDTO.category.name)"
+          alt="Ícone da categoria"
+        />
+      </div>
+      <div class="sale-details">
+        <h4>{{ sale.productResponseDTO.name }}</h4>
+        <p>
+          Quantidade: <strong>{{ sale.quantity }}</strong
+          ><br />
+          Data: {{ sale.createdAt | date : "dd/MM/yyyy HH:mm" }}<br />
+          Total:
+          <span class="sale-total">
+            {{
+              sale.quantity * sale.productResponseDTO.priceToSell
+                | currency : "BRL" : "symbol"
+            }}
+          </span>
+        </p>
+
+        <!-- Botão Editar (somente para filtro de 24h) -->
+        <div class="actions-buttons">
+          <button
+            *ngIf="filter === '24h'"
+            class="delete-sale-button"
+            (click)="openConfirmPopup(sale.sellId)"
+          >
+            <img src="assets/svg/trashcan-white.svg" alt="" />
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="filteredSales.length === 0" class="no-sales">
+      <p>Nenhuma venda encontrada nesse período.</p>
+    </div>
+  </ng-container>
+
+  <!-- Skeleton de carregamento -->
+  <ng-template #salesSkeleton>
+    <div class="sale-item" *ngFor="let i of [1, 2, 3, 4]">
+      <div class="sale-icon">
+        <ion-skeleton-text
+          animated="true"
+          style="width: 40px; height: 40px; border-radius: 50%"
+        ></ion-skeleton-text>
+      </div>
+      <div class="sale-details">
+        <h4>
+          <ion-skeleton-text
+            animated="true"
+            style="width: 10rem; height: 1rem; border-radius: 100px"
+          ></ion-skeleton-text>
+        </h4>
+        <p>
+          <ion-skeleton-text
+            animated="true"
+            style="width: 8rem; height: 0.8rem; border-radius: 100px"
+          ></ion-skeleton-text
+          ><br />
+          <ion-skeleton-text
+            animated="true"
+            style="width: 6rem; height: 0.8rem; border-radius: 100px"
+          ></ion-skeleton-text
+          ><br />
+          <ion-skeleton-text
+            animated="true"
+            style="width: 7rem; height: 0.8rem; border-radius: 100px"
+          ></ion-skeleton-text>
+        </p>
+      </div>
+    </div>
+  </ng-template>
+</div>
+
+<p class="total-sales">
+  Total de Vendas:
+  <span class="total-amount">
+    {{ totalSales | currency : "BRL" : "symbol" }}
+  </span>
+</p>
+<br /><br /><br /><br /><br />
+
+<app-confirm-pop-up
+  [isActive]="isConfirmPopupOpen"
+  [firstMessage]="'Tem certeza que deseja excluir esta venda?'"
+  [secondMessage]="'Essa ação não poderá ser desfeita.'"
+  (confirm)="confirmSaleDeletion()"
+  (closeButtonEvent)="isConfirmPopupOpen = false"
+></app-confirm-pop-up>
+<app-loading-sppiner [isLoading]="isLoadingActions"></app-loading-sppiner>
+<app-message-per-request
+  [errorMessage]="(errorMessage$ | async) ?? ''"
+  [successMessage]="(successMessage$ | async) ?? ''"
+></app-message-per-request>

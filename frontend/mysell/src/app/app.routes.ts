@@ -53,7 +53,7 @@ export const routes: Routes = [
   {
     path: 'your-products',
     loadComponent: () =>
-      import('./your-products/your-products.page').then(
+      import('./pages/your-products/your-products.page').then(
         (m) => m.YourProductsPage
       ),
   },
@@ -73,5 +73,10 @@ export const routes: Routes = [
     path: 'analytics',
     loadComponent: () =>
       import('./pages/analytics/analytics.page').then((m) => m.AnalyticsPage),
+  },
+  {
+    path: 'history',
+    loadComponent: () =>
+      import('./pages/history/history.page').then((m) => m.HistoryPage),
   },
 ];

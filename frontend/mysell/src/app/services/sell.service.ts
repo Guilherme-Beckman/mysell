@@ -23,4 +23,9 @@ export class SellService {
       { withCredentials: true }
     );
   }
+  public deleteSell(sellId: number): Observable<any> {
+    return this.httpClient.delete<any>(`${this.apiUrl}sell/${sellId}`, {
+      withCredentials: true,
+    });
+  }
 }
