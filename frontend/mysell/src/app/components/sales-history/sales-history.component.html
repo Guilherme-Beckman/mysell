@@ -40,7 +40,11 @@
           <button *ngIf="filter === '24h'" class="edit-sale-button">
             <img src="assets/svg/pen.svg" alt="" />
           </button>
-          <button *ngIf="filter === '24h'" class="delete-sale-button">
+          <button
+            *ngIf="filter === '24h'"
+            class="delete-sale-button"
+            (click)="openConfirmPopup(sale.sellId)"
+          >
             <img src="assets/svg/trashcan-white.svg" alt="" />
           </button>
         </div>
@@ -97,4 +101,15 @@
 </p>
 <br /><br /><br /><br /><br />
 
-<app-confirm-pop-up [isActive]="isConfirmPopupOpen"></app-confirm-pop-up>
+<app-confirm-pop-up
+  [isActive]="isConfirmPopupOpen"
+  [firstMessage]="'Tem certeza que deseja excluir esta venda?'"
+  [secondMessage]="'Essa ação não poderá ser desfeita.'"
+  (confirm)="confirmSaleDeletion()"
+  (closeButtonEvent)="isConfirmPopupOpen = false"
+></app-confirm-pop-up>
+<app-loading-sppiner [isLoading]="isLoadingActions"></app-loading-sppiner>
+<app-message-per-request
+  [errorMessage]="(errorMessage$ | async) ?? ''"
+  [successMessage]="(successMessage$ | async) ?? ''"
+></app-message-per-request>
