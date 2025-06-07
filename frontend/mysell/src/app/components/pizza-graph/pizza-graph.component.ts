@@ -13,6 +13,7 @@ import { Chart, ChartConfiguration, registerables } from 'chart.js';
 import { IonContent } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { BottomArrowComponent } from '../bottom-arrow/bottom-arrow.component';
+import { LoadingSppinerComponent } from '../loading-sppiner/loading-sppiner.component';
 
 Chart.register(...registerables);
 
@@ -24,7 +25,7 @@ export interface Product {
   selector: 'app-pizza-graph',
   templateUrl: './pizza-graph.component.html',
   styleUrls: ['./pizza-graph.component.scss'],
-  imports: [CommonModule, BottomArrowComponent],
+  imports: [CommonModule, BottomArrowComponent, LoadingSppinerComponent],
 })
 export class PizzaGraphComponent implements OnInit {
   @Input() isExpanded = false;
