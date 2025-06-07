@@ -86,3 +86,47 @@
 .total-amount {
   color: var(--mysell-red);
 }
+.actions-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+.edit-sale-button,
+.delete-sale-button {
+  margin-top: 0.5rem;
+  margin-right: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  border: none;
+  color: var(--white);
+  border-radius: 0.6rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+.edit-sale-button {
+  background-color: var(--medium-gray);
+}
+.delete-sale-button {
+  background-color: var(--mysell-red);
+}
+
+.edit-sale-button:hover,
+.delete-sale-button:hover {
+  background-color: #5a5a5a; /* levemente mais escuro */
+}
+
+.edit-sale-button:active,
+.delete-sale-button:active {
+  background-color: var(--mysell-red);
+  transform: scale(0.96); /* efeito de clique */
+}
+
+.edit-sale-button img,
+.delete-sale-button img {
+  width: 18px;
+  height: 18px;
+  filter: brightness(100%);
+}

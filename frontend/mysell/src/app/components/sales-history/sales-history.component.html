@@ -34,6 +34,16 @@
             }}
           </span>
         </p>
+
+        <!-- Botão Editar (somente para filtro de 24h) -->
+        <div class="actions-buttons">
+          <button *ngIf="filter === '24h'" class="edit-sale-button">
+            <img src="assets/svg/pen.svg" alt="" />
+          </button>
+          <button *ngIf="filter === '24h'" class="delete-sale-button">
+            <img src="assets/svg/trashcan-white.svg" alt="" />
+          </button>
+        </div>
       </div>
     </div>
 

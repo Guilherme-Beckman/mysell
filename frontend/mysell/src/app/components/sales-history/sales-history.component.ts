@@ -12,7 +12,7 @@ import { IonSkeletonText } from '@ionic/angular/standalone';
 })
 export class SalesHistoryComponent implements OnInit {
   sales: any[] = [];
-  filter: string = '7d';
+  filter: string = '24h';
   isLoading = false;
   constructor(private sellService: SellService) {}
 
