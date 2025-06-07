@@ -30,6 +30,7 @@
 }
 
 .sale-item {
+  position: relative;
   display: flex;
   gap: 1rem;
   align-items: center;
@@ -89,8 +90,12 @@
 .actions-buttons {
   display: flex;
   gap: 0.5rem;
+  position: absolute;
+  top: 0rem;
+  right: 0rem;
+  z-index: 1000;
 }
-.edit-sale-button,
+
 .delete-sale-button {
   margin-top: 0.5rem;
   margin-right: 0.5rem;
@@ -106,25 +111,20 @@
   justify-content: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
-.edit-sale-button {
-  background-color: var(--medium-gray);
-}
+
 .delete-sale-button {
   background-color: var(--mysell-red);
 }
 
-.edit-sale-button:hover,
 .delete-sale-button:hover {
   background-color: #5a5a5a; /* levemente mais escuro */
 }
 
-.edit-sale-button:active,
 .delete-sale-button:active {
   background-color: var(--mysell-red);
   transform: scale(0.96); /* efeito de clique */
 }
 
-.edit-sale-button img,
 .delete-sale-button img {
   width: 18px;
   height: 18px;
