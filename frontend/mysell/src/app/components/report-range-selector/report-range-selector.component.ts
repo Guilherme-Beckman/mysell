@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { DayButtonComponent } from '../day-button/day-button.component';
 
 @Component({
@@ -11,10 +11,12 @@ import { DayButtonComponent } from '../day-button/day-button.component';
 export class ReportRangeSelectorComponent implements OnInit {
   public dayOptions: number[] = [1, 7];
   public selectedDay: number = 1;
+  @Output() daySelected = new EventEmitter<number>();
   constructor() {}
 
   onDaySelected(day: number) {
     this.selectedDay = day;
+    this.daySelected.emit(day);
   }
   ngOnInit() {}
 }

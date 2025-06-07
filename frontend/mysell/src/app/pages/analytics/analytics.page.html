@@ -7,7 +7,9 @@
 <main>
   <h1>Relatórios</h1>
   <div class="report-range-selector">
-    <app-report-range-selector></app-report-range-selector>
+    <app-report-range-selector
+      (daySelected)="onDaySelected($event)"
+    ></app-report-range-selector>
   </div>
   <div class="report-info">
     <app-report-info

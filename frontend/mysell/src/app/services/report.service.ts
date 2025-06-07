@@ -16,4 +16,9 @@ export class ReportService {
       withCredentials: true,
     });
   }
+  public getWeeklyReport(): Observable<any> {
+    return this.httpClient.get<any>(`${this.apiUrl}report/weekly`, {
+      withCredentials: true,
+    });
+  }
 }
