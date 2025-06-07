@@ -1,1 +1,10 @@
-<app-sales-history></app-sales-history>
+<nav>
+  <div class="itens">
+    <app-home-redirect></app-home-redirect>
+    <app-arrow [direction]="'left'" [pageToGo]="'/home'"></app-arrow>
+  </div>
+</nav>
+<main>
+  <h1>Relatórios</h1>
+  <app-sales-history></app-sales-history>
+</main>

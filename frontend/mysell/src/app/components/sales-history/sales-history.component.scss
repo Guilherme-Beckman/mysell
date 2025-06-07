@@ -1,0 +1,36 @@
+.filter-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.filter-buttons button {
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: var(--medium-gray);
+  color: var(--text-gray);
+  cursor: pointer;
+}
+
+.filter-buttons button.selected {
+  background-color: var(--mysell-dark-red);
+  color: var(--white);
+}
+
+.sales-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sale-item {
+  background-color: var(--white);
+  padding: 0.5rem;
+  border: 1px solid var(--fine-gray);
+}
+
+.total-sales {
+  margin-top: 1rem;
+  font-weight: bold;
+  color: var(--mysell-red);
+}

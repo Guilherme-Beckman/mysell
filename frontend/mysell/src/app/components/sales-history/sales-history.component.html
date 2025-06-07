@@ -1,3 +1,24 @@
-<p>
-  sales-history works!
-</p>
+<div class="filter-buttons">
+  <button [ngClass]="{ selected: filter === '24h' }" (click)="setFilter('24h')">
+    Last จาก 24 hours
+  </button>
+  <button [ngClass]="{ selected: filter === '7d' }" (click)="setFilter('7d')">
+    Last 7 days
+  </button>
+  <button [ngClass]="{ selected: filter === '30d' }" (click)="setFilter('30d')">
+    Last 30 days
+  </button>
+</div>
+<div class="sales-list">
+  <div *ngFor="let sale of filteredSales" class="sale-item">
+    <p>
+      {{ sale.productResponseDTO.name }} - Quantity: {{ sale.quantity }} - Date:
+      {{ sale.createdAt | date : "short" }} - Total:
+      {{ sale.quantity * sale.productResponseDTO.priceToSell | currency }}
+    </p>
+  </div>
+  <div *ngIf="filteredSales.length === 0">
+    <p>No sales found in this period.</p>
+  </div>
+</div>
+<p class="total-sales">Total Sales: {{ totalSales | currency }}</p>
