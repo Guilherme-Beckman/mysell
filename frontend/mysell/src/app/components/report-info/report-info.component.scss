@@ -1,0 +1,99 @@
+main {
+  height: 50vh;
+  background-color: #ececec;
+  border-radius: 10px;
+  display: flex;
+}
+.content {
+  margin: 1rem;
+  height: 100%;
+  width: 100%;
+}
+.info-blocks {
+  height: 20%;
+  display: flex;
+  gap: 5%;
+}
+.profit,
+.sales {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: var(--text-gray);
+  text-align: center;
+  width: 50%;
+  padding: 1rem;
+  background-color: var(--medium-gray);
+  border-radius: 10px;
+  span {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+}
+.ranking-graph {
+  display: flex;
+}
+
+.ranking {
+  display: flex;
+  flex-direction: column;
+  height: 32vh;
+  width: 50%;
+  margin-top: 1rem;
+}
+
+.ranking-header {
+  h3 {
+    text-align: center;
+  }
+  flex-shrink: 0;
+  padding: 0.5rem;
+}
+
+.ranking-scroll {
+  overflow: auto;
+  flex-grow: 1;
+}
+
+.pizza-graph {
+  height: 32vh;
+  width: 50%;
+  margin-top: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+.expanded-graph {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+.total-revenue {
+  margin-top: 1rem;
+  span {
+    color: var(--mysell-red);
+    font-size: 2rem;
+    font-weight: 800;
+  }
+}
+.skeleton {
+  width: 80%;
+  height: 1.5rem;
+  background: linear-gradient(90deg, #dcdcdc 25%, #050505 50%, #dcdcdc 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

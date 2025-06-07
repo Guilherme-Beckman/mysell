@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonApp } from '@ionic/angular/standalone';
+import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
 import { IonContent } from '@ionic/angular/standalone';
 import { HomeNavComponent } from '../components/home-nav/home-nav.component';
 import { SellsProfitInfoComponent } from '../components/sells-profit-info/sells-profit-info.component';

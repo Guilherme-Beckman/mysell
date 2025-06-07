@@ -177,19 +177,28 @@ public class ReportService {
                 .then();
     }
     private Mono<Void> processUserWeeklyReport(UserModel user) {
-        return generateWeeklyReportForUser(user.getUsersId())
+        return generateWeeklyReportResponse(user.getUsersId())
                 .flatMap(dailyReport -> createAndSaveWeeklyReport(user, dailyReport))
                 .onErrorResume(this::skipUserWithNoSales);
     }
-    private Mono<WeeklyReportResponseDTO> generateWeeklyReportForUser(UUID userId) {
-        return generateWeeklyReportResponse(userId);
-    }
+
     private Mono<WeeklyReportResponseDTO> generateWeeklyReportResponse(UUID userId) {
         Flux<SellResponseDTO> weekSales = retrieveSalesForThisWeek(userId);
         
         Mono<ReportAccumulator> reportAccumulator = calculateReportAccumulator(weekSales);
-        Flux<DailyReportResponseDTOSimplified> dailyReportsWeek = this.dailyReportRepository.getThisWeekDailyReportByUserId(userId)
+        Flux<DailyReportResponseDTOSimplified> dailyReportsPersisted = this.dailyReportRepository
+        	    .getThisWeekDailyReportByUserId(userId)
         	    .flatMap(this::createDailyReportResponseSimplified);
+
+        	Mono<DailyReportResponseDTOSimplified> todayReport = generateDailyReportResponse(userId)
+        	    .map(daily -> new DailyReportResponseDTOSimplified(
+        	        daily.date(),
+        	        daily.profit(),
+        	        daily.grossRevenue(),
+        	        daily.numberOfSales()
+        	    ));
+
+        	Flux<DailyReportResponseDTOSimplified> dailyReportsWeek = Flux.concat(dailyReportsPersisted, todayReport);
 
         return createWeeklyReportResponse(reportAccumulator, dailyReportsWeek);
     }

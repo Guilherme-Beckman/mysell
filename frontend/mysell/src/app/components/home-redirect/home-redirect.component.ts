@@ -10,7 +10,7 @@ export class HomeRedirectComponent implements OnInit {
   @Input() emitOnly = false; // se true, apenas emite o evento
   @Output() requestNavigationBack = new EventEmitter<void>();
 
-  private homePath = '/home';
+  private homePath = '/home'; // caminho para a página inicial
 
   constructor(private navController: NavController) {}
 

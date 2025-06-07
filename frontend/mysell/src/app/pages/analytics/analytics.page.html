@@ -1,0 +1,23 @@
+<nav>
+  <div class="itens">
+    <app-home-redirect></app-home-redirect>
+    <app-arrow [direction]="'left'" [pageToGo]="'/home'"></app-arrow>
+  </div>
+</nav>
+<main>
+  <h1>Relatórios</h1>
+  <div class="report-range-selector">
+    <app-report-range-selector
+      (daySelected)="onDaySelected($event)"
+    ></app-report-range-selector>
+  </div>
+  <div class="report-info">
+    <app-report-info
+      [isLoading]="isLoading"
+      [profit]="profit"
+      [sales]="sales"
+      [totalRevenue]="totalRevenue"
+      [productRanking]="productRanking"
+    ></app-report-info>
+  </div>
+</main>

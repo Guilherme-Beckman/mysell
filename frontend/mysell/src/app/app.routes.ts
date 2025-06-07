@@ -52,14 +52,26 @@ export const routes: Routes = [
   },
   {
     path: 'your-products',
-    loadComponent: () => import('./your-products/your-products.page').then( m => m.YourProductsPage)
+    loadComponent: () =>
+      import('./your-products/your-products.page').then(
+        (m) => m.YourProductsPage
+      ),
   },
   {
     path: 'edit-product',
-    loadComponent: () => import('./pages/edit-product/edit-product.page').then( m => m.EditProductPage)
+    loadComponent: () =>
+      import('./pages/edit-product/edit-product.page').then(
+        (m) => m.EditProductPage
+      ),
   },
   {
     path: 'sell',
-    loadComponent: () => import('./pages/sell/sell.page').then( m => m.SellPage)
+    loadComponent: () =>
+      import('./pages/sell/sell.page').then((m) => m.SellPage),
+  },
+  {
+    path: 'analytics',
+    loadComponent: () =>
+      import('./pages/analytics/analytics.page').then((m) => m.AnalyticsPage),
   },
 ];

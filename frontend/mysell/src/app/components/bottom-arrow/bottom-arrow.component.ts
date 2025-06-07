@@ -14,7 +14,7 @@ import { IonSegment } from '@ionic/angular/standalone';
   selector: 'app-bottom-arrow',
   templateUrl: './bottom-arrow.component.html',
   styleUrls: ['./bottom-arrow.component.scss'],
-  imports: [IonSegment, CommonModule],
+  imports: [CommonModule],
 })
 export class BottomArrowComponent implements OnInit {
   @Input() direction: 'right' | 'left' = 'right';
