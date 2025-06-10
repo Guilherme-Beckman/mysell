@@ -15,6 +15,8 @@ import {
   ProductNameSales,
 } from 'src/app/components/report-info/report-info.component';
 import { ReportService } from 'src/app/services/report.service';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 interface DailyReport {
   date: string;
@@ -44,18 +46,16 @@ export class AnalyticsPage implements OnInit {
   productRanking: ProductNameSales[] = [];
   isLoading: boolean = false;
 
-  // Mapeamento mais seguro dos dias da semana
   private readonly daysOfWeek = [
-    'Domingo', // 0
-    'Segunda-feira', // 1
-    'Terça-feira', // 2
-    'Quarta-feira', // 3
-    'Quinta-feira', // 4
-    'Sexta-feira', // 5
-    'Sábado', // 6
+    'Domingo',
+    'Segunda-feira',
+    'Terça-feira',
+    'Quarta-feira',
+    'Quinta-feira',
+    'Sexta-feira',
+    'Sábado',
   ];
 
-  // Mapeamento alternativo para garantir consistência
   private readonly dayNameMap: Record<string, string> = {
     sunday: 'Domingo',
     monday: 'Segunda-feira',
@@ -76,27 +76,21 @@ export class AnalyticsPage implements OnInit {
   constructor(private reportService: ReportService) {}
 
   ngOnInit() {
-    this.loadReport(1); // carrega o relatório diário por padrão
+    this.loadReport(1);
   }
 
   onDaySelected(day: number) {
     this.loadReport(day);
   }
 
-  /**
-   * Método mais seguro para obter o nome do dia em português
-   * Usa múltiplas estratégias para garantir a conversão correta
-   */
   private getDayNameInPortuguese(dateString: string): string {
     try {
-      // Estratégia 1: Parse manual da data para evitar problemas de timezone
       const dateParts = dateString.split(/[-T]/);
       if (dateParts.length >= 3) {
         const year = parseInt(dateParts[0]);
-        const month = parseInt(dateParts[1]) - 1; // Mês é 0-indexado
+        const month = parseInt(dateParts[1]) - 1;
         const day = parseInt(dateParts[2]);
 
-        // Cria a data no timezone local para evitar mudanças de dia
         const date = new Date(year, month, day);
         const dayIndex = date.getDay();
 
@@ -105,18 +99,15 @@ export class AnalyticsPage implements OnInit {
         }
       }
 
-      // Estratégia 2: Usar Intl com configurações mais específicas
-      const date = new Date(dateString + 'T12:00:00'); // Adiciona meio-dia para evitar problemas de timezone
+      const date = new Date(dateString + 'T12:00:00');
       const dayName = new Intl.DateTimeFormat('pt-BR', {
         weekday: 'long',
         timeZone: 'America/Sao_Paulo',
       }).format(date);
 
-      // Capitaliza e normaliza o nome do dia
       const normalizedDayName =
         dayName.charAt(0).toUpperCase() + dayName.slice(1).toLowerCase();
 
-      // Verifica se o nome está no nosso array de dias válidos
       const validDay = this.daysOfWeek.find(
         (day) => day.toLowerCase() === normalizedDayName.toLowerCase()
       );
@@ -125,7 +116,6 @@ export class AnalyticsPage implements OnInit {
         return validDay;
       }
 
-      // Estratégia 3: Fallback usando mapeamento manual
       const englishDayName = new Date(dateString + 'T12:00:00')
         .toLocaleDateString('en-US', { weekday: 'long' })
         .toLowerCase();
@@ -143,9 +133,6 @@ export class AnalyticsPage implements OnInit {
     }
   }
 
-  /**
-   * Método auxiliar para debug - mostra como a conversão está funcionando
-   */
   private debugDateConversion(dateString: string): void {
     console.log(`Data original: ${dateString}`);
 
@@ -194,72 +181,69 @@ export class AnalyticsPage implements OnInit {
         ? this.reportService.getDailyReport()
         : this.reportService.getWeeklyReport();
 
-    report$.subscribe((report) => {
-      this.profit = report.profit;
-      this.totalRevenue = report.grossRevenue;
-      this.sales = report.numberOfSales;
+    report$
+      .pipe(
+        catchError((error) => {
+          console.error('Erro ao carregar relatório:', error);
+          this.isLoading = false;
+          return of({
+            profit: 0,
+            grossRevenue: 0,
+            numberOfSales: 0,
+            sellsByProduct: [],
+            dailyReports: [],
+          });
+        })
+      )
+      .subscribe((report) => {
+        this.profit = report.profit;
+        this.totalRevenue = report.grossRevenue;
+        this.sales = report.numberOfSales;
 
-      if (day === 1) {
-        // Relatório diário — ranking por produto
-        this.productRanking = report.sellsByProduct
-          .map(
-            (item: any): ProductNameSales => ({
-              name: item.productResponseDTO.name,
-              sales: item.saleCount,
-            })
-          )
-          .sort(
-            (a: ProductNameSales, b: ProductNameSales) => b.sales - a.sales
-          );
-      } else {
-        // Relatório semanal — ranking por dia da semana, com dias zerados
-        const salesMap: Record<string, number> = {};
-
-        // Inicializa todos os dias com zero
-        this.daysOfWeek.forEach((day) => {
-          salesMap[day] = 0;
-        });
-
-        // Processa os relatórios diários
-        report.dailyReports.forEach((item: DailyReport) => {
-          // Ativa o debug se necessário (remova em produção)
-          // this.debugDateConversion(item.date);
-
-          const dayName = this.getDayNameInPortuguese(item.date);
-
-          // Garante que o dia é válido antes de somar
-          if (this.daysOfWeek.includes(dayName)) {
-            salesMap[dayName] += item.numberOfSales;
-          } else {
-            console.warn(
-              `Dia inválido encontrado: ${dayName} para data ${item.date}`
+        if (day === 1) {
+          this.productRanking = report.sellsByProduct
+            .map(
+              (item: any): ProductNameSales => ({
+                name: item.productResponseDTO.name,
+                sales: item.saleCount,
+              })
+            )
+            .sort(
+              (a: ProductNameSales, b: ProductNameSales) => b.sales - a.sales
             );
-          }
-        });
+        } else {
+          const salesMap: Record<string, number> = {};
+          this.daysOfWeek.forEach((day) => (salesMap[day] = 0));
 
-        // Cria o ranking dos dias
-        this.productRanking = Object.entries(salesMap)
-          .map(([name, sales]) => ({ name, sales }))
-          .sort((a, b) => b.sales - a.sales);
-      }
+          report.dailyReports.forEach((item: DailyReport) => {
+            const dayName = this.getDayNameInPortuguese(item.date);
+            if (this.daysOfWeek.includes(dayName)) {
+              salesMap[dayName] += item.numberOfSales;
+            } else {
+              console.warn(
+                `Dia inválido encontrado: ${dayName} para data ${item.date}`
+              );
+            }
+          });
 
-      this.isLoading = false;
-    });
+          this.productRanking = Object.entries(salesMap)
+            .map(([name, sales]) => ({ name, sales }))
+            .sort((a, b) => b.sales - a.sales);
+        }
+
+        this.isLoading = false;
+      });
   }
 
-  /**
-   * Método utilitário para testar a conversão de datas
-   * Pode ser chamado no ngOnInit para debug
-   */
   private testDateConversions(): void {
     const testDates = [
-      '2025-06-02', // Segunda
-      '2025-06-03', // Terça
-      '2025-06-04', // Quarta
-      '2025-06-05', // Quinta
-      '2025-06-06', // Sexta
-      '2025-06-07', // Sábado
-      '2025-06-08', // Domingo
+      '2025-06-02',
+      '2025-06-03',
+      '2025-06-04',
+      '2025-06-05',
+      '2025-06-06',
+      '2025-06-07',
+      '2025-06-08',
     ];
 
     console.log('=== TESTE DE CONVERSÃO DE DATAS ===');
