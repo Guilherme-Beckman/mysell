@@ -256,6 +256,6 @@ export class AnalyticsPage implements OnInit {
     });
   }
   navigateToReportHistory() {
-    this.navController.navigateForward('/report-history');
+    this.navController.navigateRoot('/report-history');
   }
 }
