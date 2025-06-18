@@ -17,7 +17,8 @@ import {
 import { ReportService } from 'src/app/services/report.service';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
-
+import { N } from '@angular/core/navigation_types.d-Lh6SmhKv';
+import { NavController } from '@ionic/angular/standalone';
 interface DailyReport {
   date: string;
   profit: number;
@@ -73,7 +74,10 @@ export class AnalyticsPage implements OnInit {
     sábado: 'Sábado',
   };
 
-  constructor(private reportService: ReportService) {}
+  constructor(
+    private reportService: ReportService,
+    private navController: NavController
+  ) {}
 
   ngOnInit() {
     this.loadReport(1);
@@ -250,5 +254,8 @@ export class AnalyticsPage implements OnInit {
     testDates.forEach((date) => {
       this.debugDateConversion(date);
     });
+  }
+  navigateToReportHistory() {
+    this.navController.navigateForward('/report-history');
   }
 }

@@ -6,6 +6,7 @@ nav {
 }
 main {
   margin: 2rem;
+  position: relative;
 }
 h1 {
   padding: 0.5rem;
@@ -17,4 +18,12 @@ h1 {
 .report-range-selector {
   margin-top: 1rem;
   margin-bottom: 1rem;
+}
+.report-history {
+  position: absolute;
+  right: 0;
+  button {
+    background: none;
+    border: none;
+  }
 }

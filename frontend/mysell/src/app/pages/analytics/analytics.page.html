@@ -6,6 +6,11 @@
 </nav>
 <main>
   <h1>Relatórios</h1>
+  <div class="report-history">
+    <button (click)="navigateToReportHistory()">
+      <img src="assets/svg/history.svg" alt="" />
+    </button>
+  </div>
   <div class="report-range-selector">
     <app-report-range-selector
       (daySelected)="onDaySelected($event)"
