@@ -1,13 +1,19 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>report-history</ion-title>
-  </ion-toolbar>
-</ion-header>
+<main>
+  <nav>
+    <div class="itens">
+      <app-home-redirect></app-home-redirect>
+      <app-arrow [direction]="'left'" [pageToGo]="'/home'"></app-arrow>
+    </div>
+  </nav>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">report-history</ion-title>
-    </ion-toolbar>
-  </ion-header>
-</ion-content>
+  <h1>Histórico de Vendas</h1>
+  <app-search-bar
+    [placeholder]="'Buscar relatórios...'"
+    (searchChange)="onSearchChange($event)"
+  ></app-search-bar>
+  <div class="report-history">
+    <app-report-history-list
+      [searchTerm]="searchTerm"
+    ></app-report-history-list>
+  </div>
+</main>
