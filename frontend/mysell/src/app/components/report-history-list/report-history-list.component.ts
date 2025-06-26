@@ -1,12 +1,43 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { SellService } from '../../services/sell.service';
 import { MessageService } from '../../services/message.service';
-import { getCategoryIconPath } from '../../datas/categories';
 import { CommonModule } from '@angular/common';
 import { LoadingSppinerComponent } from '../loading-sppiner/loading-sppiner.component';
 import { ConfirmPopUpComponent } from '../confirm-pop-up/confirm-pop-up.component';
 import { MessagePerRequestComponent } from '../message-per-request/message-per-request.component';
 import { IonSkeletonText } from '@ionic/angular/standalone';
+import { ReportService } from 'src/app/services/report.service';
+import { getCategoryIconPath } from 'src/app/datas/categories';
+interface ProductSale {
+  saleCount: number;
+  profit: number;
+  grossRevenue: number;
+  productResponseDTO: {
+    productsId: number;
+    name: string;
+    category: {
+      name: string;
+      gpcCode: number;
+    };
+    purchasedPrice: number;
+    priceToSell: number;
+    brand: string;
+    productUnitOfMeasureDTO: {
+      quantity: number;
+      unityOfMeasure: {
+        name: string;
+      };
+    };
+  };
+}
+
+interface DailyReport {
+  date: string;
+  profit: number;
+  grossRevenue: number;
+  numberOfSales: number;
+  sellsByProduct: ProductSale[];
+}
 @Component({
   selector: 'app-report-history-list',
   templateUrl: './report-history-list.component.html',
@@ -21,27 +52,45 @@ import { IonSkeletonText } from '@ionic/angular/standalone';
 })
 export class ReportHistoryComponentList implements OnInit {
   @Input() searchTerm: string = '';
-  sales: any[] = [];
-  filter: string = '24h';
+  reports: DailyReport[] = [];
+  filter: string = '7d';
   isLoading = false;
-  isLoadingActions = false;
-  isConfirmPopupOpen = false;
-  saleIdToDelete: string | null = null;
+  expandedReports: Set<string> = new Set();
   public successMessage$ = this.messageService.successMessage$;
   public errorMessage$ = this.messageService.errorMessage$;
+
   constructor(
-    private sellService: SellService,
+    private reportService: ReportService,
     private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
+    this.loadReports();
+  }
+
+  loadReports(): void {
     this.isLoading = true;
-    this.sellService.getMySell().subscribe({
+    this.reportService.getDailyReportHistory().subscribe({
       next: (data) => {
-        this.sales = data;
+        this.reports = data.sort(
+          (a: DailyReport, b: DailyReport) =>
+            new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
+        this.reports.forEach((report) => {
+          console.log(`Relatório de ${report.date}:`, report);
+          report.sellsByProduct.forEach((productSale) => {
+            console.log(
+              `Produto: ${productSale.productResponseDTO.name}, Vendas: ${productSale.saleCount}, Lucro: ${productSale.profit}, Receita Bruta: ${productSale.grossRevenue}`
+            );
+          });
+        });
       },
       error: (err) => {
-        console.error('Erro ao carregar vendas:', err);
+        console.error('Erro ao carregar relatórios:', err);
+        this.messageService.setErrorMessage(
+          'Erro ao carregar relatórios. Tente novamente.',
+          ''
+        );
       },
       complete: () => {
         this.isLoading = false;
@@ -55,116 +104,97 @@ export class ReportHistoryComponentList implements OnInit {
 
   setFilter(newFilter: string) {
     this.filter = newFilter;
+    this.expandedReports.clear();
   }
 
-  get filteredSales(): any[] {
-    if (!this.sales) return [];
+  get filteredReports(): DailyReport[] {
+    if (!this.reports) return [];
 
     const now = new Date();
     let startDate: Date | null = null;
 
-    if (this.filter === '24h') {
-      startDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-    } else if (this.filter === '7d') {
+    if (this.filter === '7d') {
       startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     } else if (this.filter === '30d') {
       startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    } else if (this.filter === '90d') {
+      startDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
     }
 
     const term = this.normalizeText(this.searchTerm.toLowerCase().trim());
 
-    return this.sales.filter((sale) => {
-      const saleDate = new Date(sale.createdAt);
-      const matchDate = !startDate || saleDate >= startDate;
+    return this.reports.filter((report) => {
+      const reportDate = new Date(report.date);
+      const matchDate = !startDate || reportDate >= startDate;
 
-      const normalizedName = this.normalizeText(
-        sale.productResponseDTO.name.toLowerCase()
-      );
-      const normalizedBrand = this.normalizeText(
-        sale.productResponseDTO.brand.toLowerCase()
-      );
-      const normalizedCategory = this.normalizeText(
-        sale.productResponseDTO.category.name.toLowerCase()
-      );
-      const matchText =
-        !term ||
-        normalizedName.includes(term) ||
-        normalizedBrand.includes(term) ||
-        normalizedCategory.includes(term);
+      if (!term) return matchDate;
+
+      // Buscar nos produtos do relatório
+      const matchText = report.sellsByProduct.some((productSale) => {
+        const product = productSale.productResponseDTO;
+        const normalizedName = this.normalizeText(product.name.toLowerCase());
+        const normalizedBrand = this.normalizeText(product.brand.toLowerCase());
+        const normalizedCategory = this.normalizeText(
+          product.category.name.toLowerCase()
+        );
+
+        return (
+          normalizedName.includes(term) ||
+          normalizedBrand.includes(term) ||
+          normalizedCategory.includes(term)
+        );
+      });
 
       return matchDate && matchText;
     });
   }
 
-  get totalSales(): number {
-    return this.filteredSales.reduce(
-      (sum, sale) => sum + sale.quantity * sale.productResponseDTO.priceToSell,
+  get totalRevenue(): number {
+    return this.filteredReports.reduce(
+      (sum, report) => sum + report.grossRevenue,
       0
     );
   }
+
+  get totalProfit(): number {
+    return this.filteredReports.reduce((sum, report) => sum + report.profit, 0);
+  }
+
+  get totalSales(): number {
+    return this.filteredReports.reduce(
+      (sum, report) => sum + report.numberOfSales,
+      0
+    );
+  }
+
   getCategoryIconPath(categoryName: string): string | undefined {
     return getCategoryIconPath(categoryName);
-    {
+  }
+
+  toggleReportExpansion(date: string): void {
+    if (this.expandedReports.has(date)) {
+      this.expandedReports.delete(date);
+    } else {
+      this.expandedReports.add(date);
     }
   }
-  openConfirmPopup(saleId: string) {
-    console.log('[Popup] Abrindo popup de confirmação para saleId:', saleId);
-    this.saleIdToDelete = saleId;
-    this.isConfirmPopupOpen = true;
+
+  isReportExpanded(date: string): boolean {
+    return this.expandedReports.has(date);
   }
 
-  closeConfirmPopup() {
-    console.log('[Popup] Fechando popup de confirmação.');
-    this.isConfirmPopupOpen = false;
-  }
-
-  confirmSaleDeletion() {
-    this.isLoadingActions = true;
-
-    if (!this.saleIdToDelete) {
-      console.warn('[Delete] Nenhuma saleId definida para deletar.');
-      this.isLoadingActions = false;
-      return;
-    }
-
-    console.log(
-      '[Delete] Iniciando deleção da venda com saleId:',
-      this.saleIdToDelete
-    );
-
-    this.sellService.deleteSell(Number(this.saleIdToDelete)).subscribe({
-      next: () => {
-        console.log(
-          '[Delete] Venda deletada com sucesso:',
-          this.saleIdToDelete
-        );
-        console.log('[Delete] Lista de vendas antes da exclusão:', this.sales);
-
-        this.sales = this.sales.filter(
-          (sale) => sale.sellId !== this.saleIdToDelete
-        );
-
-        console.log('[Delete] Lista de vendas após a exclusão:', this.sales);
-
-        this.messageService.setSuccessMessage(
-          'Venda deletada com sucesso.',
-          ''
-        );
-        this.isLoadingActions = false;
-      },
-      error: (err) => {
-        console.error('[Delete] Erro ao deletar venda:', err);
-        this.messageService.setErrorMessage(
-          'Erro ao deletar a venda. Tente novamente.',
-          ''
-        );
-        this.isLoadingActions = false;
-      },
-      complete: () => {
-        console.log('[Delete] Finalizando processo de deleção.');
-        this.isConfirmPopupOpen = false;
-        this.saleIdToDelete = null;
-      },
+  getFormattedDate(dateString: string): string {
+    const date = new Date(`${dateString}T00:00:00`);
+    return date.toLocaleDateString('pt-BR', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
     });
+  }
+
+  getFormattedUnit(product: ProductSale): string {
+    const unit = product.productResponseDTO.productUnitOfMeasureDTO;
+    return `${unit.quantity}${unit.unityOfMeasure.name}`;
   }
 }

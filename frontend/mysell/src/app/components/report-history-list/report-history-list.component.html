@@ -1,111 +1,186 @@
 <div class="filter-buttons">
-  <button [ngClass]="{ selected: filter === '24h' }" (click)="setFilter('24h')">
-    Últimas 24h
-  </button>
   <button [ngClass]="{ selected: filter === '7d' }" (click)="setFilter('7d')">
     Últimos 7 dias
   </button>
   <button [ngClass]="{ selected: filter === '30d' }" (click)="setFilter('30d')">
     Últimos 30 dias
   </button>
+  <button [ngClass]="{ selected: filter === '90d' }" (click)="setFilter('90d')">
+    Últimos 90 dias
+  </button>
+  <button [ngClass]="{ selected: filter === 'all' }" (click)="setFilter('all')">
+    Todos
+  </button>
 </div>
 
-<!-- Lista de vendas ou skeleton -->
-<div class="sales-list">
-  <ng-container *ngIf="!isLoading; else salesSkeleton">
-    <div *ngFor="let sale of filteredSales" class="sale-item">
-      <div class="sale-icon">
-        <img
-          [src]="getCategoryIconPath(sale.productResponseDTO.category.name)"
-          alt="Ícone da categoria"
-        />
-      </div>
-      <div class="sale-details">
-        <h4>{{ sale.productResponseDTO.name }}</h4>
-        <p>
-          Quantidade: <strong>{{ sale.quantity }}</strong
-          ><br />
-          Data: {{ sale.createdAt | date : "dd/MM/yyyy HH:mm" }}<br />
-          Total:
-          <span class="sale-total">
-            {{
-              sale.quantity * sale.productResponseDTO.priceToSell
-                | currency : "BRL" : "symbol"
-            }}
-          </span>
-        </p>
+<!-- Resumo dos totais -->
+<div class="summary-cards" *ngIf="!isLoading && filteredReports.length > 0">
+  <div class="summary-card">
+    <h4>Receita Total</h4>
+    <p class="summary-value revenue">
+      {{ totalRevenue | currency : "BRL" : "symbol" }}
+    </p>
+  </div>
+  <div class="summary-card">
+    <h4>Lucro Total</h4>
+    <p class="summary-value profit">
+      {{ totalProfit | currency : "BRL" : "symbol" }}
+    </p>
+  </div>
+  <div class="summary-card">
+    <h4>Total de Vendas</h4>
+    <p class="summary-value sales">{{ totalSales }}</p>
+  </div>
+</div>
 
-        <!-- Botão Editar (somente para filtro de 24h) -->
-        <div class="actions-buttons">
-          <button
-            *ngIf="filter === '24h'"
-            class="delete-sale-button"
-            (click)="openConfirmPopup(sale.sellId)"
+<!-- Lista de relatórios ou skeleton -->
+<div class="reports-list">
+  <ng-container *ngIf="!isLoading; else reportsSkeleton">
+    <div *ngFor="let report of filteredReports" class="report-item">
+      <div class="report-header" (click)="toggleReportExpansion(report.date)">
+        <div class="report-date">
+          <h3>{{ getFormattedDate(report.date) }}</h3>
+          <div class="report-summary">
+            <span class="summary-item">
+              <strong>{{ report.numberOfSales }}</strong> vendas
+            </span>
+            <span class="summary-item">
+              Receita:
+              <strong>{{
+                report.grossRevenue | currency : "BRL" : "symbol"
+              }}</strong>
+            </span>
+            <span class="summary-item profit-indicator">
+              Lucro:
+              <strong>{{ report.profit | currency : "BRL" : "symbol" }}</strong>
+            </span>
+          </div>
+        </div>
+        <div
+          class="expand-icon"
+          [ngClass]="{ expanded: isReportExpanded(report.date) }"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <img src="assets/svg/trashcan-white.svg" alt="" />
-          </button>
+            <path
+              d="M6 9L12 15L18 9"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Detalhes expandidos do relatório -->
+      <div class="report-details" *ngIf="isReportExpanded(report.date)">
+        <h4>Vendas por Produto:</h4>
+        <div class="products-list">
+          <div
+            *ngFor="let productSale of report.sellsByProduct"
+            class="product-item"
+          >
+            <div class="product-icon">
+              <img
+                [src]="
+                  getCategoryIconPath(
+                    productSale.productResponseDTO.category.name
+                  )
+                "
+                alt="Ícone da categoria"
+              />
+            </div>
+            <div class="product-info">
+              <h5>{{ productSale.productResponseDTO.name }}</h5>
+              <p class="product-brand">
+                {{ productSale.productResponseDTO.brand }} -
+                {{ getFormattedUnit(productSale) }}
+              </p>
+              <div class="product-stats">
+                <span class="stat">
+                  Vendidos: <strong>{{ productSale.saleCount }}</strong>
+                </span>
+                <span class="stat">
+                  Receita:
+                  <strong>{{
+                    productSale.grossRevenue | currency : "BRL" : "symbol"
+                  }}</strong>
+                </span>
+                <span class="stat profit">
+                  Lucro:
+                  <strong>{{
+                    productSale.profit | currency : "BRL" : "symbol"
+                  }}</strong>
+                </span>
+              </div>
+            </div>
+            <div class="product-prices">
+              <p class="price-info">
+                Preço:
+                {{
+                  productSale.productResponseDTO.priceToSell
+                    | currency : "BRL" : "symbol"
+                }}
+              </p>
+              <p class="margin-info">
+                Margem:
+                {{
+                  ((productSale.productResponseDTO.priceToSell -
+                    productSale.productResponseDTO.purchasedPrice) /
+                    productSale.productResponseDTO.priceToSell) *
+                    100 | number : "1.1-1"
+                }}%
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div *ngIf="filteredSales.length === 0" class="no-sales">
-      <p>Nenhuma venda encontrada nesse período.</p>
+    <div *ngIf="filteredReports.length === 0" class="no-reports">
+      <p>Nenhum relatório encontrado nesse período.</p>
     </div>
   </ng-container>
 
   <!-- Skeleton de carregamento -->
-  <ng-template #salesSkeleton>
-    <div class="sale-item" *ngFor="let i of [1, 2, 3, 4]">
-      <div class="sale-icon">
-        <ion-skeleton-text
-          animated="true"
-          style="width: 40px; height: 40px; border-radius: 50%"
-        ></ion-skeleton-text>
-      </div>
-      <div class="sale-details">
-        <h4>
-          <ion-skeleton-text
-            animated="true"
-            style="width: 10rem; height: 1rem; border-radius: 100px"
-          ></ion-skeleton-text>
-        </h4>
-        <p>
-          <ion-skeleton-text
-            animated="true"
-            style="width: 8rem; height: 0.8rem; border-radius: 100px"
-          ></ion-skeleton-text
-          ><br />
-          <ion-skeleton-text
-            animated="true"
-            style="width: 6rem; height: 0.8rem; border-radius: 100px"
-          ></ion-skeleton-text
-          ><br />
-          <ion-skeleton-text
-            animated="true"
-            style="width: 7rem; height: 0.8rem; border-radius: 100px"
-          ></ion-skeleton-text>
-        </p>
+  <ng-template #reportsSkeleton>
+    <div class="report-item" *ngFor="let i of [1, 2, 3, 4]">
+      <div class="report-header">
+        <div class="report-date">
+          <h3>
+            <ion-skeleton-text
+              animated="true"
+              style="width: 15rem; height: 1.5rem; border-radius: 100px"
+            ></ion-skeleton-text>
+          </h3>
+          <div class="report-summary">
+            <ion-skeleton-text
+              animated="true"
+              style="width: 10rem; height: 1rem; border-radius: 100px"
+            ></ion-skeleton-text>
+            <ion-skeleton-text
+              animated="true"
+              style="width: 8rem; height: 1rem; border-radius: 100px"
+            ></ion-skeleton-text>
+            <ion-skeleton-text
+              animated="true"
+              style="width: 7rem; height: 1rem; border-radius: 100px"
+            ></ion-skeleton-text>
+          </div>
+        </div>
       </div>
     </div>
   </ng-template>
 </div>
 
-<p class="total-sales">
-  Total de Vendas:
-  <span class="total-amount">
-    {{ totalSales | currency : "BRL" : "symbol" }}
-  </span>
-</p>
 <br /><br /><br /><br /><br />
 
-<app-confirm-pop-up
-  [isActive]="isConfirmPopupOpen"
-  [firstMessage]="'Tem certeza que deseja excluir esta venda?'"
-  [secondMessage]="'Essa ação não poderá ser desfeita.'"
-  (confirm)="confirmSaleDeletion()"
-  (closeButtonEvent)="isConfirmPopupOpen = false"
-></app-confirm-pop-up>
-<app-loading-sppiner [isLoading]="isLoadingActions"></app-loading-sppiner>
 <app-message-per-request
   [errorMessage]="(errorMessage$ | async) ?? ''"
   [successMessage]="(successMessage$ | async) ?? ''"
