@@ -21,11 +21,14 @@
   </p>
 </div>
 
-<app-bottom-arrow
-  (arrowClick)="closeInfo()"
-  [direction]="'left'"
-  *ngIf="isExpanded"
-></app-bottom-arrow>
+<div class="bottom-arrow">
+  <app-bottom-arrow
+    (arrowClick)="closeInfo()"
+    [direction]="'left'"
+    *ngIf="isExpanded"
+  ></app-bottom-arrow>
+</div>
+
 <app-loading-sppiner
   [isLoading]="isLoading && isExpanded"
 ></app-loading-sppiner>
