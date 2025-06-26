@@ -21,4 +21,9 @@ export class ReportService {
       withCredentials: true,
     });
   }
+  public getDailyReportHistory(): Observable<any> {
+    return this.httpClient.get<any>(`${this.apiUrl}report/daily/all`, {
+      withCredentials: true,
+    });
+  }
 }

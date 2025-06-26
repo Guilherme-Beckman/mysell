@@ -3,10 +3,12 @@
 }
 nav {
   height: 6vh;
+  background: none;
 }
 main {
   margin: 2rem;
-  position: relative;
+  height: 94vh;
+  overflow-y: auto;
 }
 h1 {
   padding: 0.5rem;
@@ -15,15 +17,6 @@ h1 {
   font-weight: 300;
   border-bottom: 1px solid var(--text-gray);
 }
-.report-range-selector {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
 .report-history {
-  position: absolute;
-  right: 0;
-  button {
-    background: none;
-    border: none;
-  }
+  margin-top: 1rem;
 }

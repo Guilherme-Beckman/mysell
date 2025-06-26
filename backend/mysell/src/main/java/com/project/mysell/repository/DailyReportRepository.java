@@ -7,6 +7,7 @@ import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 
+import com.project.mysell.dto.report.DailyReportResponseDTO;
 import com.project.mysell.model.report.DailyReportModel;
 
 import reactor.core.publisher.Flux;
@@ -20,6 +21,7 @@ public interface DailyReportRepository extends ReactiveCrudRepository<DailyRepor
 			       "AND date >= date_trunc('week', CURRENT_DATE) " +
 			       "AND date < date_trunc('week', CURRENT_DATE) + interval '1 week'")
 		Flux<DailyReportModel> getThisWeekDailyReportByUserId(UUID userId);
+		Flux<DailyReportModel> findAllByUserId(UUID userId);
 	}
 
 

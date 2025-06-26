@@ -249,5 +249,19 @@ public class ReportService {
         return this.weeklyReportRepository.save(newWeeklyReport);
     }
 
+	public Flux<DailyReportResponseDTO> getAllDailyReports(String token) {
+		UUID userId = this.extractUserIdFromToken(token);
+		return Flux.concat(
+				this.dailyReportRepository.findAllByUserId(userId)
+				.flatMap(this::createDailyReportResponse),
+				this.getDailyReport(token));
+				
+	}
+
+	public Flux<WeeklyReportModel> getAllWeeklyReports(String token) {
+		UUID userId = this.extractUserIdFromToken(token);
+		return this.weeklyReportRepository.findAllByUserId(userId);
+	}
+
 
 }
