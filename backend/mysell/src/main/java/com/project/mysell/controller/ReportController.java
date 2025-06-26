@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.mysell.dto.report.DailyReportResponseDTO;
 import com.project.mysell.dto.report.WeeklyReportResponseDTO;
+import com.project.mysell.model.report.WeeklyReportModel;
 import com.project.mysell.service.report.ReportService;
 
 import reactor.core.publisher.Flux;
@@ -47,5 +48,10 @@ public class ReportController {
 	private ResponseEntity<Flux<DailyReportResponseDTO>> getAllDailyReports (@RequestHeader("Authorization") String token){
 		Flux<DailyReportResponseDTO> dailyReports = this.reportService.getAllDailyReports(token);
 		return ResponseEntity.ok().body(dailyReports);
+	}
+	@GetMapping("/weekly/all")
+	private ResponseEntity<Flux<WeeklyReportModel>> getAllWeeklyReports (@RequestHeader("Authorization") String token){
+		Flux<WeeklyReportModel> weeklyReports = this.reportService.getAllWeeklyReports(token);
+		return ResponseEntity.ok().body(weeklyReports);
 	}
 }
