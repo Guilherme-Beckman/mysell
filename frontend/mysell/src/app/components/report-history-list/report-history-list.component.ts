@@ -5,9 +5,16 @@ import { CommonModule } from '@angular/common';
 import { LoadingSppinerComponent } from '../loading-sppiner/loading-sppiner.component';
 import { ConfirmPopUpComponent } from '../confirm-pop-up/confirm-pop-up.component';
 import { MessagePerRequestComponent } from '../message-per-request/message-per-request.component';
-import { IonSkeletonText } from '@ionic/angular/standalone';
+import {
+  IonSkeletonText,
+  LoadingController,
+  AlertController,
+  ToastController,
+} from '@ionic/angular/standalone';
 import { ReportService } from 'src/app/services/report.service';
 import { getCategoryIconPath } from 'src/app/datas/categories';
+import { PdfService } from 'src/app/services/pdf-service.service';
+
 interface ProductSale {
   saleCount: number;
   profit: number;
@@ -38,6 +45,7 @@ interface DailyReport {
   numberOfSales: number;
   sellsByProduct: ProductSale[];
 }
+
 @Component({
   selector: 'app-report-history-list',
   templateUrl: './report-history-list.component.html',
@@ -56,12 +64,17 @@ export class ReportHistoryComponentList implements OnInit {
   filter: string = '7d';
   isLoading = false;
   expandedReports: Set<string> = new Set();
+  generatingPdfReports: Set<string> = new Set();
   public successMessage$ = this.messageService.successMessage$;
   public errorMessage$ = this.messageService.errorMessage$;
 
   constructor(
     private reportService: ReportService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private pdfService: PdfService,
+    private loadingController: LoadingController,
+    private alertController: AlertController,
+    private toastController: ToastController
   ) {}
 
   ngOnInit(): void {
@@ -183,6 +196,192 @@ export class ReportHistoryComponentList implements OnInit {
     return this.expandedReports.has(date);
   }
 
+  // Método adaptado para usar async/await e feedback visual melhorado
+  async generatePDF(report: DailyReport): Promise<void> {
+    // Verificar se há dados para gerar o PDF
+    if (!report.sellsByProduct || report.sellsByProduct.length === 0) {
+      const alert = await this.alertController.create({
+        header: 'Aviso',
+        message: 'Este relatório não possui dados de vendas para gerar o PDF.',
+        buttons: ['OK'],
+      });
+      await alert.present();
+      return;
+    }
+
+    // Adicionar ao set de relatórios sendo gerados
+    this.generatingPdfReports.add(report.date);
+
+    // Criar loading personalizado
+    const loading = await this.loadingController.create({
+      message: 'Gerando PDF...',
+      spinner: 'crescent',
+      translucent: true,
+      cssClass: 'custom-loading',
+    });
+
+    await loading.present();
+
+    try {
+      // Usar o serviço PDF adaptado para mobile
+      await this.pdfService.generateDailyReportPDF(report);
+
+      // Fechar loading
+      await loading.dismiss();
+
+      // Mostrar toast de sucesso
+      const toast = await this.toastController.create({
+        message: 'PDF gerado com sucesso!',
+        duration: 3000,
+        position: 'bottom',
+        color: 'success',
+        buttons: [
+          {
+            text: 'OK',
+            role: 'cancel',
+          },
+        ],
+      });
+
+      await toast.present();
+
+      // Também usar o serviço de mensagem existente
+      this.messageService.setSuccessMessage(
+        'PDF gerado com sucesso!',
+        'O relatório foi salvo e pode ser compartilhado.'
+      );
+    } catch (error) {
+      // Fechar loading em caso de erro
+      await loading.dismiss();
+
+      console.error('Erro ao gerar PDF:', error);
+
+      // Mostrar alerta de erro
+      const alert = await this.alertController.create({
+        header: 'Erro ao gerar PDF',
+        message:
+          'Não foi possível gerar o relatório. Verifique se você tem espaço disponível e tente novamente.',
+        buttons: [
+          {
+            text: 'Tentar novamente',
+            handler: () => {
+              this.generatePDF(report);
+            },
+          },
+          {
+            text: 'Cancelar',
+            role: 'cancel',
+          },
+        ],
+      });
+
+      await alert.present();
+
+      // Também usar o serviço de mensagem existente
+      this.messageService.setErrorMessage(
+        'Erro ao gerar PDF',
+        'Não foi possível gerar o relatório. Tente novamente.'
+      );
+    } finally {
+      // Remover do set de relatórios sendo gerados
+      this.generatingPdfReports.delete(report.date);
+    }
+  }
+
+  // Método para gerar PDF com confirmação
+  async generatePDFWithConfirmation(report: DailyReport): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Gerar PDF',
+      message: `Deseja gerar o relatório em PDF para o dia ${this.getFormattedDate(
+        report.date
+      )}?`,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: 'Gerar',
+          handler: () => {
+            this.generatePDF(report);
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
+  // Método para gerar múltiplos PDFs
+  async generateMultiplePDFs(reports: DailyReport[]): Promise<void> {
+    if (reports.length === 0) {
+      const toast = await this.toastController.create({
+        message: 'Nenhum relatório selecionado',
+        duration: 2000,
+        position: 'bottom',
+        color: 'warning',
+      });
+      await toast.present();
+      return;
+    }
+
+    const alert = await this.alertController.create({
+      header: 'Gerar PDFs',
+      message: `Deseja gerar ${reports.length} relatório(s) em PDF?`,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: 'Gerar todos',
+          handler: async () => {
+            const loading = await this.loadingController.create({
+              message: `Gerando ${reports.length} PDF(s)...`,
+              spinner: 'crescent',
+            });
+
+            await loading.present();
+
+            try {
+              for (const report of reports) {
+                await this.pdfService.generateDailyReportPDF(report);
+              }
+
+              await loading.dismiss();
+
+              const toast = await this.toastController.create({
+                message: `${reports.length} PDF(s) gerado(s) com sucesso!`,
+                duration: 3000,
+                position: 'bottom',
+                color: 'success',
+              });
+
+              await toast.present();
+            } catch (error) {
+              await loading.dismiss();
+              console.error('Erro ao gerar PDFs:', error);
+
+              const errorAlert = await this.alertController.create({
+                header: 'Erro',
+                message: 'Erro ao gerar alguns relatórios. Tente novamente.',
+                buttons: ['OK'],
+              });
+
+              await errorAlert.present();
+            }
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
+  isGeneratingPdf(date: string): boolean {
+    return this.generatingPdfReports.has(date);
+  }
+
   getFormattedDate(dateString: string): string {
     const date = new Date(`${dateString}T00:00:00`);
     return date.toLocaleDateString('pt-BR', {
@@ -196,5 +395,24 @@ export class ReportHistoryComponentList implements OnInit {
   getFormattedUnit(product: ProductSale): string {
     const unit = product.productResponseDTO.productUnitOfMeasureDTO;
     return `${unit.quantity}${unit.unityOfMeasure.name}`;
+  }
+
+  // Método auxiliar para verificar se é mobile
+  get isMobile(): boolean {
+    return window.innerWidth <= 768;
+  }
+
+  // Método para formatar moeda
+  formatCurrency(value: number): string {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    }).format(value);
+  }
+
+  // Método para calcular margem de lucro
+  calculateMargin(product: ProductSale): number {
+    const { purchasedPrice, priceToSell } = product.productResponseDTO;
+    return ((priceToSell - purchasedPrice) / priceToSell) * 100;
   }
 }
