@@ -45,6 +45,25 @@ interface DailyReport {
   sellsByProduct: ProductSale[];
 }
 
+// Interface para o relatório geral
+interface GeneralReport {
+  startDate: string;
+  endDate: string;
+  period: string;
+  totalRevenue: number;
+  totalProfit: number;
+  totalSales: number;
+  dailyReports: DailyReport[];
+  topSellingProducts: {
+    productName: string;
+    brand: string;
+    category: string;
+    totalSales: number;
+    totalRevenue: number;
+    totalProfit: number;
+  }[];
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -58,10 +77,10 @@ export class PdfService {
 
       // Configurações otimizadas para mobile
       const doc = new jsPDF({
-        orientation: isMobile ? 'portrait' : 'landscape', // Portrait é melhor para mobile
+        orientation: isMobile ? 'portrait' : 'landscape',
         unit: 'mm',
         format: isMobile ? 'a4' : 'a4',
-        compress: true, // Comprimir para reduzir tamanho
+        compress: true,
       });
 
       const pageWidth = doc.internal.pageSize.width;
@@ -94,7 +113,6 @@ export class PdfService {
       doc.setFontSize(isMobile ? 9 : 10);
 
       if (isMobile) {
-        // Layout vertical para mobile
         this.addSummaryItem(
           doc,
           'Total de Vendas:',
@@ -120,7 +138,6 @@ export class PdfService {
         );
         currentY += 15;
       } else {
-        // Layout horizontal para desktop
         this.addSummaryItem(
           doc,
           'Total de Vendas:',
@@ -150,7 +167,7 @@ export class PdfService {
       doc.setTextColor(40, 44, 52);
       doc.text('Vendas por Produto', margins.left, currentY);
 
-      // Prepare table data - diferentes colunas para mobile/desktop
+      // Prepare table data
       const tableData = report.sellsByProduct.map((productSale) => {
         const product = productSale.productResponseDTO;
         const unit = `${product.productUnitOfMeasureDTO.quantity}${product.productUnitOfMeasureDTO.unityOfMeasure.name}`;
@@ -160,7 +177,6 @@ export class PdfService {
           100;
 
         if (isMobile) {
-          // Menos colunas para mobile
           return [
             this.truncateText(product.name, 18),
             productSale.saleCount.toString(),
@@ -169,7 +185,6 @@ export class PdfService {
             `${margin.toFixed(1)}%`,
           ];
         } else {
-          // Todas as colunas para desktop
           return [
             this.truncateText(product.name, 20),
             `${this.truncateText(product.brand, 15)} - ${unit}`,
@@ -183,7 +198,7 @@ export class PdfService {
         }
       });
 
-      // Table headers - diferentes para mobile/desktop
+      // Table headers
       const tableHeaders = isMobile
         ? ['Produto', 'Qtd.', 'Preço', 'Lucro', 'Margem']
         : [
@@ -197,61 +212,8 @@ export class PdfService {
             'Margem',
           ];
 
-      // Column styles - diferentes para mobile/desktop
-      const columnStyles: { [key: string]: any } = {};
-
-      if (isMobile) {
-        columnStyles['0'] = { cellWidth: 'auto' as const, minCellWidth: 35 }; // Produto
-        columnStyles['1'] = {
-          cellWidth: 'auto' as const,
-          minCellWidth: 15,
-          halign: 'center' as const,
-        }; // Qtd.
-        columnStyles['2'] = {
-          cellWidth: 'auto' as const,
-          minCellWidth: 25,
-          halign: 'right' as const,
-        }; // Preço
-        columnStyles['3'] = {
-          cellWidth: 'auto' as const,
-          minCellWidth: 25,
-          halign: 'right' as const,
-        }; // Lucro
-        columnStyles['4'] = {
-          cellWidth: 'auto' as const,
-          minCellWidth: 20,
-          halign: 'right' as const,
-        }; // Margem
-      } else {
-        columnStyles['0'] = { cellWidth: 'auto' as const, minCellWidth: 25 }; // Produto
-        columnStyles['1'] = { cellWidth: 'auto' as const, minCellWidth: 25 }; // Marca/Unidade
-        columnStyles['2'] = { cellWidth: 'auto' as const, minCellWidth: 20 }; // Categoria
-        columnStyles['3'] = {
-          cellWidth: 'auto' as const,
-          minCellWidth: 12,
-          halign: 'center' as const,
-        }; // Qtd.
-        columnStyles['4'] = {
-          cellWidth: 'auto' as const,
-          minCellWidth: 18,
-          halign: 'right' as const,
-        }; // Preço
-        columnStyles['5'] = {
-          cellWidth: 'auto' as const,
-          minCellWidth: 20,
-          halign: 'right' as const,
-        }; // Receita
-        columnStyles['6'] = {
-          cellWidth: 'auto' as const,
-          minCellWidth: 18,
-          halign: 'right' as const,
-        }; // Lucro
-        columnStyles['7'] = {
-          cellWidth: 'auto' as const,
-          minCellWidth: 15,
-          halign: 'right' as const,
-        }; // Margem
-      }
+      // Column styles
+      const columnStyles = this.getColumnStyles(isMobile);
 
       // Create table
       autoTable(doc, {
@@ -281,41 +243,333 @@ export class PdfService {
           cellWidth: 'wrap',
         },
         didDrawPage: (data: any) => {
-          // Footer
-          const pageNumber = doc.getCurrentPageInfo().pageNumber;
-          const totalPages = doc.getNumberOfPages();
-
-          doc.setFontSize(isMobile ? 6 : 7);
-          doc.setTextColor(150, 150, 150);
-          doc.text(
-            `Página ${pageNumber} de ${totalPages}`,
-            pageWidth - margins.right,
-            pageHeight - margins.bottom,
-            { align: 'right' }
-          );
-
-          // Generation date
-          doc.text(
-            `Gerado em: ${new Date().toLocaleDateString('pt-BR')}`,
-            margins.left,
-            pageHeight - margins.bottom
-          );
+          this.addPageFooter(doc, pageWidth, pageHeight, margins);
         },
       });
 
-      // Save/Share the PDF based on platform
+      // Save/Share the PDF
       const fileName = `relatorio_${report.date.replace(/\//g, '-')}.pdf`;
-
-      if (this.platform.is('capacitor')) {
-        // Mobile: Save and share
-        await this.savePDFToDevice(doc, fileName);
-      } else {
-        // Web: Direct download
-        doc.save(fileName);
-      }
+      await this.handlePdfOutput(doc, fileName);
     } catch (error) {
       console.error('Erro ao gerar PDF:', error);
       throw error;
+    }
+  }
+
+  async generateGeneralReportPDF(report: GeneralReport): Promise<void> {
+    try {
+      const isMobile = this.platform.is('mobile');
+
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+        compress: true,
+      });
+
+      const pageWidth = doc.internal.pageSize.width;
+      const pageHeight = doc.internal.pageSize.height;
+      const margins = { top: 15, left: 10, right: 10, bottom: 15 };
+
+      // Header
+      doc.setFontSize(isMobile ? 16 : 18);
+      doc.setTextColor(40, 44, 52);
+      doc.text('Relatório Geral de Vendas', pageWidth / 2, margins.top, {
+        align: 'center',
+      });
+
+      // Period
+      doc.setFontSize(isMobile ? 11 : 12);
+      doc.setTextColor(100, 100, 100);
+      doc.text(report.period, pageWidth / 2, margins.top + 8, {
+        align: 'center',
+      });
+
+      // Date range
+      doc.setFontSize(isMobile ? 9 : 10);
+      const dateRange = `${this.formatDate(
+        report.startDate
+      )} até ${this.formatDate(report.endDate)}`;
+      doc.text(dateRange, pageWidth / 2, margins.top + 15, {
+        align: 'center',
+      });
+
+      let currentY = margins.top + 25;
+
+      // Summary section
+      doc.setFontSize(isMobile ? 12 : 14);
+      doc.setTextColor(40, 44, 52);
+      doc.text('Resumo Consolidado', margins.left, currentY);
+
+      currentY += 10;
+      doc.setFontSize(isMobile ? 9 : 10);
+
+      // Summary items (vertical layout)
+      this.addSummaryItem(
+        doc,
+        'Total de Vendas:',
+        report.totalSales.toString(),
+        margins.left,
+        currentY
+      );
+      currentY += 12;
+
+      this.addSummaryItem(
+        doc,
+        'Receita Total:',
+        this.formatCurrency(report.totalRevenue),
+        margins.left,
+        currentY
+      );
+      currentY += 12;
+
+      this.addSummaryItem(
+        doc,
+        'Lucro Total:',
+        this.formatCurrency(report.totalProfit),
+        margins.left,
+        currentY
+      );
+      currentY += 12;
+
+      // Calculate and show average margin
+      const averageMargin =
+        report.totalRevenue > 0
+          ? (report.totalProfit / report.totalRevenue) * 100
+          : 0;
+
+      this.addSummaryItem(
+        doc,
+        'Margem Média:',
+        `${averageMargin.toFixed(1)}%`,
+        margins.left,
+        currentY
+      );
+      currentY += 20;
+
+      // Top selling products section
+      if (report.topSellingProducts && report.topSellingProducts.length > 0) {
+        doc.setFontSize(isMobile ? 12 : 14);
+        doc.setTextColor(40, 44, 52);
+        doc.text('Top Produtos Mais Vendidos', margins.left, currentY);
+
+        const topProductsData = report.topSellingProducts.map(
+          (product, index) => [
+            `${index + 1}º`,
+            this.truncateText(product.productName, isMobile ? 25 : 30),
+            this.truncateText(product.brand, isMobile ? 15 : 20),
+            product.totalSales.toString(),
+            this.formatCurrency(product.totalRevenue),
+            this.formatCurrency(product.totalProfit),
+          ]
+        );
+
+        const topProductsHeaders = [
+          'Pos.',
+          'Produto',
+          'Marca',
+          'Qtd.',
+          'Receita',
+          'Lucro',
+        ];
+
+        autoTable(doc, {
+          head: [topProductsHeaders],
+          body: topProductsData,
+          startY: currentY + 8,
+          theme: 'striped',
+          headStyles: {
+            fillColor: [34, 197, 94],
+            textColor: [255, 255, 255],
+            fontSize: isMobile ? 7 : 8,
+            fontStyle: 'bold',
+          },
+          bodyStyles: {
+            fontSize: isMobile ? 6 : 7,
+            textColor: [60, 60, 60],
+            cellPadding: isMobile ? 1.5 : 2,
+          },
+          alternateRowStyles: {
+            fillColor: [248, 248, 248],
+          },
+          columnStyles: {
+            0: { cellWidth: 12, halign: 'center' }, // Pos.
+            1: { cellWidth: 'auto', minCellWidth: 40 }, // Produto
+            2: { cellWidth: 'auto', minCellWidth: 25 }, // Marca
+            3: { cellWidth: 20, halign: 'center' }, // Qtd.
+            4: { cellWidth: 30, halign: 'right' }, // Receita
+            5: { cellWidth: 30, halign: 'right' }, // Lucro
+          },
+          margin: { left: margins.left, right: margins.right },
+          didDrawPage: (data: any) => {
+            this.addPageFooter(doc, pageWidth, pageHeight, margins);
+          },
+        });
+
+        currentY = (doc as any).lastAutoTable.finalY + 15;
+      }
+
+      // Daily performance section
+      if (report.dailyReports && report.dailyReports.length > 0) {
+        // Check if we need a new page
+        if (currentY > pageHeight - 100) {
+          doc.addPage();
+          currentY = margins.top;
+        }
+
+        doc.setFontSize(isMobile ? 12 : 14);
+        doc.setTextColor(40, 44, 52);
+        doc.text('Desempenho Diário', margins.left, currentY);
+
+        const dailyData = report.dailyReports.map((dailyReport) => [
+          this.formatDateShort(dailyReport.date),
+          dailyReport.numberOfSales.toString(),
+          this.formatCurrency(dailyReport.grossRevenue),
+          this.formatCurrency(dailyReport.profit),
+          dailyReport.grossRevenue > 0
+            ? `${(
+                (dailyReport.profit / dailyReport.grossRevenue) *
+                100
+              ).toFixed(1)}%`
+            : '0%',
+        ]);
+
+        const dailyHeaders = ['Data', 'Vendas', 'Receita', 'Lucro', 'Margem'];
+
+        autoTable(doc, {
+          head: [dailyHeaders],
+          body: dailyData,
+          startY: currentY + 8,
+          theme: 'striped',
+          headStyles: {
+            fillColor: [59, 130, 246],
+            textColor: [255, 255, 255],
+            fontSize: isMobile ? 7 : 8,
+            fontStyle: 'bold',
+          },
+          bodyStyles: {
+            fontSize: isMobile ? 6 : 7,
+            textColor: [60, 60, 60],
+            cellPadding: isMobile ? 1.5 : 2,
+          },
+          alternateRowStyles: {
+            fillColor: [248, 248, 248],
+          },
+          columnStyles: {
+            0: { cellWidth: 30, halign: 'center' }, // Data
+            1: { cellWidth: 25, halign: 'center' }, // Vendas
+            2: { cellWidth: 35, halign: 'right' }, // Receita
+            3: { cellWidth: 35, halign: 'right' }, // Lucro
+            4: { cellWidth: 25, halign: 'right' }, // Margem
+          },
+          margin: { left: margins.left, right: margins.right },
+          didDrawPage: (data: any) => {
+            this.addPageFooter(doc, pageWidth, pageHeight, margins);
+          },
+        });
+      }
+
+      // Save/Share the PDF
+      const fileName = `relatorio_geral_${report.startDate.replace(
+        /\//g,
+        '-'
+      )}_${report.endDate.replace(/\//g, '-')}.pdf`;
+      await this.handlePdfOutput(doc, fileName);
+    } catch (error) {
+      console.error('Erro ao gerar PDF geral:', error);
+      throw error;
+    }
+  }
+
+  private getColumnStyles(isMobile: boolean): { [key: string]: any } {
+    const columnStyles: { [key: string]: any } = {};
+
+    if (isMobile) {
+      columnStyles['0'] = { cellWidth: 'auto' as const, minCellWidth: 35 };
+      columnStyles['1'] = {
+        cellWidth: 'auto' as const,
+        minCellWidth: 15,
+        halign: 'center' as const,
+      };
+      columnStyles['2'] = {
+        cellWidth: 'auto' as const,
+        minCellWidth: 25,
+        halign: 'right' as const,
+      };
+      columnStyles['3'] = {
+        cellWidth: 'auto' as const,
+        minCellWidth: 25,
+        halign: 'right' as const,
+      };
+      columnStyles['4'] = {
+        cellWidth: 'auto' as const,
+        minCellWidth: 20,
+        halign: 'right' as const,
+      };
+    } else {
+      columnStyles['0'] = { cellWidth: 'auto' as const, minCellWidth: 25 };
+      columnStyles['1'] = { cellWidth: 'auto' as const, minCellWidth: 25 };
+      columnStyles['2'] = { cellWidth: 'auto' as const, minCellWidth: 20 };
+      columnStyles['3'] = {
+        cellWidth: 'auto' as const,
+        minCellWidth: 12,
+        halign: 'center' as const,
+      };
+      columnStyles['4'] = {
+        cellWidth: 'auto' as const,
+        minCellWidth: 18,
+        halign: 'right' as const,
+      };
+      columnStyles['5'] = {
+        cellWidth: 'auto' as const,
+        minCellWidth: 20,
+        halign: 'right' as const,
+      };
+      columnStyles['6'] = {
+        cellWidth: 'auto' as const,
+        minCellWidth: 18,
+        halign: 'right' as const,
+      };
+      columnStyles['7'] = {
+        cellWidth: 'auto' as const,
+        minCellWidth: 15,
+        halign: 'right' as const,
+      };
+    }
+
+    return columnStyles;
+  }
+
+  private addPageFooter(
+    doc: jsPDF,
+    pageWidth: number,
+    pageHeight: number,
+    margins: any
+  ): void {
+    const pageNumber = doc.getCurrentPageInfo().pageNumber;
+    const totalPages = doc.getNumberOfPages();
+
+    doc.setFontSize(7);
+    doc.setTextColor(150, 150, 150);
+    doc.text(
+      `Página ${pageNumber} de ${totalPages}`,
+      pageWidth - margins.right,
+      pageHeight - margins.bottom,
+      { align: 'right' }
+    );
+
+    doc.text(
+      `Gerado em: ${new Date().toLocaleDateString('pt-BR')}`,
+      margins.left,
+      pageHeight - margins.bottom
+    );
+  }
+
+  private async handlePdfOutput(doc: jsPDF, fileName: string): Promise<void> {
+    if (this.platform.is('capacitor')) {
+      await this.savePDFToDevice(doc, fileName);
+    } else {
+      doc.save(fileName);
     }
   }
 
@@ -345,14 +599,12 @@ export class PdfService {
 
       const filePath = result.uri;
 
-      // Solicita permissão para notificação
       const permission = await LocalNotifications.requestPermissions();
       if (permission.display !== 'granted') {
         console.warn('Permissão de notificação negada.');
         return;
       }
 
-      // Registra listener para clique na notificação
       LocalNotifications.addListener(
         'localNotificationActionPerformed',
         async () => {
@@ -367,7 +619,6 @@ export class PdfService {
         }
       );
 
-      // Dispara a notificação
       await LocalNotifications.schedule({
         notifications: [
           {
@@ -380,11 +631,10 @@ export class PdfService {
         ],
       });
 
-      // Tenta compartilhar, mas trata cancelamento como sucesso
       try {
         await Share.share({
-          title: 'Relatório Diário de Vendas',
-          text: 'Confira o relatório diário de vendas em PDF.',
+          title: 'Relatório de Vendas',
+          text: 'Confira o relatório de vendas em PDF.',
           url: filePath,
           dialogTitle: 'Compartilhar Relatório PDF',
         });
@@ -394,7 +644,6 @@ export class PdfService {
           shareError
         );
 
-        // Mostra um toast amigável
         const toast = document.createElement('ion-toast');
         toast.message = 'Relatório salvo! Você pode compartilhar mais tarde.';
         toast.duration = 3000;
@@ -421,6 +670,15 @@ export class PdfService {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
+    });
+  }
+
+  private formatDateShort(dateString: string): string {
+    const date = new Date(`${dateString}T00:00:00`);
+    return date.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: '2-digit',
     });
   }
 

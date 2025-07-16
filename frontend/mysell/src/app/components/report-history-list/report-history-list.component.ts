@@ -46,6 +46,25 @@ interface DailyReport {
   sellsByProduct: ProductSale[];
 }
 
+// Interface para o relatório geral
+interface GeneralReport {
+  startDate: string;
+  endDate: string;
+  period: string;
+  totalRevenue: number;
+  totalProfit: number;
+  totalSales: number;
+  dailyReports: DailyReport[];
+  topSellingProducts: {
+    productName: string;
+    brand: string;
+    category: string;
+    totalSales: number;
+    totalRevenue: number;
+    totalProfit: number;
+  }[];
+}
+
 @Component({
   selector: 'app-report-history-list',
   templateUrl: './report-history-list.component.html',
@@ -65,6 +84,7 @@ export class ReportHistoryComponentList implements OnInit {
   isLoading = false;
   expandedReports: Set<string> = new Set();
   generatingPdfReports: Set<string> = new Set();
+  isGeneratingGeneralPdf = false;
   public successMessage$ = this.messageService.successMessage$;
   public errorMessage$ = this.messageService.errorMessage$;
 
@@ -194,6 +214,147 @@ export class ReportHistoryComponentList implements OnInit {
 
   isReportExpanded(date: string): boolean {
     return this.expandedReports.has(date);
+  }
+
+  // Método para gerar relatório geral em PDF
+  async generateGeneralReportPDF(): Promise<void> {
+    // Verificar se há dados para gerar o relatório
+    if (!this.filteredReports || this.filteredReports.length === 0) {
+      const alert = await this.alertController.create({
+        header: 'Aviso',
+        message: 'Não há dados suficientes para gerar o relatório geral.',
+        buttons: ['OK'],
+      });
+      await alert.present();
+      return;
+    }
+
+    this.isGeneratingGeneralPdf = true;
+
+    const loading = await this.loadingController.create({
+      message: 'Gerando relatório geral...',
+      spinner: 'crescent',
+      translucent: true,
+      cssClass: 'custom-loading',
+    });
+
+    await loading.present();
+
+    try {
+      // Construir o relatório geral
+      const generalReport = this.buildGeneralReport();
+
+      // Gerar PDF usando o serviço
+      await this.pdfService.generateGeneralReportPDF(generalReport);
+
+      await loading.dismiss();
+
+      this.messageService.setSuccessMessage(
+        'Relatório geral gerado com sucesso!',
+        'O relatório consolidado foi salvo e pode ser compartilhado.'
+      );
+    } catch (error) {
+      await loading.dismiss();
+      console.error('Erro ao gerar relatório geral:', error);
+
+      const alert = await this.alertController.create({
+        header: 'Erro ao compartilhar PDF',
+        message:
+          'Não foi possível compartilhar o relatório, mas ele foi baixado com sucesso.',
+        buttons: [
+          {
+            text: 'Tentar novamente',
+            handler: () => {
+              this.generateGeneralReportPDF();
+            },
+          },
+          {
+            text: 'Cancelar',
+            role: 'cancel',
+          },
+        ],
+      });
+
+      await alert.present();
+    } finally {
+      this.isGeneratingGeneralPdf = false;
+    }
+  }
+
+  // Método para construir o relatório geral
+  private buildGeneralReport(): GeneralReport {
+    const filtered = this.filteredReports;
+    const startDate =
+      filtered.length > 0 ? filtered[filtered.length - 1].date : '';
+    const endDate = filtered.length > 0 ? filtered[0].date : '';
+
+    // Calcular produtos mais vendidos
+    const productSalesMap = new Map<
+      string,
+      {
+        productName: string;
+        brand: string;
+        category: string;
+        totalSales: number;
+        totalRevenue: number;
+        totalProfit: number;
+      }
+    >();
+
+    filtered.forEach((report) => {
+      report.sellsByProduct.forEach((productSale) => {
+        const product = productSale.productResponseDTO;
+        const key = `${product.name}-${product.brand}`;
+
+        if (productSalesMap.has(key)) {
+          const existing = productSalesMap.get(key)!;
+          existing.totalSales += productSale.saleCount;
+          existing.totalRevenue += productSale.grossRevenue;
+          existing.totalProfit += productSale.profit;
+        } else {
+          productSalesMap.set(key, {
+            productName: product.name,
+            brand: product.brand,
+            category: product.category.name,
+            totalSales: productSale.saleCount,
+            totalRevenue: productSale.grossRevenue,
+            totalProfit: productSale.profit,
+          });
+        }
+      });
+    });
+
+    // Ordenar produtos por vendas
+    const topSellingProducts = Array.from(productSalesMap.values())
+      .sort((a, b) => b.totalSales - a.totalSales)
+      .slice(0, 10); // Top 10 produtos
+
+    return {
+      startDate,
+      endDate,
+      period: this.getPeriodDescription(),
+      totalRevenue: this.totalRevenue,
+      totalProfit: this.totalProfit,
+      totalSales: this.totalSales,
+      dailyReports: filtered,
+      topSellingProducts,
+    };
+  }
+
+  // Método para obter descrição do período
+  private getPeriodDescription(): string {
+    switch (this.filter) {
+      case '7d':
+        return 'Últimos 7 dias';
+      case '30d':
+        return 'Últimos 30 dias';
+      case '90d':
+        return 'Últimos 90 dias';
+      case 'all':
+        return 'Todos os períodos';
+      default:
+        return 'Período personalizado';
+    }
   }
 
   // Método adaptado para usar async/await e feedback visual melhorado
@@ -393,6 +554,7 @@ export class ReportHistoryComponentList implements OnInit {
   // Método para calcular margem de lucro
   calculateMargin(product: ProductSale): number {
     const { purchasedPrice, priceToSell } = product.productResponseDTO;
+    if (purchasedPrice === 0) return 0; // Evitar divisão por zero
     return ((priceToSell - purchasedPrice) / priceToSell) * 100;
   }
 }
