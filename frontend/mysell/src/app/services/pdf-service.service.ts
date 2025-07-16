@@ -5,6 +5,7 @@ import { Share } from '@capacitor/share';
 import { FileOpener } from '@capacitor-community/file-opener';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { LocalNotifications } from '@capacitor/local-notifications';
 
 // Extend jsPDF type to include autoTable
 declare module 'jspdf' {
@@ -197,24 +198,60 @@ export class PdfService {
           ];
 
       // Column styles - diferentes para mobile/desktop
-      const columnStyles = isMobile
-        ? {
-            0: { cellWidth: 'auto', minCellWidth: 35 }, // Produto
-            1: { cellWidth: 'auto', minCellWidth: 15, halign: 'center' }, // Qtd.
-            2: { cellWidth: 'auto', minCellWidth: 25, halign: 'right' }, // Preço
-            3: { cellWidth: 'auto', minCellWidth: 25, halign: 'right' }, // Lucro
-            4: { cellWidth: 'auto', minCellWidth: 20, halign: 'right' }, // Margem
-          }
-        : {
-            0: { cellWidth: 'auto', minCellWidth: 25 }, // Produto
-            1: { cellWidth: 'auto', minCellWidth: 25 }, // Marca/Unidade
-            2: { cellWidth: 'auto', minCellWidth: 20 }, // Categoria
-            3: { cellWidth: 'auto', minCellWidth: 12, halign: 'center' }, // Qtd.
-            4: { cellWidth: 'auto', minCellWidth: 18, halign: 'right' }, // Preço
-            5: { cellWidth: 'auto', minCellWidth: 20, halign: 'right' }, // Receita
-            6: { cellWidth: 'auto', minCellWidth: 18, halign: 'right' }, // Lucro
-            7: { cellWidth: 'auto', minCellWidth: 15, halign: 'right' }, // Margem
-          };
+      const columnStyles: { [key: string]: any } = {};
+
+      if (isMobile) {
+        columnStyles['0'] = { cellWidth: 'auto' as const, minCellWidth: 35 }; // Produto
+        columnStyles['1'] = {
+          cellWidth: 'auto' as const,
+          minCellWidth: 15,
+          halign: 'center' as const,
+        }; // Qtd.
+        columnStyles['2'] = {
+          cellWidth: 'auto' as const,
+          minCellWidth: 25,
+          halign: 'right' as const,
+        }; // Preço
+        columnStyles['3'] = {
+          cellWidth: 'auto' as const,
+          minCellWidth: 25,
+          halign: 'right' as const,
+        }; // Lucro
+        columnStyles['4'] = {
+          cellWidth: 'auto' as const,
+          minCellWidth: 20,
+          halign: 'right' as const,
+        }; // Margem
+      } else {
+        columnStyles['0'] = { cellWidth: 'auto' as const, minCellWidth: 25 }; // Produto
+        columnStyles['1'] = { cellWidth: 'auto' as const, minCellWidth: 25 }; // Marca/Unidade
+        columnStyles['2'] = { cellWidth: 'auto' as const, minCellWidth: 20 }; // Categoria
+        columnStyles['3'] = {
+          cellWidth: 'auto' as const,
+          minCellWidth: 12,
+          halign: 'center' as const,
+        }; // Qtd.
+        columnStyles['4'] = {
+          cellWidth: 'auto' as const,
+          minCellWidth: 18,
+          halign: 'right' as const,
+        }; // Preço
+        columnStyles['5'] = {
+          cellWidth: 'auto' as const,
+          minCellWidth: 20,
+          halign: 'right' as const,
+        }; // Receita
+        columnStyles['6'] = {
+          cellWidth: 'auto' as const,
+          minCellWidth: 18,
+          halign: 'right' as const,
+        }; // Lucro
+        columnStyles['7'] = {
+          cellWidth: 'auto' as const,
+          minCellWidth: 15,
+          halign: 'right' as const,
+        }; // Margem
+      }
 
       // Create table
       autoTable(doc, {
@@ -300,28 +337,71 @@ export class PdfService {
       const pdfOutput = doc.output('datauristring');
       const base64Data = pdfOutput.split(',')[1];
 
-      // Salvar o arquivo
       const result = await Filesystem.writeFile({
         path: fileName,
         data: base64Data,
         directory: Directory.Documents,
       });
 
-      console.log('PDF salvo em:', result.uri);
+      const filePath = result.uri;
 
-      // Compartilhar o arquivo
-      if (await Share.canShare()) {
+      // Solicita permissão para notificação
+      const permission = await LocalNotifications.requestPermissions();
+      if (permission.display !== 'granted') {
+        console.warn('Permissão de notificação negada.');
+        return;
+      }
+
+      // Registra listener para clique na notificação
+      LocalNotifications.addListener(
+        'localNotificationActionPerformed',
+        async () => {
+          try {
+            await FileOpener.open({
+              filePath,
+              contentType: 'application/pdf',
+            });
+          } catch (error) {
+            console.error('Erro ao abrir o arquivo PDF:', error);
+          }
+        }
+      );
+
+      // Dispara a notificação
+      await LocalNotifications.schedule({
+        notifications: [
+          {
+            id: 1,
+            title: 'Download concluído!',
+            body: 'Toque para abrir ou compartilhar o relatório.',
+            schedule: { at: new Date(Date.now() + 1000) },
+            attachments: [{ id: '1', url: filePath }],
+          },
+        ],
+      });
+
+      // Tenta compartilhar, mas trata cancelamento como sucesso
+      try {
         await Share.share({
-          title: 'Relatório de Vendas',
-          text: 'Relatório de vendas diário',
-          url: result.uri,
+          title: 'Relatório Diário de Vendas',
+          text: 'Confira o relatório diário de vendas em PDF.',
+          url: filePath,
+          dialogTitle: 'Compartilhar Relatório PDF',
         });
-      } else {
-        // Tentar abrir com FileOpener se Share não estiver disponível
-        await FileOpener.open({
-          filePath: result.uri,
-          contentType: 'application/pdf',
-        });
+      } catch (shareError) {
+        console.warn(
+          'Compartilhamento cancelado ou não suportado:',
+          shareError
+        );
+
+        // Mostra um toast amigável
+        const toast = document.createElement('ion-toast');
+        toast.message = 'Relatório salvo! Você pode compartilhar mais tarde.';
+        toast.duration = 3000;
+        toast.color = 'medium';
+        toast.position = 'bottom';
+        document.body.appendChild(toast);
+        await toast.present();
       }
     } catch (error) {
       console.error('Erro ao salvar PDF:', error);

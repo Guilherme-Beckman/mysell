@@ -229,22 +229,6 @@ export class ReportHistoryComponentList implements OnInit {
       // Fechar loading
       await loading.dismiss();
 
-      // Mostrar toast de sucesso
-      const toast = await this.toastController.create({
-        message: 'PDF gerado com sucesso!',
-        duration: 3000,
-        position: 'bottom',
-        color: 'success',
-        buttons: [
-          {
-            text: 'OK',
-            role: 'cancel',
-          },
-        ],
-      });
-
-      await toast.present();
-
       // Também usar o serviço de mensagem existente
       this.messageService.setSuccessMessage(
         'PDF gerado com sucesso!',
@@ -258,9 +242,9 @@ export class ReportHistoryComponentList implements OnInit {
 
       // Mostrar alerta de erro
       const alert = await this.alertController.create({
-        header: 'Erro ao gerar PDF',
+        header: 'Erro ao compartilhar PDF',
         message:
-          'Não foi possível gerar o relatório. Verifique se você tem espaço disponível e tente novamente.',
+          'Não foi possível compartilhar o relatório, mas ele foi baixado com sucesso.',
         buttons: [
           {
             text: 'Tentar novamente',
@@ -278,10 +262,6 @@ export class ReportHistoryComponentList implements OnInit {
       await alert.present();
 
       // Também usar o serviço de mensagem existente
-      this.messageService.setErrorMessage(
-        'Erro ao gerar PDF',
-        'Não foi possível gerar o relatório. Tente novamente.'
-      );
     } finally {
       // Remover do set de relatórios sendo gerados
       this.generatingPdfReports.delete(report.date);
