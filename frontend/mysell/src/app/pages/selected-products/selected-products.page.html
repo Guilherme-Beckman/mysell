@@ -1,0 +1,61 @@
+<nav>
+  <div class="itens">
+    <app-home-redirect
+      [emitOnly]="true"
+      (requestNavigationBack)="showNavigateHomeConfirmation()"
+    ></app-home-redirect>
+  </div>
+</nav>
+<main>
+  <h1>Adicionar Produtos</h1>
+  <app-proguess-bar [progress]="currentProgressValue"></app-proguess-bar>
+  <div class="selected-products">
+    <h3>Produtos selecionados</h3>
+    <hr />
+
+    <div class="list-container">
+      <div class="item" *ngFor="let product of selectedProducts">
+        <img
+          [src]="getCategoryIconUrl(product.category)"
+          alt="{{ product.name }}"
+          class="icon"
+        />
+        <span class="name">{{ product.name }}</span>
+        <button
+          class="remove-btn"
+          (click)="openProductExclusionConfirmation(product.id)"
+        >
+          ✕
+        </button>
+      </div>
+    </div>
+  </div>
+  <app-bottom-arrow
+    [direction]="'left'"
+    (arrowClick)="navigateBack()"
+  ></app-bottom-arrow>
+  <app-confirm-button
+    [position]="'right'"
+    (confirm)="confirmCreateProducts()"
+  ></app-confirm-button>
+</main>
+<app-confirm-pop-up
+  [firstMessage]="'Deseja excluir esse item?'"
+  [secondMessage]="'A exclusão removerá o produto da lista de adição.'"
+  [isActive]="isConfirmationPopupActive"
+  (closeButtonEvent)="closeConfirmationPopup()"
+  (confirm)="handleProductExclusionConfirmation()"
+  [id]="productIdToExclude"
+></app-confirm-pop-up>
+<app-confirm-pop-up
+  [firstMessage]="'Deseja voltar para a página inicial?'"
+  [secondMessage]="'Você perderá as alterações feitas nos produtos.'"
+  [isActive]="isNavigateHomeConfirmationActive"
+  (closeButtonEvent)="hideNavigateHomeConfirmation()"
+  (confirm)="confirmNavigationHome()"
+></app-confirm-pop-up>
+<app-message-per-request
+  [errorMessage]="(errorMessage$ | async) ?? ''"
+  [successMessage]="(successMessage$ | async) ?? ''"
+></app-message-per-request>
+<app-loading-sppiner [isLoading]="isLoading"></app-loading-sppiner>

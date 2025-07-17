@@ -1,0 +1,18 @@
+<app-arrow [direction]="'right'" [pageToGo]="'/email-validation'" *ngIf="emailToValidate"></app-arrow>
+<app-auth-form
+  [title]="'Registro'"
+  [buttonText]="'Continuar'"
+  [isRegisterForm]="true"
+  [fields]="formFields"
+  (formSubmitted)="onRegister($event)"
+  [textGoogleButton]="'Registrar com Google'"
+  (googleButtonClicked)="onGoogleRegister()"
+  [textFacebookButton]="'Registrar com Facebook'"
+  (facebookButtonClicked)="onFacebookRegister()"
+  [textFooter]="'Já possui uma conta?'"
+  [textLink]="'Faça login'"
+  [link]="'/login'"
+>
+</app-auth-form>
+<app-message-per-request [errorMessage]="(errorMessage$ | async) ?? ''" [successMessage]="(successMessage$ | async) ?? ''"></app-message-per-request>
+<app-loading-sppiner [isLoading]="isLoading"></app-loading-sppiner>

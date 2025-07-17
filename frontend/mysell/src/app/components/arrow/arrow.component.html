@@ -1,0 +1,11 @@
+<div
+  class="arrow"
+  [ngClass]="{
+    'rotate-right arrow-right': direction === 'right',
+    'rotate-left arrow-left': direction === 'left'
+  }"
+>
+  <button (click)="redirectToPage()">
+    <img src="/assets/svg/arrow.svg" alt="" />
+  </button>
+</div>

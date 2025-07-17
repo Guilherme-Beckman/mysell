@@ -1,0 +1,14 @@
+<form class="search-bar" (ngSubmit)="onSubmit()">
+  <input
+    type="text"
+    [(ngModel)]="term"
+    name="term"
+    [placeholder]="placeholder"
+    aria-label="Busca"
+    (input)="onInputChange()"
+    (keydown.enter)="$event.preventDefault(); onSubmit()"
+  />
+  <button type="submit" [disabled]="!term.trim()">
+    <img src="/assets/svg/search.svg" alt="Buscar" />
+  </button>
+</form>

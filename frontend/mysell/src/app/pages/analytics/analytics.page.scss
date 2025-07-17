@@ -1,0 +1,29 @@
+* {
+  color: var(--text-gray);
+}
+nav {
+  height: 6vh;
+}
+main {
+  margin: 2rem;
+  position: relative;
+}
+h1 {
+  padding: 0.5rem;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 300;
+  border-bottom: 1px solid var(--text-gray);
+}
+.report-range-selector {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+.report-history {
+  position: absolute;
+  right: 0;
+  button {
+    background: none;
+    border: none;
+  }
+}

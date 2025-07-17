@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS users (
+    users_id UUID DEFAULT RANDOM_UUID() PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    email_validated BOOLEAN DEFAULT false NOT NULL,
+    role VARCHAR(10) DEFAULT 'USER' NOT NULL,
+    created_at TIMESTAMP
+);

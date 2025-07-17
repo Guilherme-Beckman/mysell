@@ -1,0 +1,309 @@
+<div class="filter-buttons">
+  <button [ngClass]="{ selected: filter === '7d' }" (click)="setFilter('7d')">
+    Últimos 7 dias
+  </button>
+  <button [ngClass]="{ selected: filter === '30d' }" (click)="setFilter('30d')">
+    Últimos 30 dias
+  </button>
+  <button [ngClass]="{ selected: filter === '90d' }" (click)="setFilter('90d')">
+    Últimos 90 dias
+  </button>
+  <button [ngClass]="{ selected: filter === 'all' }" (click)="setFilter('all')">
+    Todos
+  </button>
+</div>
+
+<!-- Resumo dos totais -->
+<div class="summary-cards" *ngIf="!isLoading && filteredReports.length > 0">
+  <div class="summary-card">
+    <h4>Receita Total</h4>
+    <p class="summary-value revenue">
+      {{ totalRevenue | currency : "BRL" : "symbol" }}
+    </p>
+  </div>
+  <div class="summary-card">
+    <h4>Lucro Total</h4>
+    <p class="summary-value profit">
+      {{ totalProfit | currency : "BRL" : "symbol" }}
+    </p>
+  </div>
+  <div class="summary-card">
+    <h4>Total de Vendas</h4>
+    <p class="summary-value sales">{{ totalSales }}</p>
+  </div>
+
+  <!-- Botão para download do relatório geral -->
+  <div class="summary-card download-card">
+    <h4>Relatório Geral</h4>
+    <button
+      class="download-general-button"
+      [disabled]="isGeneratingGeneralPdf"
+      (click)="generateGeneralReportPDF()"
+      title="Baixar relatório geral do período"
+    >
+      <span *ngIf="!isGeneratingGeneralPdf" class="download-content">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        Baixar PDF
+      </span>
+      <span *ngIf="isGeneratingGeneralPdf" class="loading-spinner">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+          <path
+            d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+        Gerando...
+      </span>
+    </button>
+  </div>
+</div>
+
+<!-- Lista de relatórios ou skeleton -->
+<div class="reports-list">
+  <ng-container *ngIf="!isLoading; else reportsSkeleton">
+    <div *ngFor="let report of filteredReports" class="report-item">
+      <div class="report-header">
+        <div class="report-date" (click)="toggleReportExpansion(report.date)">
+          <h3>{{ getFormattedDate(report.date) }}</h3>
+          <div class="report-summary">
+            <span class="summary-item">
+              <strong>{{ report.numberOfSales }}</strong> vendas
+            </span>
+            <span class="summary-item">
+              Receita:
+              <strong>{{
+                report.grossRevenue | currency : "BRL" : "symbol"
+              }}</strong>
+            </span>
+            <span class="summary-item profit-indicator">
+              Lucro:
+              <strong>{{ report.profit | currency : "BRL" : "symbol" }}</strong>
+            </span>
+          </div>
+        </div>
+
+        <div class="report-actions">
+          <!-- Botão de geração de PDF -->
+          <button
+            class="pdf-button"
+            [disabled]="isGeneratingPdf(report.date)"
+            (click)="generatePDF(report)"
+            title="Gerar PDF"
+          >
+            <span *ngIf="!isGeneratingPdf(report.date)">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M14 2v6h6M16 13H8M16 17H8M10 9H8"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+            <span *ngIf="isGeneratingPdf(report.date)" class="loading-spinner">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </span>
+          </button>
+
+          <!-- Botão de expandir/recolher -->
+          <button
+            class="expand-button"
+            (click)="toggleReportExpansion(report.date)"
+            title="Expandir/Recolher"
+          >
+            <div
+              class="expand-icon"
+              [ngClass]="{ expanded: isReportExpanded(report.date) }"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M6 9L12 15L18 9"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Detalhes expandidos do relatório -->
+      <div class="report-details" *ngIf="isReportExpanded(report.date)">
+        <h4>Vendas por Produto:</h4>
+        <div class="products-list">
+          <div
+            *ngFor="let productSale of report.sellsByProduct"
+            class="product-item"
+          >
+            <div class="product-icon">
+              <img
+                [src]="
+                  getCategoryIconPath(
+                    productSale.productResponseDTO.category.name
+                  )
+                "
+                alt="Ícone da categoria"
+              />
+            </div>
+            <div class="product-info">
+              <h5>{{ productSale.productResponseDTO.name }}</h5>
+              <p class="product-brand">
+                {{ productSale.productResponseDTO.brand }} -
+                {{ getFormattedUnit(productSale) }}
+              </p>
+              <div class="product-stats">
+                <span class="stat">
+                  Vendidos: <strong>{{ productSale.saleCount }}</strong>
+                </span>
+                <span class="stat">
+                  Receita:
+                  <strong>{{
+                    productSale.grossRevenue | currency : "BRL" : "symbol"
+                  }}</strong>
+                </span>
+                <span class="stat profit">
+                  Lucro:
+                  <strong>{{
+                    productSale.profit | currency : "BRL" : "symbol"
+                  }}</strong>
+                </span>
+              </div>
+            </div>
+            <div class="product-prices">
+              <p class="price-info">
+                Preço:
+                {{
+                  productSale.productResponseDTO.priceToSell
+                    | currency : "BRL" : "symbol"
+                }}
+              </p>
+              <p class="margin-info">
+                Margem:
+                {{
+                  ((productSale.productResponseDTO.priceToSell -
+                    productSale.productResponseDTO.purchasedPrice) /
+                    productSale.productResponseDTO.priceToSell) *
+                    100 | number : "1.1-1"
+                }}%
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="filteredReports.length === 0" class="no-reports">
+      <p>Nenhum relatório encontrado nesse período.</p>
+    </div>
+  </ng-container>
+
+  <!-- Skeleton de carregamento -->
+  <ng-template #reportsSkeleton>
+    <div class="report-item" *ngFor="let i of [1, 2, 3, 4]">
+      <div class="report-header">
+        <div class="report-date">
+          <h3>
+            <ion-skeleton-text
+              animated="true"
+              style="width: 15rem; height: 1.5rem; border-radius: 100px"
+            ></ion-skeleton-text>
+          </h3>
+          <div class="report-summary">
+            <ion-skeleton-text
+              animated="true"
+              style="width: 10rem; height: 1rem; border-radius: 100px"
+            ></ion-skeleton-text>
+            <ion-skeleton-text
+              animated="true"
+              style="width: 8rem; height: 1rem; border-radius: 100px"
+            ></ion-skeleton-text>
+            <ion-skeleton-text
+              animated="true"
+              style="width: 7rem; height: 1rem; border-radius: 100px"
+            ></ion-skeleton-text>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>
+
+<br /><br /><br /><br /><br />
+
+<app-message-per-request
+  [errorMessage]="(errorMessage$ | async) ?? ''"
+  [successMessage]="(successMessage$ | async) ?? ''"
+></app-message-per-request>

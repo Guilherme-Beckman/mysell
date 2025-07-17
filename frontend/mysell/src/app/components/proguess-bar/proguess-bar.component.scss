@@ -1,0 +1,14 @@
+.progress-container {
+  width: 100%;
+  height: 8px; // altura da barra
+  background: var(--medium-gray); // cor de fundo (cinza claro)
+  border-radius: 4px; // bordas arredondadas
+  overflow: hidden;
+  margin: 0.5rem 0; // espaçamento vertical
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--mysell-red); // cor do preenchimento (vermelho suave)
+  transition: width 0.3s ease;
+}

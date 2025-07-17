@@ -1,0 +1,17 @@
+<main>
+  <h1>Ações</h1>
+  <div class="carousel-container">
+    <div class="action-carousel">
+      <div *ngFor="let act of actions" class="action-wrapper">
+        <button
+          class="action-button"
+          [ngClass]="act.cssClass"
+          (click)="onAction(act)"
+        >
+          <img [src]="act.svgPath" alt="{{ act.label }}" class="action-icon" />
+        </button>
+        <span class="action-label">{{ act.label }}</span>
+      </div>
+    </div>
+  </div>
+</main>

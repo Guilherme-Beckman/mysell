@@ -1,0 +1,73 @@
+<main>
+  <div class="content" *ngIf="!isExpanded">
+    <div class="info-blocks">
+      <div class="profit">
+        <h3>Lucro</h3>
+        <ng-container *ngIf="isLoading; else profitData">
+          <ion-skeleton-text
+            animated
+            style="width: 60%; height: 1.5rem"
+          ></ion-skeleton-text>
+        </ng-container>
+        <ng-template #profitData>
+          <span>{{ profit | currency : "BRL" : "symbol" : "1.2-2" }}</span>
+        </ng-template>
+      </div>
+
+      <div class="sales">
+        <h3>Vendas</h3>
+        <ng-container *ngIf="isLoading; else salesData">
+          <ion-skeleton-text
+            animated
+            style="width: 40%; height: 1.5rem"
+          ></ion-skeleton-text>
+        </ng-container>
+        <ng-template #salesData>
+          <span>{{ sales }}</span>
+        </ng-template>
+      </div>
+    </div>
+
+    <div class="ranking-graph">
+      <div class="ranking">
+        <div class="ranking-header">
+          <h3>Mais vendidos</h3>
+        </div>
+        <div class="ranking-scroll">
+          <app-product-ranking
+            [isLoading]="isLoading"
+            [productRanking]="productRanking"
+          ></app-product-ranking>
+        </div>
+      </div>
+
+      <div class="pizza-graph">
+        <app-pizza-graph
+          [isLoading]="isLoading"
+          (expand)="expandGraph()"
+          [products]="productRanking"
+        ></app-pizza-graph>
+      </div>
+    </div>
+  </div>
+  <div class="expanded-graph" *ngIf="isExpanded">
+    <app-pizza-graph
+      [isLoading]="isLoading"
+      [isExpanded]="true"
+      (closeInfoEvent)="closeGraphInfo()"
+      [products]="productRanking"
+    ></app-pizza-graph>
+  </div>
+</main>
+<div class="total-revenue" *ngIf="!isExpanded">
+  <h2>Renda Total</h2>
+  <ng-container *ngIf="isLoading; else revenueValue">
+    <ion-skeleton-text
+      animated
+      style="width: 120px; height: 2rem; border-radius: 8px"
+    ></ion-skeleton-text>
+  </ng-container>
+  <ng-template #revenueValue>
+    <span>{{ totalRevenue | currency : "BRL" : "symbol" : "1.2-2" }}</span>
+  </ng-template>
+</div>

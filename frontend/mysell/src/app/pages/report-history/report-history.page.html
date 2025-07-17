@@ -1,0 +1,19 @@
+<main>
+  <nav>
+    <div class="itens">
+      <app-home-redirect></app-home-redirect>
+      <app-arrow [direction]="'left'" [pageToGo]="'/home'"></app-arrow>
+    </div>
+  </nav>
+
+  <h1>Histórico de Relatórios</h1>
+  <app-search-bar
+    [placeholder]="'Buscar relatórios...'"
+    (searchChange)="onSearchChange($event)"
+  ></app-search-bar>
+  <div class="report-history">
+    <app-report-history-list
+      [searchTerm]="searchTerm"
+    ></app-report-history-list>
+  </div>
+</main>

@@ -1,0 +1,17 @@
+
+<app-auth-form
+  [title]="'Login'"
+  [buttonText]="'Continuar'"
+  [fields]="formFields"
+  (formSubmitted)="onLogin($event)"
+  [textGoogleButton]="'Fazer login com Google'"
+  (googleButtonClicked)="onGoogleLogin()"
+  [textFacebookButton]="'Fazer login com Facebook'"
+  (facebookButtonClicked)="onFacebookLogin()"
+  [textFooter]="'Não possui uma conta?'"
+  [textLink]="'Crie uma aqui'"
+  [link]="'/register'"
+  >
+</app-auth-form>
+<app-message-per-request [errorMessage]="(errorMessage$ | async) ?? ''" [successMessage]="(successMessage$ | async) ?? ''"></app-message-per-request>
+<app-loading-sppiner [isLoading]="isLoading"></app-loading-sppiner>

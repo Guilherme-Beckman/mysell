@@ -1,0 +1,50 @@
+<div class="product-info">
+  <ng-container *ngIf="isLoading; else contentLoaded">
+    <!-- Skeleton Placeholder -->
+    <div class="product-sale" *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]">
+      <div class="product-rank">
+        <ion-skeleton-text
+          animated="true"
+          style="width: 1rem; height: 1rem; border-radius: 50%"
+        ></ion-skeleton-text>
+      </div>
+      <div class="product-name">
+        <ion-skeleton-text
+          animated="true"
+          style="width: 6rem; height: 1rem; border-radius: 100px"
+        ></ion-skeleton-text>
+      </div>
+      <div class="product-sales" style="margin-left: auto">
+        <ion-skeleton-text
+          animated="true"
+          style="width: 1rem; height: 1rem; border-radius: 100px"
+        ></ion-skeleton-text>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #contentLoaded>
+    <ng-container
+      *ngIf="productRanking && productRanking.length > 0; else noProducts"
+    >
+      <div
+        class="product-sale"
+        *ngFor="let product of productRanking; let i = index"
+        [ngClass]="{ 'top-product': i < 3 }"
+      >
+        <div class="product-rank">
+          <p>{{ i + 1 }}</p>
+        </div>
+        <div class="product-name">
+          <p>{{ product.name }}</p>
+        </div>
+        <div class="product-sales"></div>
+        <p>{{ product.sales }}x</p>
+      </div>
+    </ng-container>
+  </ng-template>
+
+  <ng-template #noProducts>
+    <p class="no-products">Nenhum produto encontrado.</p>
+  </ng-template>
+</div>

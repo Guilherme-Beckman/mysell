@@ -1,0 +1,14 @@
+button {
+  color: var(--text-gray);
+  border: none;
+  background-color: var(--medium-gray);
+  border-radius: 10px;
+  height: 2.5rem;
+  width: 6rem;
+  font-size: 1.2rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+button.selected {
+  background-color: var(--mysell-red);
+  color: white;
+}

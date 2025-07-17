@@ -1,0 +1,22 @@
+.top-product {
+  color: var(--mysell-red);
+}
+
+.product-sale {
+  font-size: 0.9rem;
+  display: flex;
+  padding: 0.4rem;
+  gap: 0.4rem;
+}
+.product-sales {
+  margin-left: auto;
+}
+.no-products {
+  text-align: center;
+  color: #777;
+  font-style: italic;
+  padding: 1rem;
+}
+ion-skeleton-text {
+  --background: rgba(255, 255, 255, 0.065);
+}

@@ -1,0 +1,10 @@
+<div class="progress-container">
+  <div
+    class="progress-fill"
+    [style.width.%]="clampedProgress()"
+    aria-valuemin="0"
+    aria-valuemax="100"
+    [attr.aria-valuenow]="clampedProgress()"
+    role="progressbar"
+  ></div>
+</div>
