@@ -1,0 +1,11 @@
+<div
+  class="confirm-button-wrapper"
+  [ngClass]="{
+    'confirm-right': position === 'right',
+    'confirm-left': position === 'left'
+  }"
+>
+  <button (click)="onConfirmClick()">
+    <img src="assets/svg/confirm.svg" alt="Confirm" />
+  </button>
+</div>

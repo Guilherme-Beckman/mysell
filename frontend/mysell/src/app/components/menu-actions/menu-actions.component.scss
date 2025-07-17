@@ -1,0 +1,35 @@
+ul {
+  margin-left: 1rem;
+}
+li {
+  list-style: none;
+}
+.menu-list {
+  margin-top: 1rem;
+  padding: 0;
+}
+
+.menu-item {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.menu-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.75rem;
+}
+
+.menu-icon img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+span {
+  font-size: 1.2rem;
+  color: var(--text-gray);
+  font-weight: 500;
+}

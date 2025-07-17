@@ -1,0 +1,116 @@
+<div class="modal-body">
+  <div class="form-row">
+    <input
+      type="text"
+      placeholder="Nome"
+      [(ngModel)]="productInfo.name"
+      class="input-full"
+    />
+  </div>
+  <div class="form-row">
+    <input
+      type="text"
+      placeholder="Marca"
+      [(ngModel)]="productInfo.brand"
+      class="input-half"
+    />
+    <div class="category-select">
+      <img src="assets/svg/categories-icon.svg" alt="" />
+      <div class="category-input">
+        <input
+          type="text"
+          placeholder="Categoria"
+          [(ngModel)]="categorySearch"
+          (input)="filterCategories()"
+          (focus)="showDropdown = true"
+          (blur)="hideDropdown()"
+          class="input-with-icon"
+        />
+        <span class="dropdown-icon">▼</span>
+
+        <ul
+          class="dropdown"
+          *ngIf="showDropdown && filteredCategories.length > 0"
+        >
+          <li
+            *ngFor="let category of filteredCategories"
+            (mousedown)="selectCategory(category)"
+          >
+            <div class="categories-icons">
+              <img src="{{ category.pathSvg }}" alt="" />
+            </div>
+            {{ category.name }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <input
+      type="text"
+      placeholder="Preço comprado"
+      [ngModel]="purchasePriceModel"
+      (ngModelChange)="onPurchasePriceChange($event)"
+      mask="separator.2"
+      thousandSeparator="."
+      decimalMarker=","
+      prefix="R$ "
+      [dropSpecialCharacters]="false"
+      class="input-half"
+    />
+    <input
+      type="text"
+      placeholder="Preço a vender"
+      [ngModel]="sellingPriceModel"
+      (ngModelChange)="onSellingPriceChange($event)"
+      mask="separator.2"
+      thousandSeparator="."
+      decimalMarker=","
+      prefix="R$ "
+      [dropSpecialCharacters]="false"
+      class="input-half"
+    />
+  </div>
+
+  <div class="form-row">
+    <input
+      type="text"
+      placeholder="Quantidade"
+      [ngModel]="quantityModel"
+      (ngModelChange)="onQuantityChange($event)"
+      mask="separator.2"
+      thousandSeparator="."
+      decimalMarker=","
+      [dropSpecialCharacters]="false"
+      class="input-half"
+    />
+    <div class="measure-select">
+      <img src="assets/svg/ruler-icon.svg" alt="ícone medida" />
+      <div class="measure-input">
+        <input
+          type="text"
+          placeholder="Medida"
+          [(ngModel)]="measureSearch"
+          (input)="filterMeasures()"
+          (focus)="showMeasureDropdown = true"
+          (blur)="hideMeasureDropdown()"
+          class="input-with-icon"
+        />
+        <span class="dropdown-icon">▼</span>
+
+        <ul
+          class="dropdown-measure"
+          *ngIf="showMeasureDropdown && filteredMeasures.length > 0"
+        >
+          <li
+            *ngFor="let measure of filteredMeasures"
+            (mousedown)="selectMeasure(measure)"
+          >
+            {{ measure }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

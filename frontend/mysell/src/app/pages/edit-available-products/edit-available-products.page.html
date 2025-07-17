@@ -1,0 +1,63 @@
+<main>
+  <nav>
+    <app-home-redirect
+      [emitOnly]="true"
+      (requestNavigationBack)="showNavigateHomeConfirmation()"
+    ></app-home-redirect>
+  </nav>
+  <h1>Adicionar Produtos</h1>
+  <app-proguess-bar [progress]="currentProgress"></app-proguess-bar>
+  <div class="title">
+    <h1>Editar Informações</h1>
+  </div>
+  <div
+    class="edit-form"
+    *ngFor="let product of selectedProducts; trackBy: trackByProductId"
+  >
+    <div class="trash-item-title">
+      <div class="trashcan">
+        <button (click)="showDeleteConfirmation(product.id)">
+          <img src="assets/svg/trash.svg" alt="" />
+        </button>
+      </div>
+      <div class="item-title">
+        <h1>{{product.name}}</h1>
+        <img src="" alt="" />
+      </div>
+    </div>
+    <app-edit-product-form [productInfo]="product"></app-edit-product-form>
+  </div>
+
+  <app-bottom-arrow
+    [direction]="'left'"
+    (arrowClick)="showNavigateBackConfirmation()"
+  ></app-bottom-arrow>
+  <app-bottom-arrow
+    [direction]="'right'"
+    (arrowClick)="navigateToSelectedProducts()"
+  ></app-bottom-arrow>
+  <br /><br /><br /><br /><br />
+  <br /><br /><br /><br /><br />
+</main>
+<app-confirm-pop-up
+  [firstMessage]="'Deseja excluir esse item?'"
+  [secondMessage]="'A exclusão removerá o produto da lista de adição.'"
+  [isActive]="isDeleteConfirmationActive"
+  (closeButtonEvent)="hideDeleteConfirmation()"
+  (confirm)="confirmProductDeletion()"
+  [id]="productIdToDelete"
+></app-confirm-pop-up>
+<app-confirm-pop-up
+  [firstMessage]="'Deseja voltar?'"
+  [secondMessage]="'Isso excluira as edições feitas nos produtos.'"
+  [isActive]="isNavigateBackConfirmationActive"
+  (closeButtonEvent)="hideNavigateBackConfirmation()"
+  (confirm)="confirmNavigationBack()"
+></app-confirm-pop-up>
+<app-confirm-pop-up
+  [firstMessage]="'Deseja voltar para a página inicial?'"
+  [secondMessage]="'Você perderá as alterações feitas nos produtos.'"
+  [isActive]="isNavigateHomeConfirmationActive"
+  (closeButtonEvent)="hideNavigateHomeConfirmation()"
+  (confirm)="confirmNavigationHome()"
+></app-confirm-pop-up>

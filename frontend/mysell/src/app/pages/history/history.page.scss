@@ -1,0 +1,22 @@
+* {
+  color: var(--text-gray);
+}
+nav {
+  height: 6vh;
+  background: none;
+}
+main {
+  margin: 2rem;
+  height: 94vh;
+  overflow-y: auto;
+}
+h1 {
+  padding: 0.5rem;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 300;
+  border-bottom: 1px solid var(--text-gray);
+}
+.sales-history {
+  margin-top: 1rem;
+}

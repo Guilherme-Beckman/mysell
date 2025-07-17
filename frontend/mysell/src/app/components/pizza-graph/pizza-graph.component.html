@@ -1,0 +1,34 @@
+<div class="content">
+  <ng-container>
+    <div
+      class="chart-container"
+      [class.expanded]="isExpanded"
+      [hidden]="!products || products.length === 0"
+    >
+      <canvas #chartCanvas></canvas>
+    </div>
+    <div
+      class="info-icon"
+      [hidden]="!products || products.length === 0 || isExpanded"
+    >
+      <button (click)="expandInfo()">
+        <img src="assets/svg/info.svg" alt="Abrir informações" />
+      </button>
+    </div>
+  </ng-container>
+  <p class="no-products" [hidden]="products && products.length > 0">
+    Nenhum dado disponível para o gráfico.
+  </p>
+</div>
+
+<div class="bottom-arrow">
+  <app-bottom-arrow
+    (arrowClick)="closeInfo()"
+    [direction]="'left'"
+    *ngIf="isExpanded"
+  ></app-bottom-arrow>
+</div>
+
+<app-loading-sppiner
+  [isLoading]="isLoading && isExpanded"
+></app-loading-sppiner>

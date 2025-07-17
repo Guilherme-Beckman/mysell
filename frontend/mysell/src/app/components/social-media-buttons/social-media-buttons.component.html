@@ -1,0 +1,22 @@
+<div class="social-media-buttons">
+  <div class="social-button-container">
+    <button type="button" (click)="onGoogleClick()" class="social-button">
+      <div class="icon-and-text">
+        <div class="icon-container">
+          <app-google-svg></app-google-svg>
+        </div>
+        <span>{{ textGoogleButton }}</span>
+      </div>
+    </button>
+  </div>
+  <div class="social-button-container">
+    <button type="button" (click)="onFacebookClick()" class="social-button">
+      <div class="icon-and-text">
+        <div class="icon-container">
+          <app-facebook-svg></app-facebook-svg>
+        </div>
+        <span>{{ textFacebookButton }}</span>
+      </div>
+    </button>
+  </div>
+</div>

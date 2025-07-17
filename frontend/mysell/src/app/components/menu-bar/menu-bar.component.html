@@ -1,0 +1,19 @@
+<ion-menu side="start" menuId="main-menu" contentId="main-content">
+  <main>
+    <nav>
+      <div class="user-icon">
+        <i class="ri-user-line"></i>
+      </div>
+      <h1>{{ email }}</h1>
+    </nav>
+
+    <app-menu-actions [actions]="menuActions"></app-menu-actions>
+  </main>
+</ion-menu>
+<app-confirm-pop-up
+  [firstMessage]="'Tem certeza que deseja sair?'"
+  [secondMessage]="'Você precisará fazer login novamente.'"
+  [isActive]="isConfirmPopupOpen"
+  (confirm)="confirmLogout()"
+  (closeButtonEvent)="isConfirmPopupOpen = false"
+></app-confirm-pop-up>

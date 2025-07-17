@@ -1,0 +1,46 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - email
+          facebook:
+            client-id: ${FACEBOOK_CLIENT_ID}  
+            client-secret: ${FACEBOOK_CLIENT_SECRET}
+            scope:
+              - email
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/mysell
+    username: postgres
+    password: ${DB_PASSWORD}
+  flyway:
+    enabled: true
+    url: jdbc:postgresql://localhost:5432/mysell
+    user: postgres
+    password: ${DB_PASSWORD}
+    locations: classpath:db/migration
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${GMAIL}
+    password: ${GMAILPASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+jwt:
+  secret: ${SECRET}
+api:
+  product:
+    barcode:
+      url: ${BARCODE_API_BASE_URL}
+      token: ${BARCODE_API_BASE_TOKEN}
+      header: ${BARCODE_API_BASE_HEADER}
+server:
+  forward-headers-strategy: framework

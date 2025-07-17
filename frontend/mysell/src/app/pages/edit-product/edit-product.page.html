@@ -1,0 +1,55 @@
+<app-loading-sppiner [isLoading]="isLoading"></app-loading-sppiner>
+
+<main>
+  <nav>
+    <app-home-redirect
+      [emitOnly]="true"
+      (requestNavigationBack)="showNavigateHomeConfirmation()"
+    ></app-home-redirect>
+  </nav>
+  <div class="title">
+    <h1>Editar Produtos</h1>
+  </div>
+  <div
+    class="edit-form"
+    *ngFor="let product of selectedProducts; trackBy: trackByProductId"
+  >
+    <div class="trash-item-title">
+      <div class="item-title">
+        <h1>{{product.name}}</h1>
+        <img src="" alt="" />
+      </div>
+    </div>
+    <app-edit-product-form [productInfo]="product"></app-edit-product-form>
+  </div>
+
+  <app-bottom-arrow
+    [direction]="'left'"
+    (arrowClick)="showNavigateBackConfirmation()"
+  ></app-bottom-arrow>
+  <app-confirm-button
+    [position]="'right'"
+    (confirm)="confirmUpdateProducts()"
+  ></app-confirm-button>
+  <br /><br /><br /><br /><br />
+  <br /><br /><br /><br /><br />
+</main>
+
+<app-confirm-pop-up
+  [firstMessage]="'Deseja voltar?'"
+  [secondMessage]="'Isso excluira as edições feitas nos produtos.'"
+  [isActive]="isNavigateBackConfirmationActive"
+  (closeButtonEvent)="hideNavigateBackConfirmation()"
+  (confirm)="confirmNavigationBack()"
+></app-confirm-pop-up>
+<app-confirm-pop-up
+  [firstMessage]="'Deseja voltar para a página inicial?'"
+  [secondMessage]="'Você perderá as alterações feitas nos produtos.'"
+  [isActive]="isNavigateHomeConfirmationActive"
+  (closeButtonEvent)="hideNavigateHomeConfirmation()"
+  (confirm)="confirmNavigationHome()"
+></app-confirm-pop-up>
+<app-message-per-request
+  [errorMessage]="(errorMessage$ | async) ?? ''"
+  [successMessage]="(successMessage$ | async) ?? ''"
+></app-message-per-request>

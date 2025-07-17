@@ -1,0 +1,87 @@
+<div class="background-image"></div>
+<div class="content-space">
+  <div class="content-padding">
+    <header>
+      <h2>{{ title }}</h2>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="inputs-container">
+        <ng-container *ngFor="let field of fields">
+          <div class="form-item">
+            <label>{{ field.label }}</label>
+
+            <div class="input-wrapper" *ngIf="field.type === 'password'; else regularInput">
+              <input
+                [formControlName]="field.name"
+                [type]="showPassword[field.name] ? 'text' : 'password'"
+                [placeholder]="field.placeholder"
+              />
+              <app-eye-svg
+                [isEyeOpen]="showPassword[field.name]"
+                (toggle)="togglePasswordVisibility(field.name)"
+              ></app-eye-svg>
+            </div>
+
+            <!-- Mensagens de erro agrupadas -->
+            <div *ngIf="form.get(field.name)?.touched && form.get(field.name)?.errors" class="errors-wrapper">
+              <h6 class="error-text" *ngIf="form.get(field.name)?.errors?.['required']">
+                Campo obrigatório.
+              </h6>
+              <h6 class="error-text" *ngIf="form.get(field.name)?.errors?.['email']">
+                Email inválido.
+              </h6>
+              <h6 class="error-text" *ngIf="field.type === 'password' && form.get(field.name)?.errors?.['minlength']">
+                Min. 8 caracteres.
+              </h6>
+              <h6 class="error-text" *ngIf="field.type === 'password' && form.get(field.name)?.errors?.['pattern']">
+                Letra e número obrigatórios.
+              </h6>
+            </div>
+
+            <!-- Erro de confirmação de senha -->
+            <div
+              *ngIf="
+                field.name === 'confirmPassword' &&
+                form.hasError('passwordMismatch') &&
+                form.get('confirmPassword')?.touched
+              "
+              class="errors-wrapper"
+            >
+              <h6 class="error-text">Senhas diferentes.</h6>
+            </div>
+
+            <!-- Input regular -->
+            <ng-template #regularInput>
+              <input
+                [formControlName]="field.name"
+                [type]="field.type"
+                [placeholder]="field.placeholder"
+              />
+            </ng-template>
+          </div>
+        </ng-container>
+      </div>
+
+      <div class="button-container">
+        <button expand="block" type="submit" [disabled]="form.invalid">
+          {{ buttonText }}
+        </button>
+      </div>
+    </form>
+
+    <app-social-media-buttons
+      [textGoogleButton]="textGoogleButton"
+      (googleEvent)="googleEvent()"
+      [textFacebookButton]="textFacebookButton"
+      (facebookEvent)="facebookEvent()"
+    ></app-social-media-buttons>
+
+    <footer>
+      <p>
+        {{ textFooter }}
+        <a href="{{ link }}" (click)="handleFooterClick()" draggable="false">{{ textLink }} </a>
+      </p>
+    </footer>
+  </div>
+</div>

@@ -1,0 +1,11 @@
+<h2>Relatório</h2>
+<div class="data-buttons">
+  <app-day-button
+    *ngFor="let day of dayOptions"
+    [day]="day"
+    [selected]="day === selectedDay"
+    (daySelected)="onDaySelected($event)"
+  ></app-day-button>
+</div>
+
+<p>Exibindo dados dos último(s) {{ selectedDay }} dia(s)</p>
