@@ -2,7 +2,7 @@
 ---
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Guilherme-Beckman/mysell/main/frontend/mysell/src/assets/favicon.ico" />
+  <img src="https://raw.githubusercontent.com/Guilherme-Beckman/mysell/main/frontend/mysell/src/assets/icon/favicon.png" />
   <h1 align="center">MySell</h1>
 </p>
 
