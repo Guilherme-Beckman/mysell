@@ -14,8 +14,6 @@
 
 **MySell** é um aplicativo que auxilia pequenos empreendedores a registrarem suas vendas diariamente. A plataforma oferece funcionalidades como login e registro com JWT, autenticação via Google e Facebook, registro de produtos e vendas, geração de relatórios em PDF, histórico de vendas, e proteção contra tentativas suspeitas de acesso.
 
-**Implantação:** [Link para o projeto funcionando](https://mysell.example.com) *(substituir pelo link real quando disponível)*
-
 ---
 
 ## \:wrench: Tecnologias
@@ -30,7 +28,6 @@
 * JWT (autenticação e autorização)
 * OAuth2 (Google e Facebook)
 * Tratamento de exceções usando RFC
-* Docker & Docker Compose
 * Spring Security
 * MVC
 * CORS
@@ -43,16 +40,6 @@
 * HTML / CSS
 * Figma (design)
 * Plugins de câmera e QR Code
-
-### Implantação
-
-* AWS
-* AWS S3
-* EC2
-* Application Load Balancer
-* Route 53
-* RDS
-* Nginx
 
 ---
 
@@ -97,18 +84,22 @@
 
 ---
 
-## \:book: Planejamento
+## :book: Planejamento
 
 ### Diagramas
 
-O design do sistema e fluxo de dados foi planejado no Figma, incluindo:
+O design do sistema foi planejado em duas etapas principais:
 
-* Fluxo de autenticação
-* Registro e busca de produtos
-* Geração de relatórios
-* Histórico de vendas
+* **Banco de Dados:** modelado no [DrawSQL](https://drawsql.app/) para estruturar entidades, relacionamentos e chaves.
+* **Fluxo de Telas:** planejado no Figma para mapear autenticação, registro de produtos, geração de relatórios e histórico de vendas.
 
-*(Adicionar imagens ou links para os diagramas do Figma se desejar)*
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Guilherme-Beckman/mysell/main/drawSQL-image-export-2025-09-07.png" alt="Diagrama do Banco de Dados" width="700"/>
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Guilherme-Beckman/mysell/main/MySell%20%E2%80%93%20Figma.png" alt="Fluxo de Telas no Figma" width="700"/>
+</p>
 
 ---
 
@@ -154,4 +145,3 @@ ng serve
 
 ---
 
-Se você quiser, Beckman, posso criar também **uma versão com badges dinâmicas, imagens dos fluxogramas e GIFs do MySell funcionando**, igual o README do Bird Pantanal, para ficar mais chamativo no GitHub. Quer que eu faça isso?
