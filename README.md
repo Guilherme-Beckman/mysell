@@ -1,147 +1,137 @@
-
----
-
 <p align="center">
   <img src="https://raw.githubusercontent.com/Guilherme-Beckman/mysell/main/frontend/mysell/src/assets/icon/favicon.png" />
   <h1 align="center">MySell</h1>
 </p>
 
+🌍 Languages: [English](README.md) | [Português](README.pt-br.md)
+
+
 <p align="center">
-  <a aria-label="Portfólio - Guilherme Beckman" href="https://github.com/Guilherme-Beckman"><img src="https://img.shields.io/badge/Portf%C3%B3lio-Guilherme%20Beckman-931ad9" /></a> 
+  <a aria-label="Portfolio - Guilherme Beckman" href="https://github.com/Guilherme-Beckman"><img src="https://img.shields.io/badge/Portfolio-Guilherme%20Beckman-931ad9" /></a> 
 </p>
 
-## \:bulb: Sobre o Projeto
+## :bulb: About the Project
 
-**MySell** é um aplicativo que auxilia pequenos empreendedores a registrarem suas vendas diariamente. A plataforma oferece funcionalidades como login e registro com JWT, autenticação via Google e Facebook, registro de produtos e vendas, geração de relatórios em PDF, histórico de vendas, e proteção contra tentativas suspeitas de acesso.
+**MySell** is an application that helps small entrepreneurs record their daily sales.  
+The platform provides features such as login and registration with JWT, Google and Facebook authentication, product and sales registration, PDF report generation, sales history, and protection against suspicious access attempts.
 
 ---
 
-## \:wrench: Tecnologias
+## :wrench: Technologies
 
 ### Back-end
-
 * Java 17+
-* Spring Boot WebFlux (processamento paralelo)
-* PostgreSQL (banco de dados)
+* Spring Boot WebFlux (parallel processing)
+* PostgreSQL (database)
 * Redis (cache)
 * Flyway (migrations)
-* JWT (autenticação e autorização)
-* OAuth2 (Google e Facebook)
-* Tratamento de exceções usando RFC
+* JWT (authentication and authorization)
+* OAuth2 (Google and Facebook)
+* Exception handling with RFC
 * Spring Security
 * MVC
 * CORS
 
 ### Front-end
-
 * Angular 19
 * Ionic
 * TypeScript
 * HTML / CSS
 * Figma (design)
-* Plugins de câmera e QR Code
+* Camera and QR Code plugins
 
 ---
 
-## \:scroll: Funcionalidades
+## :scroll: Features
 
-### Autenticação e Usuários
+### Authentication & Users
+* [x] Registration and login with JWT  
+* [x] Login with Google and Facebook  
+* [x] Email verification upon user registration  
+* [x] Account lockout after multiple failed login or validation attempts  
+* [x] Welcome email sending  
 
-* [x] Registro e login com JWT
-* [x] Login via Google e Facebook
-* [x] Verificação de email ao registrar usuário
-* [x] Bloqueio de contas após muitas tentativas de login ou tentativa de código de validação incorreto
-* [x] Envio de email de boas-vindas
+### Products
+* [x] Manual product registration  
+* [x] Product registration via QR Code (external API)  
+* [x] Product registration using pre-created products  
+* [x] Product editing  
+* [x] Product deletion  
 
-### Produtos
+### Sales
+* [x] Sales registration  
+* [x] Deletion of sales made within the last 24 hours  
+* [x] Product and sales search  
+* [x] Sales history  
 
-* [x] Registro manual de produtos
-* [x] Registro de produtos via QR Code (API externa)
-* [x] Registro de produtos usando produtos pré-criados
-* [x] Edição de produtos
-* [x] Exclusão de produtos
+### Reports
+* [x] Generation of daily, weekly, and monthly reports  
+* [x] Export reports in PDF  
 
-### Vendas
-
-* [x] Registro de vendas
-* [x] Exclusão de vendas realizadas nas últimas 24 horas
-* [x] Busca de produtos e vendas
-* [x] Histórico de vendas
-
-### Relatórios
-
-* [x] Geração de relatórios diários, semanais e mensais
-* [x] Exportação de relatórios em PDF
-
-### Segurança e Boas Práticas
-
-* [x] Tratamento de exceções web usando RFC
-* [x] Cache para otimização de performance
-* [x] Guards no Angular para proteger rotas com token JWT
-* [x] Clean Code e MVC
-* [x] Utilização de APIs externas
-* [x] Design do banco de dados planejado
+### Security & Best Practices
+* [x] Web exception handling with RFC  
+* [x] Cache for performance optimization  
+* [x] Angular Guards to protect routes with JWT token  
+* [x] Clean Code and MVC  
+* [x] Use of external APIs  
+* [x] Planned database design  
 
 ---
 
-## :book: Planejamento
+## :book: Planning
 
-### Diagramas
+### Diagrams
+The system design was planned in two main stages:
 
-O design do sistema foi planejado em duas etapas principais:
-
-* **Banco de Dados:** modelado no [DrawSQL](https://drawsql.app/) para estruturar entidades, relacionamentos e chaves.
-* **Fluxo de Telas:** planejado no Figma para mapear autenticação, registro de produtos, geração de relatórios e histórico de vendas.
+* **Database:** modeled in [DrawSQL](https://drawsql.app/) to structure entities, relationships, and keys.  
+* **Screen Flow:** designed in Figma to map authentication, product registration, report generation, and sales history.  
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Guilherme-Beckman/mysell/main/drawSQL-image-export-2025-09-07.png" alt="Diagrama do Banco de Dados" width="700"/>
+  <img src="https://raw.githubusercontent.com/Guilherme-Beckman/mysell/main/drawSQL-image-export-2025-09-07.png" alt="Database Diagram" width="700"/>
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Guilherme-Beckman/mysell/main/MySell%20%E2%80%93%20Figma.png" alt="Fluxo de Telas no Figma" width="700"/>
+  <img src="https://raw.githubusercontent.com/Guilherme-Beckman/mysell/main/MySell%20%E2%80%93%20Figma.png" alt="Screen Flow in Figma" width="700"/>
 </p>
 
 ---
 
-## \:floppy\_disk: Instalação
+## :floppy_disk: Installation
 
-Clone o repositório na sua máquina local:
+Clone the repository to your local machine:
 
 ```bash
 git clone https://github.com/Guilherme-Beckman/mysell.git
-```
+````
 
 ### Back-end
 
-Pré-requisitos:
+Requirements:
 
-* Java JDK 17 ou superior
+* Java JDK 17 or higher
 * PostgreSQL 16
 * Redis
-* Docker e Docker Compose
-* IDE com suporte a Java (VS Code, IntelliJ IDEA ou Spring Tool Suite)
+* Docker & Docker Compose
+* IDE with Java support (VS Code, IntelliJ IDEA, or Spring Tool Suite)
 
 ### Front-end
 
-Pré-requisitos:
+Requirements:
 
 * Node.js
 * Angular CLI (`npm install -g @angular/cli`)
 * Ionic CLI (`npm install -g @ionic/cli`)
-* Editor de código com suporte a TypeScript (VS Code, WebStorm, etc.)
+* Code editor with TypeScript support (VS Code, WebStorm, etc.)
 
-Instale as dependências:
+Install dependencies:
 
 ```bash
 cd frontend
 npm install
 ```
 
-Inicie o servidor de desenvolvimento:
+Start the development server:
 
 ```bash
 ng serve
 ```
-
----
-
