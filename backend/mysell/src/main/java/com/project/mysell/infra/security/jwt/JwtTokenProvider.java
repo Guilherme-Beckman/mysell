@@ -4,6 +4,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -101,40 +103,53 @@ public class JwtTokenProvider {
         }
         return false;
     }
-	
 	public Mono<String> createTokenFromOAuth2(Authentication authentication) {
 
 	    OAuth2AuthenticationToken auth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
 	    OAuth2User auth2User = auth2AuthenticationToken.getPrincipal();
 	    String username = auth2User.getAttribute("email");
-	    Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+	    Collection<? extends GrantedAuthority> oauthAuthorities = authentication.getAuthorities();
 	    Claims claims = Jwts.claims().setSubject(username);
 
 	    return userRepository.findByEmail(username)
 	        .flatMap(user -> {
 	            claims.put("userId", user.getUsersId());
-	            if (!authorities.isEmpty()) {
-	                String authoritiesString = authorities.stream()
-	                    .map(GrantedAuthority::getAuthority)
-	                    .collect(Collectors.joining(","));
+
+	            Set<String> allAuthorities = new HashSet<>();
+
+	            if (oauthAuthorities != null && !oauthAuthorities.isEmpty()) {
+	                allAuthorities.addAll(
+	                    oauthAuthorities.stream()
+	                        .map(GrantedAuthority::getAuthority)
+	                        .toList()
+	                );
+	            }
+
+	            if (user.getRole() != null) {
+	                allAuthorities.add(user.getRole().name());
+	            }
+
+	            if (!allAuthorities.isEmpty()) {
+	                String authoritiesString = String.join(",", allAuthorities);
 	                claims.put(AUTHORITIES_KEY, authoritiesString);
+	                System.out.println("[JWT] Authorities added to token: " + authoritiesString);
 	            }
 
 	            Date now = new Date();
-
 	            Date validity = new Date(now.getTime() + jwtProperties.getValidityInMs());
 
 	            String token = Jwts.builder()
-	                .setClaims(claims)
-	                .setIssuedAt(now)
-	                .setExpiration(validity)
-	                .signWith(secretKey, SignatureAlgorithm.HS256)
-	                .compact();
+	                    .setClaims(claims)
+	                    .setIssuedAt(now)
+	                    .setExpiration(validity)
+	                    .signWith(secretKey, SignatureAlgorithm.HS256)
+	                    .compact();
 
 
 	            return Mono.just(token);
 	        });
 	}
+
 
     public String extractJwtToken(String authorizationHeader) {
         return authorizationHeader.substring(7);
